@@ -13,6 +13,19 @@
   - 대체 대상: `data/projectsData.js`, `pages/projects/index.jsx`의 카테고리 필터/검색
 - `GET /api/projects/:url` — 단건 (slug 기반, `pages/projects/[id].jsx`에서 사용)
 - 응답 필드: `id, title, url, category, img, ProjectHeader, ProjectImages, ProjectInfo`
+- **구현 상태 (2026-04-08)**
+  - [x] `GET /api/projects?category=` NestJS 모듈 (controller/service/repository) 구현
+  - [x] `GET /api/projects/:url` slug 기반 단건 조회 + 404 처리
+  - [x] 정규화 엔티티 6종 (PROJECT, PROJECT_IMAGE, PROJECT_COMPANY_INFO,
+    PROJECT_TECHNOLOGY, PROJECT_TECHNOLOGY_ITEM, PROJECT_DETAIL) + CASCADE
+  - [x] `project-detail.mapper`로 프론트 호환 nested 응답 조립
+  - [x] `data/projectsData.js` → DB 시드 스크립트 (`npm run seed:projects -w apps/api`)
+  - [x] 프론트 연동: `pages/projects/index.jsx` getServerSideProps,
+    `pages/projects/[id].jsx → [url].jsx` slug 기반 라우팅
+  - [x] 단위 테스트 (service/controller/repository/mapper, Jest 15 케이스)
+  - [ ] 페이지네이션 (`?page=&limit=`)
+  - [ ] 검색 (`?q=`) — 프론트 검색 input은 broken 상태
+  - [ ] Admin CRUD (POST/PUT/DELETE), 이미지 업로드
 
 ### 1.2 Contact / Hire-me Form
 - `POST /api/contact` — `components/contact/ContactForm.jsx`, `HireMeModal.jsx` 제출 처리

@@ -2,8 +2,8 @@ import { useState } from 'react';
 import Button from '../reusable/Button';
 import FormInput from '../reusable/FormInput';
 
-const API_BASE_URL =
-	process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:7341';
+// API 요청은 Next.js rewrites를 통해 같은 origin으로 프록시됨
+const API_BASE_URL = '';
 
 function ContactForm() {
 	const [form, setForm] = useState({

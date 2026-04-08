@@ -20,6 +20,16 @@
   - 검증: 이메일 형식, 길이, 봇 차단(honeypot 또는 캡차)
   - 동작: 메일 발송 또는 DB 저장 + 관리자 알림
   - 응답: `{ ok: true }` / 4xx 검증 오류
+- **구현 상태 (2026-04-08)**
+  - [x] `POST /api/contact` NestJS 모듈 (controller/service/repository) 구현
+  - [x] MySQL `CONTACT_SUBMISSION` 테이블 저장 (TypeORM)
+  - [x] `class-validator` 기반 DTO 검증 (이메일/길이/필수)
+  - [x] `ContactForm.jsx` ↔ API 연동 + 성공/에러 UI
+  - [x] 단위 테스트 (controller/service/repository, Jest 7 케이스)
+  - [ ] `HireMeModal.jsx` 연동
+  - [ ] `projectType`, `budget` 필드 지원
+  - [ ] 봇 차단(honeypot/캡차)
+  - [ ] 관리자 메일 알림
 
 ### 1.3 About / Profile
 - `GET /api/about` — `data/aboutMeData.js`, `data/clientsData.js` 대체

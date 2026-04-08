@@ -27,7 +27,8 @@ const ProjectSingle = (props) => {
 							src={props.img}
 							className="rounded-t-xl border-none"
 							alt="Single Project"
-							layout="responsive"
+							sizes="100vw"
+							style={{ width: '100%', height: 'auto' }}
 							width={100}
 							height={90}
 						/>

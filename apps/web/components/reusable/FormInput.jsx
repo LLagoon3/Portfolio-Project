@@ -6,6 +6,8 @@ const FormInput = ({
 	inputName,
 	placeholderText,
 	ariaLabelName,
+	value,
+	onChange,
 }) => {
 	return (
 		<div className="font-general-regular mb-4">
@@ -22,6 +24,8 @@ const FormInput = ({
 				name={inputName}
 				placeholder={placeholderText}
 				aria-label={ariaLabelName}
+				value={value}
+				onChange={onChange}
 				required
 			/>
 		</div>

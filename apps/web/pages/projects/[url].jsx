@@ -1,8 +1,10 @@
 import Image from 'next/image';
 import { FiClock, FiTag } from 'react-icons/fi';
 import PagesMetaHead from '../../components/PagesMetaHead';
-import { projectsData } from '../../data/projectsData';
 import RelatedProjects from '../../components/projects/RelatedProjects';
+
+const API_BASE_URL =
+	process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3001';
 
 function ProjectSingle(props) {
 	return (
@@ -157,14 +159,25 @@ function ProjectSingle(props) {
 }
 
 export async function getServerSideProps({ query }) {
-	const { id } = query;
-	return {
-		props: {
-			project: projectsData.filter(
-				(project) => project.id === parseInt(id)
-			)[0],
-		},
-	};
+	const { url } = query;
+	try {
+		const res = await fetch(`${API_BASE_URL}/api/projects/${url}`);
+		if (res.status === 404) {
+			return { notFound: true };
+		}
+		if (!res.ok) {
+			return { notFound: true };
+		}
+		const body = await res.json();
+		const project = body?.data;
+		if (!project) {
+			return { notFound: true };
+		}
+		return { props: { project } };
+	} catch (err) {
+		console.error('[project detail] fetch failed', err);
+		return { notFound: true };
+	}
 }
 
 export default ProjectSingle;

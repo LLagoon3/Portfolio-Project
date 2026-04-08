@@ -1,17 +1,22 @@
 import { Injectable } from '@nestjs/common';
+import { DataSource } from 'typeorm';
 
-/**
- * 레이어드 아키텍처 예시를 위한 Repository 계층.
- * 현재는 DB 없이 인메모리/상수 값을 반환한다.
- * 추후 ORM(Prisma/TypeORM 등) 도입 시 이 계층만 교체하면 된다.
- */
 @Injectable()
 export class HealthRepository {
+  constructor(private readonly dataSource: DataSource) {}
+
   getHelloMessage(): string {
     return 'Portfolio API is running.';
   }
 
-  getStatus(): { status: string; checkedAt: string } {
-    return { status: 'ok', checkedAt: new Date().toISOString() };
+  async getStatus(): Promise<{ status: string; database: string; checkedAt: string }> {
+    let database = 'disconnected';
+    try {
+      await this.dataSource.query('SELECT 1');
+      database = 'connected';
+    } catch {
+      database = 'disconnected';
+    }
+    return { status: 'ok', database, checkedAt: new Date().toISOString() };
   }
 }

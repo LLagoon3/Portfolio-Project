@@ -9,7 +9,7 @@ export class HealthService {
     return this.healthRepository.getHelloMessage();
   }
 
-  getHealth(): { status: string; checkedAt: string } {
+  async getHealth(): Promise<{ status: string; database: string; checkedAt: string }> {
     return this.healthRepository.getStatus();
   }
 }

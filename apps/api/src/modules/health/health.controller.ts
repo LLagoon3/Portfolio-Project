@@ -11,7 +11,7 @@ export class HealthController {
   }
 
   @Get('health')
-  getHealth(): { status: string; checkedAt: string } {
+  async getHealth(): Promise<{ status: string; database: string; checkedAt: string }> {
     return this.healthService.getHealth();
   }
 }

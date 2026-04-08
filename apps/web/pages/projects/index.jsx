@@ -2,7 +2,7 @@ import PagesMetaHead from '../../components/PagesMetaHead';
 import ProjectsGrid from '../../components/projects/ProjectsGrid';
 
 const API_BASE_URL =
-	process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:7341';
+	process.env.API_INTERNAL_URL || 'http://localhost:7341';
 
 function ProjectsIndex({ projects }) {
 	return (

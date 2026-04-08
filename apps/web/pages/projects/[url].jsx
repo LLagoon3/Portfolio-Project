@@ -4,7 +4,7 @@ import PagesMetaHead from '../../components/PagesMetaHead';
 import RelatedProjects from '../../components/projects/RelatedProjects';
 
 const API_BASE_URL =
-	process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:7341';
+	process.env.API_INTERNAL_URL || 'http://localhost:7341';
 
 function ProjectSingle(props) {
 	return (

@@ -4,10 +4,10 @@ services:
       context: .
       dockerfile: apps/api/Dockerfile
     ports:
-      - "${API_PORT:-3001}:3001"
+      - "${API_PORT:-7341}:7341"
     environment:
       NODE_ENV: production
-      PORT: "3001"
+      PORT: "7341"
       CORS_ORIGIN: "${CORS_ORIGIN:-}"
       DB_HOST: mysql
       DB_PORT: "3306"

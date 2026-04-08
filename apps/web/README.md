@@ -63,7 +63,7 @@ cd nextjs-tailwindcss-portfolio
 npm install
 ```
 
-5. Start a local dev server at `http://localhost:3000`:
+5. Start a local dev server at `http://localhost:7340`:
 
 ```
 npm run dev

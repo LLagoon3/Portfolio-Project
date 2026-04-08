@@ -11,7 +11,8 @@
     "lint": "eslint \"{src,test}/**/*.ts\"",
     "test": "jest",
     "test:watch": "jest --watch",
-    "test:cov": "jest --coverage"
+    "test:cov": "jest --coverage",
+    "seed:projects": "ts-node -r tsconfig-paths/register src/database/seeds/seed-projects.ts"
   },
   "jest": {
     "moduleFileExtensions": ["js", "json", "ts"],

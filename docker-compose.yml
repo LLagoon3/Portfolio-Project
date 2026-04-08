@@ -1,0 +1,12 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    ports:
+      - "${API_PORT:-3001}:3001"
+    environment:
+      NODE_ENV: production
+      PORT: "3001"
+      CORS_ORIGIN: "${CORS_ORIGIN:-}"
+    restart: unless-stopped

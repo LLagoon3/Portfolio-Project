@@ -19,6 +19,23 @@ class EnvironmentVariables {
   @IsOptional()
   @IsString()
   CORS_ORIGIN?: string;
+
+  @IsString()
+  DB_HOST: string = 'localhost';
+
+  @IsInt()
+  @Min(1)
+  @Max(65535)
+  DB_PORT: number = 3306;
+
+  @IsString()
+  DB_USERNAME: string = 'portfolio';
+
+  @IsString()
+  DB_PASSWORD: string = 'portfolio_secret';
+
+  @IsString()
+  DB_DATABASE: string = 'portfolio';
 }
 
 export function validateEnv(config: Record<string, unknown>): EnvironmentVariables {

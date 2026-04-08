@@ -129,20 +129,64 @@ function ContactForm() {
 					</div>
 
 					{status.state === 'success' && (
-						<p
-							className="mt-4 text-green-600 dark:text-green-400"
+						<div
 							role="status"
+							aria-live="polite"
+							className="mt-6 flex items-start gap-3 p-4 rounded-lg border border-green-200 dark:border-green-900/50 bg-green-50 dark:bg-green-900/20 animate-fade-in-up"
 						>
-							{status.message}
-						</p>
+							<svg
+								className="w-6 h-6 flex-shrink-0 text-green-500 dark:text-green-400"
+								fill="none"
+								stroke="currentColor"
+								strokeWidth="2"
+								viewBox="0 0 24 24"
+								aria-hidden="true"
+							>
+								<path
+									strokeLinecap="round"
+									strokeLinejoin="round"
+									d="M5 13l4 4L19 7"
+								/>
+							</svg>
+							<div className="font-general-medium">
+								<p className="text-green-800 dark:text-green-200 text-base">
+									메시지가 성공적으로 전송되었습니다
+								</p>
+								<p className="text-green-700 dark:text-green-300/80 text-sm mt-0.5">
+									빠른 시일 내에 답변드리겠습니다. 감사합니다!
+								</p>
+							</div>
+						</div>
 					)}
 					{status.state === 'error' && (
-						<p
-							className="mt-4 text-red-600 dark:text-red-400"
+						<div
 							role="alert"
+							aria-live="assertive"
+							className="mt-6 flex items-start gap-3 p-4 rounded-lg border border-red-200 dark:border-red-900/50 bg-red-50 dark:bg-red-900/20 animate-fade-in-up"
 						>
-							{status.message}
-						</p>
+							<svg
+								className="w-6 h-6 flex-shrink-0 text-red-500 dark:text-red-400"
+								fill="none"
+								stroke="currentColor"
+								strokeWidth="2"
+								viewBox="0 0 24 24"
+								aria-hidden="true"
+							>
+								<path
+									strokeLinecap="round"
+									strokeLinejoin="round"
+									d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"
+								/>
+							</svg>
+							<div className="font-general-medium">
+								<p className="text-red-800 dark:text-red-200 text-base">
+									전송에 실패했습니다
+								</p>
+								<p className="text-red-700 dark:text-red-300/80 text-sm mt-0.5">
+									{status.message}
+								</p>
+							</div>
+						</div>
 					)}
 				</form>
 			</div>

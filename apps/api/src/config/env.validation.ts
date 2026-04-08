@@ -26,7 +26,7 @@ class EnvironmentVariables {
   @IsInt()
   @Min(1)
   @Max(65535)
-  DB_PORT: number = 3306;
+  DB_PORT: number = 3307;
 
   @IsString()
   DB_USERNAME: string = 'portfolio';

@@ -11,7 +11,7 @@ import useThemeSwitcher from '../../hooks/useThemeSwitcher';
 function AppHeader() {
 	const [showMenu, setShowMenu] = useState(false);
 	const [showModal, setShowModal] = useState(false);
-	const [activeTheme, setTheme] = useThemeSwitcher();
+	const [activeTheme, setTheme, mounted] = useThemeSwitcher();
 
 	function toggleMenu() {
 		if (!showMenu) {
@@ -37,7 +37,7 @@ function AppHeader() {
 
 	return (
 		<motion.nav
-			initial={{ opacity: 0 }}
+			initial={false}
 			animate={{ opacity: 1 }}
 			id="nav"
 			className="sm:container sm:mx-auto"
@@ -48,23 +48,13 @@ function AppHeader() {
 				<div className="flex justify-between items-center px-4 sm:px-0">
 					<div>
 						<Link href="/">
-							{activeTheme === 'dark' ? (
-								<Image
-									src={logoDark}
-									className="w-36 cursor-pointer"
-									alt="Dark Logo"
-									width={150}
-									height={120}
-								/>
-							) : (
-								<Image
-									src={logoLight}
-									className="w-36 cursor-pointer"
-									alt="Dark Logo"
-									width={150}
-									height={120}
-								/>
-							)}
+							<Image
+								src={mounted && activeTheme === 'dark' ? logoDark : logoLight}
+								className="w-36 cursor-pointer"
+								alt="Logo"
+								width={150}
+								height={120}
+							/>
 						</Link>
 					</div>
 
@@ -74,7 +64,7 @@ function AppHeader() {
 						aria-label="Theme Switcher"
 						className="block sm:hidden ml-0 bg-primary-light dark:bg-ternary-dark p-3 shadow-sm rounded-xl cursor-pointer"
 					>
-						{activeTheme === 'dark' ? (
+						{mounted && activeTheme === 'dark' ? (
 							<FiMoon className="text-ternary-dark hover:text-gray-400 dark:text-ternary-light dark:hover:text-primary-light text-xl" />
 						) : (
 							<FiSun className="text-gray-200 hover:text-gray-50 text-xl" />
@@ -179,7 +169,7 @@ function AppHeader() {
 						aria-label="Theme Switcher"
 						className="ml-8 bg-primary-light dark:bg-ternary-dark p-3 shadow-sm rounded-xl cursor-pointer"
 					>
-						{activeTheme === 'dark' ? (
+						{mounted && activeTheme === 'dark' ? (
 							<FiMoon className="text-ternary-dark hover:text-gray-400 dark:text-ternary-light dark:hover:text-primary-light text-xl" />
 						) : (
 							<FiSun className="text-gray-200 hover:text-gray-50 text-xl" />

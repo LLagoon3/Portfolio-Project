@@ -10,7 +10,7 @@ function about() {
 			<PagesMetaHead title="About Me" />
 
 			<motion.div
-				initial={{ opacity: 0 }}
+				initial={false}
 				animate={{ opacity: 1, delay: 1 }}
 				exit={{ opacity: 0 }}
 				className="container mx-auto"
@@ -20,7 +20,7 @@ function about() {
 
 			{/** Counter without paddings */}
 			<motion.div
-				initial={{ opacity: 0 }}
+				initial={false}
 				animate={{ opacity: 1, delay: 1 }}
 				exit={{ opacity: 0 }}
 			>
@@ -28,7 +28,7 @@ function about() {
 			</motion.div>
 
 			<motion.div
-				initial={{ opacity: 0 }}
+				initial={false}
 				animate={{ opacity: 1, delay: 1 }}
 				exit={{ opacity: 0 }}
 				className="container mx-auto"

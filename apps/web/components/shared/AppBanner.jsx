@@ -4,18 +4,18 @@ import { FiArrowDownCircle } from 'react-icons/fi';
 import useThemeSwitcher from '../../hooks/useThemeSwitcher';
 
 function AppBanner() {
-	const [activeTheme] = useThemeSwitcher();
+	const [activeTheme, , mounted] = useThemeSwitcher();
 
 	return (
 		<motion.section
-			initial={{ opacity: 0 }}
+			initial={false}
 			animate={{ opacity: 1 }}
 			transition={{ ease: 'easeInOut', duration: 0.9, delay: 0.2 }}
 			className="flex flex-col sm:justify-between items-center sm:flex-row mt-5 md:mt-2"
 		>
 			<div className="w-full md:w-1/3 text-left">
 				<motion.h1
-					initial={{ opacity: 0 }}
+					initial={false}
 					animate={{ opacity: 1 }}
 					transition={{
 						ease: 'easeInOut',
@@ -27,7 +27,7 @@ function AppBanner() {
 					Hi, Iam Stoman
 				</motion.h1>
 				<motion.p
-					initial={{ opacity: 0 }}
+					initial={false}
 					animate={{ opacity: 1 }}
 					transition={{
 						ease: 'easeInOut',
@@ -39,7 +39,7 @@ function AppBanner() {
 					A Full-Stack Developer & Design Enthusiast
 				</motion.p>
 				<motion.div
-					initial={{ opacity: 0 }}
+					initial={false}
 					animate={{ opacity: 1 }}
 					transition={{
 						ease: 'easeInOut',
@@ -62,15 +62,14 @@ function AppBanner() {
 				</motion.div>
 			</div>
 			<motion.div
-				initial={{ opacity: 0, y: -180 }}
+				initial={false}
 				animate={{ opacity: 1, y: 0 }}
 				transition={{ ease: 'easeInOut', duration: 0.9, delay: 0.2 }}
 				className="w-full sm:w-2/3 text-right float-right mt-8 sm:mt-0"
 			>
 				<img
-					layout="responsive"
 					src={
-						activeTheme === 'dark'
+						mounted && activeTheme === 'dark'
 							? '/images/developer.svg'
 							: '/images/developer-dark.svg'
 					}

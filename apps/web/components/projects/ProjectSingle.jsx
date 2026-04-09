@@ -7,7 +7,7 @@ const imageStyle = { maxWidth: '100%', height: 'auto' };
 const ProjectSingle = (props) => {
 	return (
 		<motion.div
-			initial={{ opacity: 0 }}
+			initial={false}
 			animate={{ opacity: 1, delay: 1 }}
 			transition={{
 				ease: 'easeInOut',

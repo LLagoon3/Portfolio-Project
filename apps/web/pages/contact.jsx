@@ -9,7 +9,7 @@ function contact() {
 			<PagesMetaHead title="Contact" />
 
 			<motion.div
-				initial={{ opacity: 0 }}
+				initial={false}
 				animate={{ opacity: 1 }}
 				transition={{
 					ease: 'easeInOut',

@@ -1,6 +1,10 @@
 import Head from 'next/head';
 
-function PagesMetaHead({ title, keywords, description }) {
+function PagesMetaHead({
+	title = 'Next.js & TailwindCSS Portfolio Project',
+	keywords = 'next.js, react, web, ui',
+	description = 'Simple and multi-page next.js and react application',
+}) {
 	return (
 		<Head>
 			<meta
@@ -15,11 +19,5 @@ function PagesMetaHead({ title, keywords, description }) {
 		</Head>
 	);
 }
-
-PagesMetaHead.defaultProps = {
-	title: 'Next.js & TailwindCSS Portfolio Project',
-	keywords: 'next.js, react, web, ui',
-	keywords: 'Simple and multi-page next.js and react application',
-};
 
 export default PagesMetaHead;

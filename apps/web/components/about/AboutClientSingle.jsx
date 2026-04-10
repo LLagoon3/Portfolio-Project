@@ -6,9 +6,10 @@ function AboutClientSingle({ title, image }) {
 			<Image
 				src={image}
 				alt={title}
-				layout="responsive"
 				width={100}
 				height={50}
+				sizes="100vw"
+				style={{ width: '100%', height: 'auto' }}
 			/>
 		</div>
 	);

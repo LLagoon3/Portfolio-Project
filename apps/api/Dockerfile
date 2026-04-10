@@ -32,6 +32,6 @@ RUN npm ci --workspace=apps/api --include-workspace-root --omit=dev
 # Copy compiled output from builder
 COPY --from=builder /app/apps/api/dist apps/api/dist
 
-EXPOSE 3001
+EXPOSE 7341
 
 CMD ["node", "apps/api/dist/main.js"]

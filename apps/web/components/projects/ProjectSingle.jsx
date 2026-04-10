@@ -7,7 +7,7 @@ const imageStyle = { maxWidth: '100%', height: 'auto' };
 const ProjectSingle = (props) => {
 	return (
 		<motion.div
-			initial={{ opacity: 0 }}
+			initial={false}
 			animate={{ opacity: 1, delay: 1 }}
 			transition={{
 				ease: 'easeInOut',
@@ -16,8 +16,8 @@ const ProjectSingle = (props) => {
 			}}
 		>
 			<Link
-				href="/projects/[id]"
-				as={'/projects/' + props.id}
+				href="/projects/[url]"
+				as={'/projects/' + props.url}
 				aria-label="Single Project"
 				passHref
 			>
@@ -27,7 +27,8 @@ const ProjectSingle = (props) => {
 							src={props.img}
 							className="rounded-t-xl border-none"
 							alt="Single Project"
-							layout="responsive"
+							sizes="100vw"
+							style={{ width: '100%', height: 'auto' }}
 							width={100}
 							height={90}
 						/>

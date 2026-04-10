@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import { FiSearch } from 'react-icons/fi';
 import ProjectSingle from './ProjectSingle';
-import { projectsData } from '../../data/projectsData';
 import ProjectsFilter from './ProjectsFilter';
 
-function ProjectsGrid() {
+function ProjectsGrid({ projects = [] }) {
 	const [searchProject, setSearchProject] = useState();
 	const [selectProject, setSelectProject] = useState();
+
+	const categories = [...new Set(projects.map((p) => p.category))].sort();
 
 	// @todo - To be fixed
 	// const searchProjectsByTitle = projectsData.filter((item) => {
@@ -20,7 +21,7 @@ function ProjectsGrid() {
 	// 	return result;
 	// });
 
-	const selectProjectsByCategory = projectsData.filter((item) => {
+	const selectProjectsByCategory = projects.filter((item) => {
 		let category =
 			item.category.charAt(0).toUpperCase() + item.category.slice(1);
 		return category.includes(selectProject);
@@ -102,7 +103,7 @@ function ProjectsGrid() {
 						/>
 					</div>
 
-					<ProjectsFilter setSelectProject={setSelectProject} />
+					<ProjectsFilter setSelectProject={setSelectProject} categories={categories} />
 				</div>
 			</div>
 
@@ -111,7 +112,7 @@ function ProjectsGrid() {
 					? selectProjectsByCategory.map((project, index) => {
 							return <ProjectSingle key={index} {...project} />;
 					  })
-					: projectsData.map((project, index) => (
+					: projects.map((project, index) => (
 							<ProjectSingle key={index} {...project} />
 					  ))}
 			</div>

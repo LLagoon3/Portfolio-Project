@@ -1,8 +1,10 @@
 import Image from 'next/image';
 import { FiClock, FiTag } from 'react-icons/fi';
 import PagesMetaHead from '../../components/PagesMetaHead';
-import { projectsData } from '../../data/projectsData';
 import RelatedProjects from '../../components/projects/RelatedProjects';
+
+const API_BASE_URL =
+	process.env.API_INTERNAL_URL || 'http://localhost:7341';
 
 function ProjectSingle(props) {
 	return (
@@ -40,7 +42,8 @@ function ProjectSingle(props) {
 								className="rounded-xl cursor-pointer shadow-lg sm:shadow-none"
 								alt={project.title}
 								key={project.id}
-								layout="responsive"
+								sizes="100vw"
+								style={{ width: '100%', height: 'auto' }}
 								width={100}
 								height={90}
 							/>
@@ -151,20 +154,48 @@ function ProjectSingle(props) {
 				</div>
 			</div>
 
-			<RelatedProjects />
+			<RelatedProjects projects={props.relatedProjects} />
 		</div>
 	);
 }
 
 export async function getServerSideProps({ query }) {
-	const { id } = query;
-	return {
-		props: {
-			project: projectsData.filter(
-				(project) => project.id === parseInt(id)
-			)[0],
-		},
-	};
+	const { url } = query;
+	try {
+		const res = await fetch(`${API_BASE_URL}/api/projects/${url}`);
+		if (res.status === 404) {
+			return { notFound: true };
+		}
+		if (!res.ok) {
+			return { notFound: true };
+		}
+		const body = await res.json();
+		const project = body?.data;
+		if (!project) {
+			return { notFound: true };
+		}
+
+		let relatedProjects = [];
+		try {
+			const category = encodeURIComponent(project.category);
+			const relRes = await fetch(
+				`${API_BASE_URL}/api/projects?category=${category}`
+			);
+			if (relRes.ok) {
+				const relBody = await relRes.json();
+				relatedProjects = (relBody?.data ?? [])
+					.filter((p) => p.url !== url)
+					.slice(0, 4);
+			}
+		} catch (relErr) {
+			console.error('[project detail] fetch related failed', relErr);
+		}
+
+		return { props: { project, relatedProjects } };
+	} catch (err) {
+		console.error('[project detail] fetch failed', err);
+		return { notFound: true };
+	}
 }
 
 export default ProjectSingle;

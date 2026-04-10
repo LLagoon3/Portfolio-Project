@@ -28,17 +28,8 @@ function useScrollToTop() {
 	return (
 		<>
 			<FiChevronUp
-				className="scrollToTop"
+				className={`scrollToTop fixed right-12 bottom-12 h-10 w-10 p-2 rounded-full cursor-pointer bg-indigo-500 text-white shadow-lg hover:bg-indigo-600 duration-300 ${showScroll ? 'flex' : 'hidden'}`}
 				onClick={backToTop}
-				style={{
-					height: 40,
-					width: 40,
-					padding: 7,
-					borderRadius: 50,
-					right: 50,
-					bottom: 50,
-					display: showScroll ? 'flex' : 'none',
-				}}
 			/>
 		</>
 	);

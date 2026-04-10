@@ -78,7 +78,7 @@ function ProjectsGrid({ projects = [] }) {
 								setSearchProject(e.target.value);
 							}}
 							className="
-                                ont-general-medium 
+                                font-general-medium
                                 pl-3
                                 pr-1
                                 sm:px-4
@@ -109,11 +109,11 @@ function ProjectsGrid({ projects = [] }) {
 
 			<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 mt-6 sm:gap-5">
 				{selectProject
-					? selectProjectsByCategory.map((project, index) => {
-							return <ProjectSingle key={index} {...project} />;
-					  })
-					: projects.map((project, index) => (
-							<ProjectSingle key={index} {...project} />
+					? selectProjectsByCategory.map((project) => (
+							<ProjectSingle key={project.id ?? project.url} {...project} />
+					  ))
+					: projects.map((project) => (
+							<ProjectSingle key={project.id ?? project.url} {...project} />
 					  ))}
 			</div>
 		</section>

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import Button from '../reusable/Button';
 import FormInput from '../reusable/FormInput';
 
-// API 요청은 Next.js rewrites를 통해 같은 origin으로 프록시됨
+// API requests are proxied to the same origin via Next.js rewrites
 const API_BASE_URL = '';
 
 function ContactForm() {
@@ -32,18 +32,18 @@ function ContactForm() {
 				const data = await res.json().catch(() => ({}));
 				const msg = Array.isArray(data?.message)
 					? data.message.join(', ')
-					: data?.message || '메시지 전송에 실패했습니다.';
+					: data?.message || 'Failed to send message.';
 				throw new Error(msg);
 			}
 			setStatus({
 				state: 'success',
-				message: '메시지가 성공적으로 전송되었습니다.',
+				message: 'Your message has been sent successfully.',
 			});
 			setForm({ name: '', email: '', subject: '', message: '' });
 		} catch (err) {
 			setStatus({
 				state: 'error',
-				message: err.message || '메시지 전송에 실패했습니다.',
+				message: err.message || 'Failed to send message.',
 			});
 		}
 	};
@@ -93,9 +93,9 @@ function ContactForm() {
 						onChange={handleChange}
 					/>
 
-					<div className="mt-6">
+					<div className="font-general-regular mb-4">
 						<label
-							className="block text-lg text-primary-dark dark:text-primary-light mb-2"
+							className="block text-lg text-primary-dark dark:text-primary-light mb-1"
 							htmlFor="message"
 						>
 							Message
@@ -114,18 +114,14 @@ function ContactForm() {
 					</div>
 
 					<div className="mt-6">
-						<span className="font-general-medium  px-7 py-4 text-white text-center font-medium tracking-wider bg-indigo-500 hover:bg-indigo-600 focus:ring-1 focus:ring-indigo-900 rounded-lg mt-6 duration-500">
-							<Button
-								title={
-									status.state === 'loading'
-										? 'Sending...'
-										: 'Send Message'
-								}
-								type="submit"
-								aria-label="Send Message"
-								disabled={status.state === 'loading'}
-							/>
-						</span>
+						<Button
+							title={status.state === 'loading' ? 'Sending...' : 'Send Message'}
+							type="submit"
+							size="lg"
+							ariaLabel="Send Message"
+							disabled={status.state === 'loading'}
+							className="tracking-wider rounded-lg"
+						/>
 					</div>
 
 					{status.state === 'success' && (
@@ -150,10 +146,10 @@ function ContactForm() {
 							</svg>
 							<div className="font-general-medium">
 								<p className="text-green-800 dark:text-green-200 text-base">
-									메시지가 성공적으로 전송되었습니다
+									Your message has been sent successfully
 								</p>
 								<p className="text-green-700 dark:text-green-300/80 text-sm mt-0.5">
-									빠른 시일 내에 답변드리겠습니다. 감사합니다!
+									We&apos;ll get back to you shortly. Thank you!
 								</p>
 							</div>
 						</div>
@@ -180,7 +176,7 @@ function ContactForm() {
 							</svg>
 							<div className="font-general-medium">
 								<p className="text-red-800 dark:text-red-200 text-base">
-									전송에 실패했습니다
+									Failed to send
 								</p>
 								<p className="text-red-700 dark:text-red-300/80 text-sm mt-0.5">
 									{status.message}

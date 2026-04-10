@@ -65,21 +65,20 @@ function AppHeader() {
 						</Link>
 					</div>
 
-					{/* Theme switcher small screen */}
-					<div
-						onClick={() => setTheme(activeTheme)}
-						aria-label="Theme Switcher"
-						className="block sm:hidden ml-0 bg-primary-light dark:bg-ternary-dark p-3 shadow-sm rounded-xl cursor-pointer"
-					>
-						{mounted && activeTheme === 'dark' ? (
-							<FiMoon className="text-ternary-dark hover:text-gray-400 dark:text-ternary-light dark:hover:text-primary-light text-xl" />
-						) : (
-							<FiSun className="text-gray-200 hover:text-gray-50 text-xl" />
-						)}
-					</div>
-
-					{/* Small screen hamburger menu */}
-					<div className="sm:hidden">
+					{/* Theme switcher + hamburger menu small screen */}
+					<div className="flex items-center gap-3 sm:hidden">
+						<div
+							onClick={() => setTheme(activeTheme)}
+							aria-label="Theme Switcher"
+							className="bg-primary-light dark:bg-ternary-dark p-3 shadow-sm rounded-xl cursor-pointer"
+						>
+							{mounted && activeTheme === 'dark' ? (
+								<FiMoon className="text-ternary-dark hover:text-gray-400 dark:text-ternary-light dark:hover:text-primary-light text-xl" />
+							) : (
+								<FiSun className="text-gray-200 hover:text-gray-50 text-xl" />
+							)}
+						</div>
+						<div>
 						<button
 							onClick={toggleMenu}
 							type="button"
@@ -98,6 +97,7 @@ function AppHeader() {
 								)}
 							</svg>
 						</button>
+					</div>
 					</div>
 				</div>
 

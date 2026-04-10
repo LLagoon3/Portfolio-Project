@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { FiX } from 'react-icons/fi';
 import Button from './reusable/Button';
+import FormInput from './reusable/FormInput';
 
 const selectOptions = [
 	'Web Application',
@@ -42,34 +43,25 @@ function HireMeModal({ onClose, onRequest }) {
 								}}
 								className="max-w-xl m-4 text-left"
 							>
-								<div className="">
-									<input
-										className="w-full px-5 py-2 border dark:border-secondary-dark rounded-md text-md bg-secondary-light dark:bg-ternary-dark text-primary-dark dark:text-ternary-light"
-										id="name"
-										name="name"
-										type="text"
-										required
-										placeholder="Name"
-										aria-label="Name"
-									/>
-								</div>
-								<div className="mt-6">
-									<input
-										className="w-full px-5 py-2 border dark:border-secondary-dark rounded-md text-md bg-secondary-light dark:bg-ternary-dark text-primary-dark dark:text-ternary-light"
-										id="email"
-										name="email"
-										type="text"
-										required
-										placeholder="Email"
-										aria-label="Email"
-									/>
-								</div>
-								<div className="mt-6">
+								<FormInput
+									inputType="text"
+									inputId="name"
+									inputName="name"
+									placeholderText="Name"
+									ariaLabelName="Name"
+								/>
+								<FormInput
+									inputType="email"
+									inputId="email"
+									inputName="email"
+									placeholderText="Email"
+									ariaLabelName="Email"
+								/>
+								<div className="font-general-regular mb-4">
 									<select
-										className="w-full px-5 py-2 border dark:border-secondary-dark rounded-md text-md bg-secondary-light dark:bg-ternary-dark text-primary-dark dark:text-ternary-light"
+										className="w-full px-5 py-2 border border-gray-300 dark:border-primary-dark border-opacity-50 text-primary-dark dark:text-secondary-light bg-ternary-light dark:bg-ternary-dark rounded-md shadow-sm text-md"
 										id="subject"
 										name="subject"
-										type="text"
 										required
 										aria-label="Project Category"
 									>
@@ -83,10 +75,9 @@ function HireMeModal({ onClose, onRequest }) {
 										))}
 									</select>
 								</div>
-
-								<div className="mt-6">
+								<div className="font-general-regular mb-4">
 									<textarea
-										className="w-full px-5 py-2 border dark:border-secondary-dark rounded-md text-md bg-secondary-light dark:bg-ternary-dark text-primary-dark dark:text-ternary-light"
+										className="w-full px-5 py-2 border border-gray-300 dark:border-primary-dark border-opacity-50 text-primary-dark dark:text-secondary-light bg-ternary-light dark:bg-ternary-dark rounded-md shadow-sm text-md"
 										id="message"
 										name="message"
 										cols="14"

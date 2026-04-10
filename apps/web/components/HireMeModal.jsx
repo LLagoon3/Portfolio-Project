@@ -40,6 +40,7 @@ function HireMeModal({ onClose, onRequest }) {
 							<form
 								onSubmit={(e) => {
 									e.preventDefault();
+									onRequest();
 								}}
 								className="max-w-xl m-4 text-left"
 							>
@@ -90,7 +91,7 @@ function HireMeModal({ onClose, onRequest }) {
 								<div className="mt-6 pb-4 sm:pb-1">
 									<Button
 										title="Send Request"
-										onClick={onRequest}
+										type="submit"
 										ariaLabel="Submit Request"
 									/>
 								</div>

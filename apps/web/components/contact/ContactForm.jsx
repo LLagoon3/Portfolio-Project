@@ -93,9 +93,9 @@ function ContactForm() {
 						onChange={handleChange}
 					/>
 
-					<div className="mt-6">
+					<div className="font-general-regular mb-4">
 						<label
-							className="block text-lg text-primary-dark dark:text-primary-light mb-2"
+							className="block text-lg text-primary-dark dark:text-primary-light mb-1"
 							htmlFor="message"
 						>
 							Message

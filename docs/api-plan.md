@@ -23,6 +23,9 @@
   - [x] 프론트 연동: `pages/projects/index.jsx` getServerSideProps,
     `pages/projects/[id].jsx → [url].jsx` slug 기반 라우팅
   - [x] 단위 테스트 (service/controller/repository/mapper, Jest 15 케이스)
+  - [x] RelatedProjects 컴포넌트 API 연동 — `[url].jsx` getServerSideProps에서
+    같은 카테고리 프로젝트를 `GET /api/projects?category=`로 조회, 현재 프로젝트
+    제외 후 최대 4개 표시. 하드코딩 데이터 제거, 카드 클릭 시 상세 이동 Link 추가.
   - [ ] 페이지네이션 (`?page=&limit=`)
   - [ ] 검색 (`?q=`) — 프론트 검색 input은 broken 상태
   - [ ] Admin CRUD (POST/PUT/DELETE), 이미지 업로드

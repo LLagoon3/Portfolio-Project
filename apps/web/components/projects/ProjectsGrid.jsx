@@ -78,7 +78,7 @@ function ProjectsGrid({ projects = [] }) {
 								setSearchProject(e.target.value);
 							}}
 							className="
-                                ont-general-medium 
+                                font-general-medium
                                 pl-3
                                 pr-1
                                 sm:px-4

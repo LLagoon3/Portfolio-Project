@@ -41,7 +41,6 @@ function ProjectSingle(props) {
 								src={project.img}
 								className="rounded-xl cursor-pointer shadow-lg sm:shadow-none"
 								alt={project.title}
-								key={project.id}
 								sizes="100vw"
 								style={{ width: '100%', height: 'auto' }}
 								width={100}

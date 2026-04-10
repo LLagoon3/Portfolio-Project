@@ -7,6 +7,8 @@ function ProjectsGrid({ projects = [] }) {
 	const [searchProject, setSearchProject] = useState();
 	const [selectProject, setSelectProject] = useState();
 
+	const categories = [...new Set(projects.map((p) => p.category))].sort();
+
 	// @todo - To be fixed
 	// const searchProjectsByTitle = projectsData.filter((item) => {
 	// 	const result = item.title
@@ -101,7 +103,7 @@ function ProjectsGrid({ projects = [] }) {
 						/>
 					</div>
 
-					<ProjectsFilter setSelectProject={setSelectProject} />
+					<ProjectsFilter setSelectProject={setSelectProject} categories={categories} />
 				</div>
 			</div>
 

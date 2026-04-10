@@ -1,10 +1,4 @@
-const selectOptions = [
-	'Web Application',
-	'Mobile Application',
-	'UI/UX Design',
-];
-
-function ProjectsFilter({ setSelectProject }) {
+function ProjectsFilter({ setSelectProject, categories = [] }) {
 	return (
 		<select
 			onChange={(e) => {
@@ -30,7 +24,7 @@ function ProjectsFilter({ setSelectProject }) {
 				All Projects
 			</option>
 
-			{selectOptions.map((option) => (
+			{categories.map((option) => (
 				<option className="text-normal sm:text-md" key={option}>
 					{option}
 				</option>

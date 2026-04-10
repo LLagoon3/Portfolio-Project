@@ -52,13 +52,18 @@ function AppBanner() {
 				animate={{ opacity: 1, y: 0 }}
 				className="w-full sm:w-2/3 text-right float-right mt-8 sm:mt-0"
 			>
-				<img
+				<Image
 					src={
 						mounted && activeTheme === 'dark'
 							? '/images/developer.svg'
 							: '/images/developer-dark.svg'
 					}
 					alt="Developer"
+					width={600}
+					height={600}
+					sizes="100vw"
+					style={{ width: '100%', height: 'auto' }}
+					priority
 				/>
 			</motion.div>
 		</motion.section>

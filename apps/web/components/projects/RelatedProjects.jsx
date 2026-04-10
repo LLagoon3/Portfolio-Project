@@ -1,52 +1,42 @@
 import Image from 'next/image';
-import { v4 as uuidv4 } from 'uuid';
+import Link from 'next/link';
 
-const RelatedProject = {
-	title: 'Related Projects',
-	Projects: [
-		{
-			id: uuidv4(),
-			title: 'Mobile UI',
-			img: '/images/ui-project-2.jpg',
-		},
-		{
-			id: uuidv4(),
-			title: 'Web Application',
-			img: '/images/mobile-project-1.jpg',
-		},
-		{
-			id: uuidv4(),
-			title: 'UI Design',
-			img: '/images/web-project-1.jpg',
-		},
-		{
-			id: uuidv4(),
-			title: 'Kabul Mobile App UI',
-			img: '/images/mobile-project-2.jpg',
-		},
-	],
-};
+function RelatedProjects({ projects = [] }) {
+	if (projects.length === 0) return null;
 
-function RelatedProjects() {
 	return (
 		<div className="mt-10 pt-10 sm:pt-14 sm:mt-20 border-t-2 border-primary-light dark:border-secondary-dark">
 			<p className="font-general-regular text-primary-dark dark:text-primary-light text-3xl font-bold mb-10 sm:mb-14 text-left">
-				{RelatedProject.title}
+				Related Projects
 			</p>
 
 			<div className="grid grid-cols-1 sm:grid-cols-4 gap-10">
-				{RelatedProject.Projects.map((project) => {
-					return (
-						<Image
-							src={project.img}
-							className="rounded-xl cursor-pointer"
-							width="400"
-							height="400"
-							alt={project.title}
-							key={project.id}
-						/>
-					);
-				})}
+				{projects.map((project) => (
+					<Link
+						key={project.id}
+						href="/projects/[url]"
+						as={`/projects/${project.url}`}
+						aria-label={project.title}
+						passHref
+					>
+						<div className="rounded-xl shadow-lg hover:shadow-xl cursor-pointer bg-secondary-light dark:bg-ternary-dark">
+							<Image
+								src={project.img}
+								className="rounded-t-xl"
+								width={400}
+								height={400}
+								sizes="100vw"
+								style={{ width: '100%', height: 'auto' }}
+								alt={project.title}
+							/>
+							<div className="text-center px-4 py-4">
+								<p className="font-general-medium text-lg text-ternary-dark dark:text-ternary-light">
+									{project.title}
+								</p>
+							</div>
+						</div>
+					</Link>
+				))}
 			</div>
 		</div>
 	);

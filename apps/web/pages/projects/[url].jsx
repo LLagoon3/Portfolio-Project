@@ -154,7 +154,7 @@ function ProjectSingle(props) {
 				</div>
 			</div>
 
-			<RelatedProjects />
+			<RelatedProjects projects={props.relatedProjects} />
 		</div>
 	);
 }
@@ -174,7 +174,24 @@ export async function getServerSideProps({ query }) {
 		if (!project) {
 			return { notFound: true };
 		}
-		return { props: { project } };
+
+		let relatedProjects = [];
+		try {
+			const category = encodeURIComponent(project.category);
+			const relRes = await fetch(
+				`${API_BASE_URL}/api/projects?category=${category}`
+			);
+			if (relRes.ok) {
+				const relBody = await relRes.json();
+				relatedProjects = (relBody?.data ?? [])
+					.filter((p) => p.url !== url)
+					.slice(0, 4);
+			}
+		} catch (relErr) {
+			console.error('[project detail] fetch related failed', relErr);
+		}
+
+		return { props: { project, relatedProjects } };
 	} catch (err) {
 		console.error('[project detail] fetch failed', err);
 		return { notFound: true };

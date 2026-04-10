@@ -4,7 +4,7 @@ import AboutCounter from '../components/about/AboutCounter';
 import AboutMeBio from '../components/about/AboutMeBio';
 import PagesMetaHead from '../components/PagesMetaHead';
 
-function about() {
+function About() {
 	return (
 		<div>
 			<PagesMetaHead title="About Me" />
@@ -39,4 +39,4 @@ function about() {
 	);
 }
 
-export default about;
+export default About;

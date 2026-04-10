@@ -30,14 +30,14 @@ function AppHeader() {
 
 	function showHireMeModal() {
 		if (!showModal) {
-			document
-				.getElementsByTagName('html')[0]
-				.classList.add('overflow-y-hidden');
+			if (typeof document !== 'undefined') {
+				document.documentElement.classList.add('overflow-y-hidden');
+			}
 			setShowModal(true);
 		} else {
-			document
-				.getElementsByTagName('html')[0]
-				.classList.remove('overflow-y-hidden');
+			if (typeof document !== 'undefined') {
+				document.documentElement.classList.remove('overflow-y-hidden');
+			}
 			setShowModal(false);
 		}
 	}

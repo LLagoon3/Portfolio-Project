@@ -114,18 +114,14 @@ function ContactForm() {
 					</div>
 
 					<div className="mt-6">
-						<span className="font-general-medium  px-7 py-4 text-white text-center font-medium tracking-wider bg-indigo-500 hover:bg-indigo-600 focus:ring-1 focus:ring-indigo-900 rounded-lg mt-6 duration-500">
-							<Button
-								title={
-									status.state === 'loading'
-										? 'Sending...'
-										: 'Send Message'
-								}
-								type="submit"
-								aria-label="Send Message"
-								disabled={status.state === 'loading'}
-							/>
-						</span>
+						<Button
+							title={status.state === 'loading' ? 'Sending...' : 'Send Message'}
+							type="submit"
+							size="lg"
+							ariaLabel="Send Message"
+							disabled={status.state === 'loading'}
+							className="tracking-wider rounded-lg"
+						/>
 					</div>
 
 					{status.state === 'success' && (

@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { FiSun, FiMoon, FiX, FiMenu } from 'react-icons/fi';
 import HireMeModal from '../HireMeModal';
+import Button from '../reusable/Button';
 import logoLight from '../../public/images/logo-light.svg';
 import logoDark from '../../public/images/logo-dark.svg';
 import useThemeSwitcher from '../../hooks/useThemeSwitcher';
@@ -118,13 +119,12 @@ function AppHeader() {
 						</Link>
 					</div>
 					<div className="border-t-2 pt-3 sm:pt-0 sm:border-t-0 border-primary-light dark:border-secondary-dark">
-						<button
+						<Button
+							title="Hire Me"
 							onClick={showHireMeModal}
-							className="font-general-medium sm:hidden block text-left text-md bg-indigo-500 hover:bg-indigo-600 text-white shadow-sm rounded-sm px-4 py-2 mt-2 duration-300 w-24"
-							aria-label="Hire Me Button"
-						>
-							Hire Me
-						</button>
+							ariaLabel="Hire Me Button"
+							className="sm:hidden block text-left text-md shadow-sm rounded-sm mt-2 w-24"
+						/>
 					</div>
 				</div>
 
@@ -154,13 +154,12 @@ function AppHeader() {
 				{/* Header right section buttons */}
 				<div className="hidden sm:flex justify-between items-center flex-col md:flex-row">
 					<div className="hidden md:flex">
-						<button
+						<Button
+							title="Hire Me"
 							onClick={showHireMeModal}
-							className="text-md font-general-medium bg-indigo-500 hover:bg-indigo-600 text-white shadow-sm rounded-md px-5 py-2.5 duration-300"
-							aria-label="Hire Me Button"
-						>
-							Hire Me
-						</button>
+							ariaLabel="Hire Me Button"
+							className="text-md shadow-sm"
+						/>
 					</div>
 
 					{/* Theme switcher large screen */}

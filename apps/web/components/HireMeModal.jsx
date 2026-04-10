@@ -88,38 +88,21 @@ function HireMeModal({ onClose, onRequest }) {
 								</div>
 
 								<div className="mt-6 pb-4 sm:pb-1">
-									<span
+									<Button
+										title="Send Request"
 										onClick={onRequest}
-										type="submit"
-										className="px-4
-											sm:px-6
-											py-2
-											sm:py-2.5
-											text-white
-											bg-indigo-500
-											hover:bg-indigo-600
-											rounded-md
-											focus:ring-1 focus:ring-indigo-900 duration-500"
-										aria-label="Submit Request"
-									>
-										<Button title="Send Request" />
-									</span>
+										ariaLabel="Submit Request"
+									/>
 								</div>
 							</form>
 						</div>
 						<div className="modal-footer mt-2 sm:mt-0 py-5 px-8 border0-t text-right">
-							<span
+							<Button
+								title="Close"
+								variant="secondary"
 								onClick={onClose}
-								type="button"
-								className="px-4
-									sm:px-6
-									py-2 bg-gray-600 text-primary-light hover:bg-ternary-dark dark:bg-gray-200 dark:text-secondary-dark dark:hover:bg-primary-light
-									rounded-md
-									focus:ring-1 focus:ring-indigo-900 duration-500"
-								aria-label="Close Modal"
-							>
-								<Button title="Close" />
-							</span>
+								ariaLabel="Close Modal"
+							/>
 						</div>
 					</div>
 				</div>

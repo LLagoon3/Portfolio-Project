@@ -15,7 +15,9 @@ RUN npm ci --workspace=apps/web --include-workspace-root
 # Copy web source and build
 COPY apps/web apps/web
 ENV NEXT_TELEMETRY_DISABLED=1
-ENV API_INTERNAL_URL=http://api:7341
+# Next.js rewrites are resolved at build time, so inject the internal API URL as a build arg.
+ARG API_INTERNAL_URL=http://api:7341
+ENV API_INTERNAL_URL=${API_INTERNAL_URL}
 RUN npm run web:build
 
 # ── Stage 2: Production image ───────────────────────────────────────

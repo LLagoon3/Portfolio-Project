@@ -3,12 +3,13 @@ services:
     build:
       context: .
       dockerfile: apps/web/Dockerfile
+      args:
+        API_INTERNAL_URL: "${WEB_API_INTERNAL_URL:-http://api:7341}"
     ports:
       - "${WEB_PORT:-7340}:7340"
     environment:
       NODE_ENV: production
       PORT: "7340"
-      API_INTERNAL_URL: "http://api:7341"
     depends_on:
       - api
     restart: unless-stopped

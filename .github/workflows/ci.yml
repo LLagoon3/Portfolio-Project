@@ -54,3 +54,16 @@ jobs:
 
       - name: Test
         run: npm test -w apps/api
+
+  docker-build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build web image
+        run: docker build -f apps/web/Dockerfile .
+
+      - name: Build api image
+        run: docker build -f apps/api/Dockerfile .

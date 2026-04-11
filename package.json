@@ -19,6 +19,7 @@
     "web:build": "npm run build -w apps/web",
     "web:start": "npm run start -w apps/web",
     "web:lint": "npm run lint -w apps/web",
+    "api:lint": "npm run lint -w apps/api",
     "api:dev": "npm run start:dev -w apps/api",
     "api:build": "npm run build -w apps/api",
     "api:start": "npm run start:prod -w apps/api"

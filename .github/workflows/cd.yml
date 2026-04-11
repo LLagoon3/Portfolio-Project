@@ -8,6 +8,10 @@ on:
     types:
       - completed
 
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
 jobs:
   deploy:
     runs-on: [self-hosted, portfolio]
@@ -18,4 +22,6 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Deploy
+        env:
+          DEPLOY_SHA: ${{ github.event.workflow_run.head_sha }}
         run: bash scripts/deploy.sh

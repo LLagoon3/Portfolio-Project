@@ -1,6 +1,11 @@
 {
   "name": "portfolio-project",
+  "version": "0.1.0",
   "private": true,
+  "packageManager": "npm@11.6.2",
+  "engines": {
+    "node": ">=24"
+  },
   "workspaces": [
     "apps/*",
     "packages/*"
@@ -9,6 +14,15 @@
     "dev": "npm run dev -w apps/web",
     "build": "npm run build -w apps/web",
     "start": "npm run start -w apps/web",
-    "lint": "npm run lint -w apps/web"
+    "lint": "npm run lint -w apps/web",
+    "check": "npm run lint && npm run build",
+    "web:dev": "npm run dev -w apps/web",
+    "web:build": "npm run build -w apps/web",
+    "web:start": "npm run start -w apps/web",
+    "web:lint": "npm run lint -w apps/web",
+    "api:lint": "npm run lint -w apps/api",
+    "api:dev": "npm run start:dev -w apps/api",
+    "api:build": "npm run build -w apps/api",
+    "api:start": "npm run start:prod -w apps/api"
   }
 }

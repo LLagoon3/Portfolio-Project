@@ -16,6 +16,8 @@ dist
 build
 coverage
 .turbo
+*.tsbuildinfo
+next-env.d.ts
 
 # deployment / local platform state
 .vercel
@@ -27,6 +29,22 @@ yarn-error.log*
 pnpm-debug.log*
 *.log
 
-# misc
+# caches
+.cache
+.eslintcache
+.parcel-cache
+
+# editors / IDE
+.idea
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+*.swp
+*.swo
+
+# OS
 .DS_Store
+Thumbs.db
+
+# misc
 *.pem

@@ -3,13 +3,13 @@ import ContactDetails from '../components/contact/ContactDetails';
 import ContactForm from '../components/contact/ContactForm';
 import PagesMetaHead from '../components/PagesMetaHead';
 
-function contact() {
+function Contact() {
 	return (
 		<div>
 			<PagesMetaHead title="Contact" />
 
 			<motion.div
-				initial={{ opacity: 0 }}
+				initial={false}
 				animate={{ opacity: 1 }}
 				transition={{
 					ease: 'easeInOut',
@@ -26,4 +26,4 @@ function contact() {
 	);
 }
 
-export default contact;
+export default Contact;

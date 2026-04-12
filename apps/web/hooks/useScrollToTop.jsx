@@ -1,49 +1,35 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { FiChevronUp } from 'react-icons/fi';
 
 function useScrollToTop() {
 	const [showScroll, setShowScroll] = useState(false);
 
 	useEffect(() => {
-		window.addEventListener('scroll', scrollToTop);
-		return function cleanup() {
-			window.removeEventListener('scroll', scrollToTop);
+		if (typeof window === 'undefined') return;
+
+		const handleScroll = () => {
+			setShowScroll(window.pageYOffset > 400);
 		};
-	});
 
-	const scrollToTop = () => {
-		if (!showScroll && window.pageYOffset > 400) {
-			setShowScroll(true);
-		} else if (showScroll && window.pageYOffset <= 400) {
-			setShowScroll(false);
-		}
-	};
+		window.addEventListener('scroll', handleScroll);
+		return () => {
+			window.removeEventListener('scroll', handleScroll);
+		};
+	}, []);
 
-	const backToTop = () => {
+	const backToTop = useCallback(() => {
+		if (typeof window === 'undefined') return;
 		window.scrollTo({
 			top: 0,
 			behavior: 'smooth',
 		});
-	};
-
-	if (typeof window !== 'undefined') {
-		window.addEventListener('scroll', scrollToTop);
-	}
+	}, []);
 
 	return (
 		<>
 			<FiChevronUp
-				className="scrollToTop"
+				className={`scrollToTop fixed right-12 bottom-12 h-10 w-10 p-2 rounded-full cursor-pointer bg-indigo-500 text-white shadow-lg hover:bg-indigo-600 duration-300 ${showScroll ? 'flex' : 'hidden'}`}
 				onClick={backToTop}
-				style={{
-					height: 40,
-					width: 40,
-					padding: 7,
-					borderRadius: 50,
-					right: 50,
-					bottom: 50,
-					display: showScroll ? 'flex' : 'none',
-				}}
 			/>
 		</>
 	);

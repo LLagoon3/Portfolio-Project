@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { FiX } from 'react-icons/fi';
 import Button from './reusable/Button';
+import FormInput from './reusable/FormInput';
 
 const selectOptions = [
 	'Web Application',
@@ -12,7 +13,7 @@ const selectOptions = [
 function HireMeModal({ onClose, onRequest }) {
 	return (
 		<motion.div
-			initial={{ opacity: 0 }}
+			initial={false}
 			animate={{ opacity: 1 }}
 			exit={{ opacity: 0 }}
 			className="font-general-medium fixed inset-0 z-30 transition-all duration-500"
@@ -39,37 +40,29 @@ function HireMeModal({ onClose, onRequest }) {
 							<form
 								onSubmit={(e) => {
 									e.preventDefault();
+									onRequest();
 								}}
 								className="max-w-xl m-4 text-left"
 							>
-								<div className="">
-									<input
-										className="w-full px-5 py-2 border dark:border-secondary-dark rounded-md text-md bg-secondary-light dark:bg-ternary-dark text-primary-dark dark:text-ternary-light"
-										id="name"
-										name="name"
-										type="text"
-										required
-										placeholder="Name"
-										aria-label="Name"
-									/>
-								</div>
-								<div className="mt-6">
-									<input
-										className="w-full px-5 py-2 border dark:border-secondary-dark rounded-md text-md bg-secondary-light dark:bg-ternary-dark text-primary-dark dark:text-ternary-light"
-										id="email"
-										name="email"
-										type="text"
-										required
-										placeholder="Email"
-										aria-label="Email"
-									/>
-								</div>
-								<div className="mt-6">
+								<FormInput
+									inputType="text"
+									inputId="name"
+									inputName="name"
+									placeholderText="Name"
+									ariaLabelName="Name"
+								/>
+								<FormInput
+									inputType="email"
+									inputId="email"
+									inputName="email"
+									placeholderText="Email"
+									ariaLabelName="Email"
+								/>
+								<div className="font-general-regular mb-4">
 									<select
-										className="w-full px-5 py-2 border dark:border-secondary-dark rounded-md text-md bg-secondary-light dark:bg-ternary-dark text-primary-dark dark:text-ternary-light"
+										className="w-full px-5 py-2 border border-gray-300 dark:border-primary-dark border-opacity-50 text-primary-dark dark:text-secondary-light bg-ternary-light dark:bg-ternary-dark rounded-md shadow-sm text-md"
 										id="subject"
 										name="subject"
-										type="text"
 										required
 										aria-label="Project Category"
 									>
@@ -83,10 +76,9 @@ function HireMeModal({ onClose, onRequest }) {
 										))}
 									</select>
 								</div>
-
-								<div className="mt-6">
+								<div className="font-general-regular mb-4">
 									<textarea
-										className="w-full px-5 py-2 border dark:border-secondary-dark rounded-md text-md bg-secondary-light dark:bg-ternary-dark text-primary-dark dark:text-ternary-light"
+										className="w-full px-5 py-2 border border-gray-300 dark:border-primary-dark border-opacity-50 text-primary-dark dark:text-secondary-light bg-ternary-light dark:bg-ternary-dark rounded-md shadow-sm text-md"
 										id="message"
 										name="message"
 										cols="14"
@@ -97,38 +89,21 @@ function HireMeModal({ onClose, onRequest }) {
 								</div>
 
 								<div className="mt-6 pb-4 sm:pb-1">
-									<span
-										onClick={onRequest}
+									<Button
+										title="Send Request"
 										type="submit"
-										className="px-4
-											sm:px-6
-											py-2
-											sm:py-2.5
-											text-white
-											bg-indigo-500
-											hover:bg-indigo-600
-											rounded-md
-											focus:ring-1 focus:ring-indigo-900 duration-500"
-										aria-label="Submit Request"
-									>
-										<Button title="Send Request" />
-									</span>
+										ariaLabel="Submit Request"
+									/>
 								</div>
 							</form>
 						</div>
 						<div className="modal-footer mt-2 sm:mt-0 py-5 px-8 border0-t text-right">
-							<span
+							<Button
+								title="Close"
+								variant="secondary"
 								onClick={onClose}
-								type="button"
-								className="px-4
-									sm:px-6
-									py-2 bg-gray-600 text-primary-light hover:bg-ternary-dark dark:bg-gray-200 dark:text-secondary-dark dark:hover:bg-primary-light
-									rounded-md
-									focus:ring-1 focus:ring-indigo-900 duration-500"
-								aria-label="Close Modal"
-							>
-								<Button title="Close" />
-							</span>
+								ariaLabel="Close Modal"
+							/>
 						</div>
 					</div>
 				</div>

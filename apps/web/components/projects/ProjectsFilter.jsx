@@ -1,11 +1,4 @@
-const selectOptions = [
-	'Web Application',
-	'Mobile Application',
-	'UI/UX Design',
-	'Branding',
-];
-
-function ProjectsFilter({ setSelectProject }) {
+function ProjectsFilter({ setSelectProject, categories = [] }) {
 	return (
 		<select
 			onChange={(e) => {
@@ -27,11 +20,11 @@ function ProjectsFilter({ setSelectProject }) {
                 dark:text-ternary-light
             "
 		>
-			<option value={setSelectProject} className="text-sm sm:text-md">
+			<option value="" className="text-sm sm:text-md">
 				All Projects
 			</option>
 
-			{selectOptions.map((option) => (
+			{categories.map((option) => (
 				<option className="text-normal sm:text-md" key={option}>
 					{option}
 				</option>

@@ -5,7 +5,8 @@ function AppFooterCopyright() {
 				&copy; {new Date().getFullYear()}
 				<a
 					href="https://github.com/realstoman/nextjs-tailwindcss-portfolio"
-					target="__blank"
+					target="_blank"
+					rel="noopener noreferrer"
 					className="hover:underline hover:text-indigo-600 dark:hover:text-indigo-300 ml-1 duration-500"
 				>
 					Next.js & Tailwind CSS Portfolio
@@ -13,7 +14,8 @@ function AppFooterCopyright() {
 				.{' '}
 				<a
 					href="https://stoman.me"
-					target="__blank"
+					target="_blank"
+					rel="noopener noreferrer"
 					className="text-secondary-dark dark:text-secondary-light font-medium uppercase hover:underline hover:text-indigo-600 dark:hover:text-indigo-300 ml-1 duration-500"
 				>
 					Stoman

@@ -1,14 +1,58 @@
+import { useState } from 'react';
 import Button from '../reusable/Button';
 import FormInput from '../reusable/FormInput';
 
+// API requests are proxied to the same origin via Next.js rewrites
+const API_BASE_URL = '';
+
 function ContactForm() {
+	const [form, setForm] = useState({
+		name: '',
+		email: '',
+		subject: '',
+		message: '',
+	});
+	const [status, setStatus] = useState({ state: 'idle', message: '' });
+
+	const handleChange = (e) => {
+		const { name, value } = e.target;
+		setForm((prev) => ({ ...prev, [name]: value }));
+	};
+
+	const handleSubmit = async (e) => {
+		e.preventDefault();
+		setStatus({ state: 'loading', message: '' });
+		try {
+			const res = await fetch(`${API_BASE_URL}/api/contact`, {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify(form),
+			});
+			if (!res.ok) {
+				const data = await res.json().catch(() => ({}));
+				const msg = Array.isArray(data?.message)
+					? data.message.join(', ')
+					: data?.message || 'Failed to send message.';
+				throw new Error(msg);
+			}
+			setStatus({
+				state: 'success',
+				message: 'Your message has been sent successfully.',
+			});
+			setForm({ name: '', email: '', subject: '', message: '' });
+		} catch (err) {
+			setStatus({
+				state: 'error',
+				message: err.message || 'Failed to send message.',
+			});
+		}
+	};
+
 	return (
 		<div className="w-full lg:w-1/2">
 			<div className="leading-loose">
 				<form
-					onSubmit={(e) => {
-						e.preventDefault();
-					}}
+					onSubmit={handleSubmit}
 					className="max-w-xl m-4 p-6 sm:p-10 bg-secondary-light dark:bg-secondary-dark rounded-xl shadow-xl text-left"
 				>
 					<p className="font-general-medium text-primary-dark dark:text-primary-light text-2xl mb-8">
@@ -23,6 +67,8 @@ function ContactForm() {
 						inputName="name"
 						placeholderText="Your Name"
 						ariaLabelName="Name"
+						value={form.name}
+						onChange={handleChange}
 					/>
 					<FormInput
 						inputLabel="Email"
@@ -32,6 +78,8 @@ function ContactForm() {
 						inputName="email"
 						placeholderText="Your email"
 						ariaLabelName="Email"
+						value={form.email}
+						onChange={handleChange}
 					/>
 					<FormInput
 						inputLabel="Subject"
@@ -41,11 +89,13 @@ function ContactForm() {
 						inputName="subject"
 						placeholderText="Subject"
 						ariaLabelName="Subject"
+						value={form.subject}
+						onChange={handleChange}
 					/>
 
-					<div className="mt-6">
+					<div className="font-general-regular mb-4">
 						<label
-							className="block text-lg text-primary-dark dark:text-primary-light mb-2"
+							className="block text-lg text-primary-dark dark:text-primary-light mb-1"
 							htmlFor="message"
 						>
 							Message
@@ -57,18 +107,83 @@ function ContactForm() {
 							cols="14"
 							rows="6"
 							aria-label="Message"
+							value={form.message}
+							onChange={handleChange}
+							required
 						></textarea>
 					</div>
 
 					<div className="mt-6">
-						<span className="font-general-medium  px-7 py-4 text-white text-center font-medium tracking-wider bg-indigo-500 hover:bg-indigo-600 focus:ring-1 focus:ring-indigo-900 rounded-lg mt-6 duration-500">
-							<Button
-								title="Send Message"
-								type="submit"
-								aria-label="Send Message"
-							/>
-						</span>
+						<Button
+							title={status.state === 'loading' ? 'Sending...' : 'Send Message'}
+							type="submit"
+							size="lg"
+							ariaLabel="Send Message"
+							disabled={status.state === 'loading'}
+							className="tracking-wider rounded-lg"
+						/>
 					</div>
+
+					{status.state === 'success' && (
+						<div
+							role="status"
+							aria-live="polite"
+							className="mt-6 flex items-start gap-3 p-4 rounded-lg border border-green-200 dark:border-green-900/50 bg-green-50 dark:bg-green-900/20 animate-fade-in-up"
+						>
+							<svg
+								className="w-6 h-6 flex-shrink-0 text-green-500 dark:text-green-400"
+								fill="none"
+								stroke="currentColor"
+								strokeWidth="2"
+								viewBox="0 0 24 24"
+								aria-hidden="true"
+							>
+								<path
+									strokeLinecap="round"
+									strokeLinejoin="round"
+									d="M5 13l4 4L19 7"
+								/>
+							</svg>
+							<div className="font-general-medium">
+								<p className="text-green-800 dark:text-green-200 text-base">
+									Your message has been sent successfully
+								</p>
+								<p className="text-green-700 dark:text-green-300/80 text-sm mt-0.5">
+									We&apos;ll get back to you shortly. Thank you!
+								</p>
+							</div>
+						</div>
+					)}
+					{status.state === 'error' && (
+						<div
+							role="alert"
+							aria-live="assertive"
+							className="mt-6 flex items-start gap-3 p-4 rounded-lg border border-red-200 dark:border-red-900/50 bg-red-50 dark:bg-red-900/20 animate-fade-in-up"
+						>
+							<svg
+								className="w-6 h-6 flex-shrink-0 text-red-500 dark:text-red-400"
+								fill="none"
+								stroke="currentColor"
+								strokeWidth="2"
+								viewBox="0 0 24 24"
+								aria-hidden="true"
+							>
+								<path
+									strokeLinecap="round"
+									strokeLinejoin="round"
+									d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"
+								/>
+							</svg>
+							<div className="font-general-medium">
+								<p className="text-red-800 dark:text-red-200 text-base">
+									Failed to send
+								</p>
+								<p className="text-red-700 dark:text-red-300/80 text-sm mt-0.5">
+									{status.message}
+								</p>
+							</div>
+						</div>
+					)}
 				</form>
 			</div>
 		</div>

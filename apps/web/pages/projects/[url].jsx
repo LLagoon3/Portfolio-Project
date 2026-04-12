@@ -146,7 +146,7 @@ function ProjectSingle(props) {
 						return (
 							<div
 								key={details.id}
-								className="prose prose-lg dark:prose-invert max-w-none mb-5 font-general-regular text-ternary-dark dark:text-ternary-light prose-headings:text-primary-dark dark:prose-headings:text-primary-light prose-strong:text-primary-dark dark:prose-strong:text-primary-light"
+								className="prose dark:prose-invert max-w-none mb-5 font-general-regular text-ternary-dark dark:text-ternary-light prose-headings:text-primary-dark dark:prose-headings:text-primary-light prose-strong:text-primary-dark dark:prose-strong:text-primary-light prose-h2:text-lg prose-h2:font-semibold prose-h2:mb-2 prose-h2:mt-4"
 							>
 								<ReactMarkdown>{details.details}</ReactMarkdown>
 							</div>

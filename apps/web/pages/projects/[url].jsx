@@ -74,7 +74,7 @@ function ProjectSingle(props) {
 													href={info.details}
 													target="_blank"
 													rel="noopener noreferrer"
-													className="hover:underline hover:text-indigo-500 dark:hover:text-indigo-400 cursor-pointer duration-300"
+													className="hover:underline hover:text-indigo-500 dark:hover:text-indigo-400 cursor-pointer duration-300 break-all"
 													aria-label={`${info.title}: ${info.details}`}
 												>
 													{info.details}

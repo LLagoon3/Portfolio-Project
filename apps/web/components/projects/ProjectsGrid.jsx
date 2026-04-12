@@ -46,7 +46,7 @@ function ProjectsGrid({ projects = [] }) {
                         mb-3
                         "
 				>
-					Search projects by title or filter by category
+					프로젝트 제목으로 검색하거나 카테고리로 필터링하세요
 				</h3>
 				<div
 					className="

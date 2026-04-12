@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import { FiClock, FiTag } from 'react-icons/fi';
+import ReactMarkdown from 'react-markdown';
 import PagesMetaHead from '../../components/PagesMetaHead';
 import RelatedProjects from '../../components/projects/RelatedProjects';
 
@@ -143,12 +144,12 @@ function ProjectSingle(props) {
 					</p>
 					{props.project.ProjectInfo.ProjectDetails.map((details) => {
 						return (
-							<p
+							<div
 								key={details.id}
-								className="font-general-regular mb-5 text-lg text-ternary-dark dark:text-ternary-light"
+								className="prose prose-lg dark:prose-invert max-w-none mb-5 font-general-regular text-ternary-dark dark:text-ternary-light prose-headings:text-primary-dark dark:prose-headings:text-primary-light prose-strong:text-primary-dark dark:prose-strong:text-primary-light"
 							>
-								{details.details}
-							</p>
+								<ReactMarkdown>{details.details}</ReactMarkdown>
+							</div>
 						);
 					})}
 				</div>

@@ -31,13 +31,19 @@ export default function Home({ projects }) {
 export async function getServerSideProps() {
 	try {
 		const res = await fetch(`${API_BASE_URL}/api/projects`);
-		if (!res.ok) {
+		if (res.status === 404) {
+			// 프로젝트 목록 API 가 404 를 반환하는 건 비정상이지만, 배포 순서 이슈 등으로
+			// 일시적으로 발생할 수 있으므로 홈이 하드 크래시되지 않도록 빈 배열로 fallback
 			return { props: { projects: [] } };
+		}
+		if (!res.ok) {
+			// 5xx 등 비정상 응답은 시스템 장애이므로 감추지 않고 Next.js 에러 페이지로 드러낸다
+			throw new Error(`[home] projects API returned ${res.status}`);
 		}
 		const body = await res.json();
 		return { props: { projects: body?.data ?? [] } };
 	} catch (err) {
 		console.error('[home] fetch projects failed', err);
-		return { props: { projects: [] } };
+		throw err;
 	}
 }

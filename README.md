@@ -93,6 +93,7 @@ DB 접속 정보는 환경변수(`DB_HOST`, `DB_PORT`, `DB_USERNAME`, `DB_PASSWO
 | `GET` | `/api/projects/:url` | 프로젝트 단건 (slug) |
 | `GET` | `/api/about` | 자기소개 (singleton) |
 | `POST` | `/api/contact` | 연락 폼 제출 |
+| `GET` | `/docs` | Swagger UI (OpenAPI JSON: `/docs-json`) |
 
 상세 스펙과 보류된 후속 작업은 [`docs/api-plan.md`](docs/api-plan.md) 참고.
 

@@ -142,10 +142,12 @@ export async function getServerSideProps({ query }) {
 	try {
 		const res = await fetch(`${API_BASE_URL}/api/projects/${url}`);
 		if (res.status === 404) {
+			// 존재하지 않는 슬러그는 Next.js 404 로 응답
 			return { notFound: true };
 		}
 		if (!res.ok) {
-			return { notFound: true };
+			// 5xx 등 비정상 응답은 404 로 위장하지 않고 Next.js 에러 페이지로 드러낸다
+			throw new Error(`[project detail] API returned ${res.status}`);
 		}
 		const body = await res.json();
 		const project = body?.data;
@@ -153,6 +155,7 @@ export async function getServerSideProps({ query }) {
 			return { notFound: true };
 		}
 
+		// Related projects 는 보조 섹션이므로 실패해도 메인 페이지 렌더를 막지 않는다
 		let relatedProjects = [];
 		try {
 			const category = encodeURIComponent(project.category);
@@ -172,7 +175,7 @@ export async function getServerSideProps({ query }) {
 		return { props: { project, relatedProjects } };
 	} catch (err) {
 		console.error('[project detail] fetch failed', err);
-		return { notFound: true };
+		throw err;
 	}
 }
 

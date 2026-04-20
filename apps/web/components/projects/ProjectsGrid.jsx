@@ -9,18 +9,6 @@ function ProjectsGrid({ projects = [] }) {
 
 	const categories = [...new Set(projects.map((p) => p.category))].sort();
 
-	// @todo - To be fixed
-	// const searchProjectsByTitle = projectsData.filter((item) => {
-	// 	const result = item.title
-	// 		.toLowerCase()
-	// 		.includes(searchProject.toLowerCase())
-	// 		? item
-	// 		: searchProject == ''
-	// 		? item
-	// 		: '';
-	// 	return result;
-	// });
-
 	const selectProjectsByCategory = projects.filter((item) => {
 		let category =
 			item.category.charAt(0).toUpperCase() + item.category.slice(1);

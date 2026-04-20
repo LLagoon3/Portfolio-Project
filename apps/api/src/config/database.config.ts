@@ -1,4 +1,8 @@
 import { registerAs } from '@nestjs/config';
+import { join } from 'node:path';
+
+const isCompiled = __filename.endsWith('.js');
+const srcExt = isCompiled ? 'js' : 'ts';
 
 export default registerAs('database', () => ({
   type: 'mysql' as const,
@@ -8,5 +12,7 @@ export default registerAs('database', () => ({
   password: process.env.DB_PASSWORD,
   database: process.env.DB_DATABASE,
   autoLoadEntities: true,
-  synchronize: process.env.NODE_ENV !== 'production',
+  synchronize: false,
+  migrations: [join(__dirname, '..', 'database', 'migrations', `*.${srcExt}`)],
+  migrationsRun: true,
 }));

@@ -4,15 +4,19 @@ import ProjectSingle from './ProjectSingle';
 import ProjectsFilter from './ProjectsFilter';
 
 function ProjectsGrid({ projects = [] }) {
-	const [searchProject, setSearchProject] = useState();
-	const [selectProject, setSelectProject] = useState();
+	const [searchProject, setSearchProject] = useState('');
+	const [selectProject, setSelectProject] = useState('');
 
 	const categories = [...new Set(projects.map((p) => p.category))].sort();
 
-	const selectProjectsByCategory = projects.filter((item) => {
-		let category =
-			item.category.charAt(0).toUpperCase() + item.category.slice(1);
-		return category.includes(selectProject);
+	const normalizedSearch = searchProject.trim().toLowerCase();
+	const filteredProjects = projects.filter((project) => {
+		const matchesCategory =
+			!selectProject || project.category === selectProject;
+		const matchesSearch =
+			!normalizedSearch ||
+			project.title.toLowerCase().includes(normalizedSearch);
+		return matchesCategory && matchesSearch;
 	});
 
 	return (
@@ -26,7 +30,7 @@ function ProjectsGrid({ projects = [] }) {
 			<div className="mt-10 sm:mt-16">
 				<h3
 					className="
-                        font-general-regular 
+                        font-general-regular
                         text-center text-secondary-dark
                         dark:text-ternary-light
                         text-md
@@ -62,6 +66,7 @@ function ProjectsGrid({ projects = [] }) {
 							<FiSearch className="text-ternary-dark dark:text-ternary-light w-5 h-5"></FiSearch>
 						</span>
 						<input
+							value={searchProject}
 							onChange={(e) => {
 								setSearchProject(e.target.value);
 							}}
@@ -71,7 +76,7 @@ function ProjectsGrid({ projects = [] }) {
                                 pr-1
                                 sm:px-4
                                 py-2
-                                border 
+                                border
                             border-gray-200
                                 dark:border-secondary-dark
                                 rounded-lg
@@ -85,9 +90,8 @@ function ProjectsGrid({ projects = [] }) {
 							id="name"
 							name="name"
 							type="search"
-							required=""
-							placeholder="Search Projects"
-							aria-label="Name"
+							placeholder="프로젝트 검색"
+							aria-label="프로젝트 검색"
 						/>
 					</div>
 
@@ -96,13 +100,9 @@ function ProjectsGrid({ projects = [] }) {
 			</div>
 
 			<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 mt-6 sm:gap-5">
-				{selectProject
-					? selectProjectsByCategory.map((project) => (
-							<ProjectSingle key={project.id ?? project.url} {...project} />
-					  ))
-					: projects.map((project) => (
-							<ProjectSingle key={project.id ?? project.url} {...project} />
-					  ))}
+				{filteredProjects.map((project) => (
+					<ProjectSingle key={project.id ?? project.url} {...project} />
+				))}
 			</div>
 		</section>
 	);

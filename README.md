@@ -9,7 +9,7 @@
 │   ├── web/          # Next.js 포트폴리오 프론트엔드 (port 7340)
 │   └── api/          # NestJS 백엔드 API (port 7341)
 ├── packages/         # 공용 패키지/타입 영역
-├── docs/             # API 계획, 데이터베이스 ERD 문서
+├── docs/             # API 계획, 데이터베이스 ERD, Migration 가이드 등
 └── scripts/          # 배포 등 운영 스크립트
 ```
 
@@ -66,6 +66,35 @@ docker compose down    # 전체 종료
 | `npm run api:start` | API 프로덕션 서버 실행 |
 | `npm run api:lint` | API 린트 실행 |
 | `npm test -w apps/api` | API 단위 테스트 실행 |
+
+### DB Migration & Seed
+
+DB 접속 정보는 환경변수(`DB_HOST`, `DB_PORT`, `DB_USERNAME`, `DB_PASSWORD`, `DB_DATABASE`)로 전달한다. 자세한 절차는 [`docs/migrations.md`](docs/migrations.md) 참고.
+
+| 명령어 | 설명 |
+|--------|------|
+| `npm run migration:show -w apps/api` | 현재 migration 적용 상태 조회 |
+| `npm run migration:run -w apps/api` | 미적용 migration 실행 |
+| `npm run migration:generate -w apps/api src/database/migrations/<Name>` | 엔티티 변경분을 새 migration 파일로 생성 |
+| `npm run migration:create -w apps/api src/database/migrations/<Name>` | 빈 migration 템플릿 생성 |
+| `npm run migration:revert -w apps/api` | 마지막 migration 되돌리기 |
+| `npm run seed:projects -w apps/api` | Projects 시드 (입력: `apps/api/src/database/seeds/portfolio-projects-data.json`) |
+| `npm run seed:about -w apps/api` | About 시드 (입력: `apps/api/src/database/seeds/about-data.json`) |
+
+런타임에서는 `migrationsRun: true` 설정으로 api 컨테이너 부팅 시 자동 적용된다.
+
+## API 엔드포인트
+
+| 메서드 | 경로 | 설명 |
+|---|---|---|
+| `GET` | `/` | health ping |
+| `GET` | `/health` | 상태 체크 |
+| `GET` | `/api/projects?category=` | 프로젝트 목록 |
+| `GET` | `/api/projects/:url` | 프로젝트 단건 (slug) |
+| `GET` | `/api/about` | 자기소개 (singleton) |
+| `POST` | `/api/contact` | 연락 폼 제출 |
+
+상세 스펙과 보류된 후속 작업은 [`docs/api-plan.md`](docs/api-plan.md) 참고.
 
 ## 작업 규칙
 

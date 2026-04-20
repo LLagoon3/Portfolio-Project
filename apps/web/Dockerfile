@@ -26,6 +26,9 @@ FROM node:24-alpine AS runner
 WORKDIR /app
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
+# SSR(getServerSideProps) 런타임에서 내부 API 주소를 참조해야 하므로 runner 이미지에도 전파한다.
+ARG API_INTERNAL_URL=http://api:7341
+ENV API_INTERNAL_URL=${API_INTERNAL_URL}
 
 # Copy workspace root manifests
 COPY package.json package-lock.json ./

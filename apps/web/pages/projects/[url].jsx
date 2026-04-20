@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import { FiClock, FiTag } from 'react-icons/fi';
+import ReactMarkdown from 'react-markdown';
 import PagesMetaHead from '../../components/PagesMetaHead';
 import RelatedProjects from '../../components/projects/RelatedProjects';
 
@@ -62,18 +63,19 @@ function ProjectSingle(props) {
 						<ul className="leading-loose">
 							{props.project.ProjectInfo.CompanyInfo.map(
 								(info) => {
+									const isUrl = /^https?:\/\//i.test(info.details);
 									return (
 										<li
 											className="font-general-regular text-ternary-dark dark:text-ternary-light"
 											key={info.id}
 										>
 											<span>{info.title}: </span>
-											{info.title === 'Website' ? (
+											{isUrl ? (
 												<a
 													href={info.details}
 													target="_blank"
 													rel="noopener noreferrer"
-													className="hover:underline hover:text-indigo-500 dark:hover:text-indigo-400 cursor-pointer duration-300"
+													className="hover:underline hover:text-indigo-500 dark:hover:text-indigo-400 cursor-pointer duration-300 break-all"
 													aria-label={`${info.title}: ${info.details}`}
 												>
 													{info.details}
@@ -110,30 +112,6 @@ function ProjectSingle(props) {
 						</p>
 					</div>
 
-					{/* Single project social sharing */}
-					<div>
-						<p className="font-general-regular text-2xl font-semibold text-ternary-dark dark:text-ternary-light mb-2">
-							{props.project.ProjectInfo.SocialSharingHeading}
-						</p>
-						{/* <div className="flex items-center gap-3 mt-5">
-							{props.project.ProjectInfo.SocialSharing.map(
-								(social, index) => {
-									<Link
-										key={index}
-										href={social.url}
-										target="__blank"
-										passHref={true}
-										aria-label="Share Project"
-										className="bg-ternary-light dark:bg-ternary-dark text-gray-400 hover:text-primary-dark dark:hover:text-primary-light p-2 rounded-lg shadow-sm duration-500"
-									>
-										<span className="text-lg lg:text-2xl">
-											{social.icon}
-										</span>
-									</Link>;
-								}
-							)}
-						</div> */}
-					</div>
 				</div>
 
 				{/*  Single project right section details */}
@@ -143,12 +121,12 @@ function ProjectSingle(props) {
 					</p>
 					{props.project.ProjectInfo.ProjectDetails.map((details) => {
 						return (
-							<p
+							<div
 								key={details.id}
-								className="font-general-regular mb-5 text-lg text-ternary-dark dark:text-ternary-light"
+								className="prose dark:prose-invert max-w-none mb-5 font-general-regular text-ternary-dark dark:text-ternary-light prose-headings:text-primary-dark dark:prose-headings:text-primary-light prose-strong:text-primary-dark dark:prose-strong:text-primary-light prose-h2:text-xl prose-h2:font-semibold prose-h2:mb-2 prose-h2:mt-4 prose-h3:text-base prose-h3:font-semibold prose-h3:mb-1 prose-h3:mt-3"
 							>
-								{details.details}
-							</p>
+								<ReactMarkdown>{details.details}</ReactMarkdown>
+							</div>
 						);
 					})}
 				</div>
@@ -164,10 +142,12 @@ export async function getServerSideProps({ query }) {
 	try {
 		const res = await fetch(`${API_BASE_URL}/api/projects/${url}`);
 		if (res.status === 404) {
+			// 존재하지 않는 슬러그는 Next.js 404 로 응답
 			return { notFound: true };
 		}
 		if (!res.ok) {
-			return { notFound: true };
+			// 5xx 등 비정상 응답은 404 로 위장하지 않고 Next.js 에러 페이지로 드러낸다
+			throw new Error(`[project detail] API returned ${res.status}`);
 		}
 		const body = await res.json();
 		const project = body?.data;
@@ -175,6 +155,7 @@ export async function getServerSideProps({ query }) {
 			return { notFound: true };
 		}
 
+		// Related projects 는 보조 섹션이므로 실패해도 메인 페이지 렌더를 막지 않는다
 		let relatedProjects = [];
 		try {
 			const category = encodeURIComponent(project.category);
@@ -194,7 +175,7 @@ export async function getServerSideProps({ query }) {
 		return { props: { project, relatedProjects } };
 	} catch (err) {
 		console.error('[project detail] fetch failed', err);
-		return { notFound: true };
+		throw err;
 	}
 }
 

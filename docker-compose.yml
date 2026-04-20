@@ -10,6 +10,7 @@ services:
     environment:
       NODE_ENV: production
       PORT: "7340"
+      API_INTERNAL_URL: "${WEB_API_INTERNAL_URL:-http://api:7341}"
     depends_on:
       - api
     restart: unless-stopped

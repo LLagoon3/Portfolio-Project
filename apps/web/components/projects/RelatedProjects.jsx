@@ -9,7 +9,12 @@ function RelatedProjects({ projects = [] }) {
 				Related Projects
 			</p>
 
-			<div className="grid grid-cols-1 sm:grid-cols-4 gap-10">
+			<div className={`grid grid-cols-1 gap-10 ${
+				projects.length === 1 ? 'sm:grid-cols-1' :
+				projects.length === 2 ? 'sm:grid-cols-2' :
+				projects.length === 3 ? 'sm:grid-cols-3' :
+				'sm:grid-cols-4'
+			}`}>
 				{projects.map((project) => (
 					<ProjectSingle key={project.id} {...project} />
 				))}

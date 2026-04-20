@@ -33,6 +33,7 @@ pnpm-debug.log*
 .cache
 .eslintcache
 .parcel-cache
+.tmp
 
 # editors / IDE
 .idea

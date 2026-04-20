@@ -20,40 +20,28 @@ interface RawProject {
   category: string;
   img: string;
   ProjectHeader: { title: string; publishDate: string; tags: string };
-  ProjectImages: { id: string; title: string; img: string }[];
+  ProjectImages: { title: string; img: string }[];
   ProjectInfo: {
     ClientHeading: string;
-    CompanyInfo: { id: string; title: string; details: string }[];
+    CompanyInfo: { title: string; details: string }[];
     ObjectivesHeading: string;
     ObjectivesDetails: string;
     Technologies: { title: string; techs: string[] }[];
     ProjectDetailsHeading: string;
-    ProjectDetails: { id: string; details: string }[];
+    ProjectDetails: { details: string }[];
     SocialSharingHeading: string;
   };
 }
 
-/**
- * apps/web/data/projectsData.js 를 안전하게 로드한다.
- *  - import 문 제거 (react-icons 등 브라우저 의존성 회피)
- *  - export 키워드 제거
- *  - uuidv4 호출은 throwaway 문자열로 치환 (DB가 PK auto-generate)
- */
-function loadRawProjects(): RawProject[] {
-  const filePath = join(
-    __dirname,
-    '../../../../web/data/projectsData.js',
-  );
-  const raw = readFileSync(filePath, 'utf-8');
-  const stripped = raw
-    .replace(/^\s*import[\s\S]*?from\s+['"][^'"]+['"];?\s*$/gm, '')
-    .replace(/export\s+const\s+projectsData/, 'const projectsData');
+interface ProjectsDataFile {
+  projects: RawProject[];
+}
 
-  const factory = new Function(
-    'uuidv4',
-    `${stripped}\nreturn projectsData;`,
-  );
-  return factory(() => 'seed-throwaway') as RawProject[];
+function loadRawProjects(): RawProject[] {
+  const filePath = join(__dirname, 'portfolio-projects-data.json');
+  const raw = readFileSync(filePath, 'utf-8');
+  const parsed = JSON.parse(raw) as ProjectsDataFile;
+  return parsed.projects;
 }
 
 async function bootstrap(): Promise<void> {
@@ -65,9 +53,8 @@ async function bootstrap(): Promise<void> {
   const projectRepo = app.get<Repository<Project>>(getRepositoryToken(Project));
 
   const raws = loadRawProjects();
-  console.log(`[seed] loaded ${raws.length} projects from projectsData.js`);
+  console.log(`[seed] loaded ${raws.length} projects from portfolio-projects-data.json`);
 
-  // 멱등성: 기존 데이터 비우기 (FK CASCADE)
   await dataSource.transaction(async (manager) => {
     await manager.query('SET FOREIGN_KEY_CHECKS=0');
     await manager.query('TRUNCATE TABLE PROJECT_TECHNOLOGY_ITEM');

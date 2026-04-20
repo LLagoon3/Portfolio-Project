@@ -36,21 +36,51 @@ npm run -w apps/api migration:revert
 api 컨테이너/프로세스가 기동될 때 미적용 마이그레이션을 자동 실행한다. 따라서
 배포 시 별도 명령 없이 컨테이너가 뜨면 최신 스키마까지 도달한다.
 
-## 기존 운영 DB 마킹 절차 (baseline 1회성)
+## 환경별 첫 도입 절차
 
-이미 테이블이 존재하는 환경에 처음 migration 체계를 도입할 때, baseline
-migration을 "이미 적용된" 것으로 마킹해야 한다. 그러지 않으면 부팅 시
-`CREATE TABLE ... already exists` 오류로 실패한다.
+baseline migration은 migration 체계를 처음 도입할 때 한 번만 치르는
+과정이다. 환경 상태에 따라 절차가 다르다.
+
+### (a) 완전히 새로운 DB (테이블이 하나도 없는 상태)
+
+아무 사전 작업도 필요하지 않다. baseline 코드가 들어있는 이미지로
+api를 기동하면 `migrationsRun: true` 설정에 의해 TypeORM이
+
+1. `migrations` 메타 테이블을 자동 생성
+2. 이 baseline migration을 실행해 실제 스키마(`PROJECT`, `CONTACT_SUBMISSION` 등) 생성
+3. `migrations` 테이블에 적용 이력 기록
+
+까지 전부 처리한다. 이후 `seed:projects` 등 데이터 적재 스크립트를 돌리면 된다.
+
+### (b) 이미 테이블이 존재하는 DB (기존 운영 환경)
+
+테이블은 이미 있지만 `migrations` 메타 테이블이 아직 없는 상태다. 이
+상태에서 baseline 코드를 그대로 배포하면, 부팅 시 TypeORM이 baseline을
+"미적용"으로 판단하고 `CREATE TABLE ... already exists`로 실패한다.
+
+배포 **이전에** 아래 SQL을 한 번 실행해 `migrations` 테이블을 수동
+생성하고 baseline이 이미 적용된 것으로 마킹해야 한다.
 
 ```sql
--- MySQL 접속 후 실행 (한 번만)
-INSERT INTO migrations (timestamp, name)
+-- 1) 메타 테이블 생성 (이미 있으면 무시)
+CREATE TABLE IF NOT EXISTS `migrations` (
+  `id`        INT NOT NULL AUTO_INCREMENT,
+  `timestamp` BIGINT NOT NULL,
+  `name`      VARCHAR(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
+
+-- 2) baseline migration을 "이미 적용"으로 마킹
+INSERT INTO `migrations` (`timestamp`, `name`)
 VALUES (<timestamp>, '<ClassName>');
 -- 예: (1776680123017, 'InitialSchema1776680123017')
 ```
 
-baseline 파일명(`<timestamp>-<Name>.ts`)의 timestamp와 파일 안의 클래스
-이름을 그대로 넣는다. 이후부터는 migration 파일을 추가·반영하는 일반 흐름을 따른다.
+`<timestamp>`와 `<ClassName>`은 baseline 파일명(`<timestamp>-<Name>.ts`)과
+파일 내부의 클래스 이름(`<Name><timestamp>`)에서 그대로 가져온다.
+
+이후 api를 기동하면 TypeORM은 baseline을 "이미 적용됨"으로 인식하고
+스킵한다. 다음 migration부터는 일반 흐름을 따른다.
 
 ## 주의
 

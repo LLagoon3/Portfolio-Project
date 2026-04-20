@@ -4,7 +4,17 @@ import AboutCounter from '../components/about/AboutCounter';
 import AboutMeBio from '../components/about/AboutMeBio';
 import PagesMetaHead from '../components/PagesMetaHead';
 
-function About() {
+const API_BASE_URL =
+	process.env.API_INTERNAL_URL || 'http://localhost:7341';
+
+const EMPTY_ABOUT = {
+	name: '',
+	tagline: null,
+	profileImage: '/images/profile.jpeg',
+	bio: [],
+};
+
+function About({ about }) {
 	return (
 		<div>
 			<PagesMetaHead title="About Me" />
@@ -15,7 +25,12 @@ function About() {
 				exit={{ opacity: 0 }}
 				className="container mx-auto"
 			>
-				<AboutMeBio />
+				<AboutMeBio
+					name={about.name}
+					tagline={about.tagline}
+					profileImage={about.profileImage}
+					bio={about.bio}
+				/>
 			</motion.div>
 
 			{/** Counter without paddings */}
@@ -37,6 +52,20 @@ function About() {
 			</motion.div>
 		</div>
 	);
+}
+
+export async function getServerSideProps() {
+	try {
+		const res = await fetch(`${API_BASE_URL}/api/about`);
+		if (!res.ok) {
+			return { props: { about: EMPTY_ABOUT } };
+		}
+		const body = await res.json();
+		return { props: { about: body?.data ?? EMPTY_ABOUT } };
+	} catch (err) {
+		console.error('[about] fetch failed', err);
+		return { props: { about: EMPTY_ABOUT } };
+	}
 }
 
 export default About;

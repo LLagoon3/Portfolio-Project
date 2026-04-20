@@ -63,13 +63,14 @@ function ProjectSingle(props) {
 						<ul className="leading-loose">
 							{props.project.ProjectInfo.CompanyInfo.map(
 								(info) => {
+									const isUrl = /^https?:\/\//i.test(info.details);
 									return (
 										<li
 											className="font-general-regular text-ternary-dark dark:text-ternary-light"
 											key={info.id}
 										>
 											<span>{info.title}: </span>
-											{info.title === 'Website' ? (
+											{isUrl ? (
 												<a
 													href={info.details}
 													target="_blank"

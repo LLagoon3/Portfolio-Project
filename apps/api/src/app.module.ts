@@ -5,6 +5,7 @@ import { ContactModule } from './modules/contact/contact.module';
 import { ProjectsModule } from './modules/projects/projects.module';
 import { AboutModule } from './modules/about/about.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { UploadsModule } from './modules/uploads/uploads.module';
 import { DatabaseModule } from './database/database.module';
 import { validateEnv } from './config/env.validation';
 
@@ -22,6 +23,7 @@ import { validateEnv } from './config/env.validation';
     ProjectsModule,
     AboutModule,
     AuthModule,
+    UploadsModule,
   ],
 })
 export class AppModule {}

@@ -2,15 +2,21 @@ import 'reflect-metadata';
 import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
+import { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import cookieParser from 'cookie-parser';
 import { AppModule } from './app.module';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { ResponseInterceptor } from './common/interceptors/response.interceptor';
+import { UPLOADS_ROOT, UPLOADS_URL_PREFIX } from './modules/uploads/uploads.controller';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
   const config = app.get(ConfigService);
+
+  // 어드민 업로드 파일을 /uploads/* 로 정적 서빙. Next.js public 디렉터리 캐싱을
+  // 우회하기 위해 api 가 직접 호스팅하고, 프론트에서는 Next rewrite 로 프록시한다.
+  app.useStaticAssets(UPLOADS_ROOT, { prefix: UPLOADS_URL_PREFIX });
 
   // 어드민 JWT 쿠키 파싱용
   app.use(cookieParser());

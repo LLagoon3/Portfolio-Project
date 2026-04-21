@@ -3,6 +3,7 @@ import Button from '../reusable/Button';
 import FormInput from '../reusable/FormInput';
 import AdminFormSection from './AdminFormSection';
 import DynamicList from './DynamicList';
+import ImageUploader from './ImageUploader';
 
 const DEFAULT_VALUES = {
 	title: '',
@@ -138,16 +139,14 @@ function ProjectForm({ initialValue, submitLabel = '저장', onSubmit }) {
 					value={form.category}
 					onChange={(e) => set('category', e.target.value)}
 				/>
-				<FormInput
-					inputLabel="썸네일 이미지 경로"
-					labelFor="thumbnailImg"
-					inputType="text"
-					inputId="thumbnailImg"
-					inputName="thumbnailImg"
-					ariaLabelName="Thumbnail image path"
-					placeholderText="/images/project.jpg"
+				<label className="block text-lg text-primary-dark dark:text-primary-light mb-1 font-general-regular">
+					썸네일 이미지
+				</label>
+				<ImageUploader
 					value={form.thumbnailImg}
-					onChange={(e) => set('thumbnailImg', e.target.value)}
+					onChange={(url) => set('thumbnailImg', url)}
+					previewAlt="Thumbnail preview"
+					className="mb-4"
 				/>
 				<FormInput
 					inputLabel="게시일 표기"
@@ -308,29 +307,26 @@ function ProjectForm({ initialValue, submitLabel = '저장', onSubmit }) {
 				/>
 			</AdminFormSection>
 
-			<AdminFormSection title="갤러리 이미지" description="프로젝트 상세 상단의 이미지 배열. URL 을 직접 입력합니다 (Phase 2b 에서 업로더로 교체).">
+			<AdminFormSection title="갤러리 이미지" description="프로젝트 상세 상단에 노출되는 이미지 배열. alt 텍스트와 함께 업로드합니다.">
 				<DynamicList
 					items={form.images}
 					onChange={(next) => set('images', next)}
 					emptyItem={() => ({ _key: `img-${Date.now()}`, title: '', img: '' })}
 					addLabel="이미지 추가"
 					renderItem={(item, _idx, onItemChange) => (
-						<div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+						<div className="flex flex-col gap-2">
 							<input
-								className="px-3 py-2 border border-gray-300 dark:border-primary-dark border-opacity-50 text-primary-dark dark:text-secondary-light bg-ternary-light dark:bg-secondary-dark rounded-md text-sm font-general-regular sm:col-span-1"
+								className="px-3 py-2 border border-gray-300 dark:border-primary-dark border-opacity-50 text-primary-dark dark:text-secondary-light bg-ternary-light dark:bg-secondary-dark rounded-md text-sm font-general-regular"
 								placeholder="alt 텍스트"
 								aria-label="Image alt"
 								value={item.title}
 								onChange={(e) => onItemChange({ title: e.target.value })}
 								required
 							/>
-							<input
-								className="px-3 py-2 border border-gray-300 dark:border-primary-dark border-opacity-50 text-primary-dark dark:text-secondary-light bg-ternary-light dark:bg-secondary-dark rounded-md text-sm font-general-regular sm:col-span-2"
-								placeholder="/images/... 또는 https://..."
-								aria-label="Image path"
+							<ImageUploader
 								value={item.img}
-								onChange={(e) => onItemChange({ img: e.target.value })}
-								required
+								onChange={(url) => onItemChange({ img: url })}
+								previewAlt={item.title || 'Gallery preview'}
 							/>
 						</div>
 					)}

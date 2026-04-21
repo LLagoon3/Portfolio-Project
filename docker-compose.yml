@@ -34,6 +34,10 @@ services:
       DB_PASSWORD: "${DB_PASSWORD:-portfolio_secret}"
       DB_DATABASE: "${DB_DATABASE:-portfolio}"
       JWT_EXPIRES_IN: "${JWT_EXPIRES_IN:-2h}"
+      UPLOADS_ROOT: /app/uploads
+      UPLOAD_MAX_BYTES: "${UPLOAD_MAX_BYTES:-5242880}"
+    volumes:
+      - uploads:/app/uploads
     depends_on:
       mysql:
         condition: service_healthy
@@ -61,3 +65,4 @@ services:
 
 volumes:
   mysql_data:
+  uploads:

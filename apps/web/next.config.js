@@ -7,6 +7,11 @@ module.exports = {
         source: '/api/:path*',
         destination: `${apiUrl}/api/:path*`,
       },
+      // 어드민 업로드 파일은 api 가 정적 서빙한다.
+      {
+        source: '/uploads/:path*',
+        destination: `${apiUrl}/uploads/:path*`,
+      },
     ];
   },
 }

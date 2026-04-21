@@ -18,7 +18,8 @@ const DEFAULT_VALUES = {
 	socialSharingHeading: '',
 	images: [],
 	companyInfo: [],
-	technologies: [],
+	// 공개 상세 페이지가 Technologies[0] 을 직접 참조하므로 최소 1 그룹을 기본으로 유지한다.
+	technologies: [{ title: 'Tools & Technologies', techs: [] }],
 	details: [],
 };
 
@@ -243,7 +244,7 @@ function ProjectForm({ initialValue, submitLabel = '저장', onSubmit }) {
 				/>
 			</AdminFormSection>
 
-			<AdminFormSection title="기술 스택" description="한 줄에 콤마(,) 로 구분해서 입력합니다.">
+			<AdminFormSection title="기술 스택" description="한 줄에 콤마(,) 로 구분해서 입력합니다. 최소 1그룹이 필요합니다.">
 				<DynamicList
 					items={form.technologies}
 					onChange={(next) => set('technologies', next)}
@@ -253,6 +254,7 @@ function ProjectForm({ initialValue, submitLabel = '저장', onSubmit }) {
 						techs: '',
 					})}
 					addLabel="기술 그룹 추가"
+					minLength={1}
 					renderItem={(item, _idx, onItemChange) => (
 						<div className="flex flex-col gap-2">
 							<input

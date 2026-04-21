@@ -21,15 +21,19 @@ services:
       dockerfile: apps/api/Dockerfile
     ports:
       - "${API_PORT:-7341}:7341"
+    # admin 쪽 env 는 .env 값이 bcrypt($$)/난수(공백 포함) 등을 포함할 수 있어
+    # compose 의 `${VAR}` 보간 경로를 타면 $ 재치환이 일어난다. env_file 로 직접 주입해 회피.
+    env_file:
+      - .env
     environment:
       NODE_ENV: production
       PORT: "7341"
-      CORS_ORIGIN: "${CORS_ORIGIN:-}"
       DB_HOST: mysql
       DB_PORT: "3306"
       DB_USERNAME: "${DB_USERNAME:-portfolio}"
       DB_PASSWORD: "${DB_PASSWORD:-portfolio_secret}"
       DB_DATABASE: "${DB_DATABASE:-portfolio}"
+      JWT_EXPIRES_IN: "${JWT_EXPIRES_IN:-2h}"
     depends_on:
       mysql:
         condition: service_healthy

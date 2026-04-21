@@ -43,7 +43,9 @@ function AdminAboutEditor({ initialAbout }) {
 				name: form.name.trim(),
 				tagline: form.tagline.trim() || null,
 				profileImage: form.profileImage.trim(),
-				bio: form.bio.map((b) => b.paragraph).filter((p) => p.length > 0),
+				bio: form.bio
+					.map((b) => b.paragraph.trim())
+					.filter((p) => p.length > 0),
 			};
 			const saved = await fetchAdmin('/api/admin/about', {
 				method: 'PUT',

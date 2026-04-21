@@ -59,9 +59,11 @@ describe('AdminProjectsService', () => {
   let projectRepo: jest.Mocked<Repository<Project>>;
   let dataSource: DSMock;
   let txManager: { save: jest.Mock; delete: jest.Mock; find: jest.Mock };
+  let uploadsStorage: { deleteByUrl: jest.Mock };
 
   beforeEach(async () => {
     txManager = { save: jest.fn(), delete: jest.fn(), find: jest.fn() };
+    uploadsStorage = { deleteByUrl: jest.fn().mockResolvedValue(true) };
 
     dataSource = {
       transaction: jest
@@ -71,6 +73,9 @@ describe('AdminProjectsService', () => {
         ),
     } as unknown as DSMock;
 
+    const { UploadsStorageService } = await import(
+      '../uploads/uploads-storage.service'
+    );
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AdminProjectsService,
@@ -82,6 +87,7 @@ describe('AdminProjectsService', () => {
           },
         },
         { provide: DataSource, useValue: dataSource },
+        { provide: UploadsStorageService, useValue: uploadsStorage },
       ],
     }).compile();
 
@@ -185,15 +191,77 @@ describe('AdminProjectsService', () => {
   });
 
   describe('remove', () => {
+    it('대상 없으면 NotFoundException', async () => {
+      projectRepo.findOne.mockResolvedValue(null);
+      await expect(service.remove(10)).rejects.toBeInstanceOf(NotFoundException);
+      expect(projectRepo.delete).not.toHaveBeenCalled();
+    });
+
+    it('정상 경로: delete 호출 + uploads 파일 정리', async () => {
+      projectRepo.findOne.mockResolvedValue(
+        baseProject({
+          id: 10,
+          url: 'to-remove',
+          thumbnailImg: '/uploads/thumb.jpg',
+          images: [
+            { id: 1, title: 'a', img: '/uploads/g1.jpg', sortOrder: 0, projectId: 10 },
+            { id: 2, title: 'b', img: '/images/legacy.jpg', sortOrder: 1, projectId: 10 },
+          ] as never,
+        }),
+      );
+      projectRepo.delete.mockResolvedValue({ affected: 1, raw: {} } as never);
+
+      await expect(service.remove(10)).resolves.toBeUndefined();
+      expect(projectRepo.delete).toHaveBeenCalledWith(10);
+      // /uploads/* 만 cleanup 대상이 됨 (`/images/*` 는 수동 자산이라 건드리지 않음)
+      const removed = uploadsStorage.deleteByUrl.mock.calls.map((c) => c[0]);
+      expect(removed.sort()).toEqual(['/uploads/g1.jpg', '/uploads/thumb.jpg']);
+    });
+
     it('affected=0 이면 NotFoundException', async () => {
+      projectRepo.findOne.mockResolvedValue(baseProject({ id: 10 }));
       projectRepo.delete.mockResolvedValue({ affected: 0, raw: {} } as never);
       await expect(service.remove(10)).rejects.toBeInstanceOf(NotFoundException);
     });
+  });
 
-    it('성공 시 void', async () => {
-      projectRepo.delete.mockResolvedValue({ affected: 1, raw: {} } as never);
-      await expect(service.remove(10)).resolves.toBeUndefined();
-      expect(projectRepo.delete).toHaveBeenCalledWith(10);
+  describe('update — uploads cleanup', () => {
+    it('교체된 /uploads/* 파일만 삭제 (유지·외부는 건드리지 않음)', async () => {
+      const existing = baseProject({
+        id: 5,
+        url: 'same-slug',
+        thumbnailImg: '/uploads/old-thumb.jpg',
+        images: [
+          { id: 1, title: 'keep', img: '/uploads/keep.jpg', sortOrder: 0, projectId: 5 },
+          { id: 2, title: 'drop', img: '/uploads/drop.jpg', sortOrder: 1, projectId: 5 },
+          { id: 3, title: 'legacy', img: '/images/legacy.jpg', sortOrder: 2, projectId: 5 },
+        ] as never,
+      });
+      projectRepo.findOne
+        .mockResolvedValueOnce(existing) // findOneWithRelations (before update)
+        .mockResolvedValueOnce(
+          baseProject({ id: 5, url: 'same-slug', thumbnailImg: '/uploads/new-thumb.jpg' }),
+        ); // findOneWithRelations (after)
+      txManager.find.mockResolvedValue([]);
+
+      await service.update(
+        5,
+        baseDto({
+          url: 'same-slug',
+          thumbnailImg: '/uploads/new-thumb.jpg',
+          images: [
+            { title: 'keep', img: '/uploads/keep.jpg' },
+            { title: 'legacy', img: '/images/legacy.jpg' },
+          ],
+        }),
+      );
+
+      const removed = uploadsStorage.deleteByUrl.mock.calls.map((c) => c[0]);
+      // 이전 썸네일, 드롭된 갤러리 이미지만 삭제. keep/legacy 는 유지.
+      expect(removed.sort()).toEqual([
+        '/uploads/drop.jpg',
+        '/uploads/old-thumb.jpg',
+      ]);
     });
   });
 });

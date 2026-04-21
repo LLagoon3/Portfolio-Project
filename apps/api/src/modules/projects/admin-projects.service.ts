@@ -1,10 +1,15 @@
 import {
   ConflictException,
   Injectable,
+  Logger,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, In, Repository } from 'typeorm';
+import {
+  collectReferencedFilenames,
+  UploadsStorageService,
+} from '../uploads/uploads-storage.service';
 import { Project } from './entities/project.entity';
 import { ProjectCompanyInfo } from './entities/project-company-info.entity';
 import { ProjectDetail } from './entities/project-detail.entity';
@@ -15,12 +20,22 @@ import { UpsertProjectDto } from './dto/upsert-project.dto';
 import { ProjectDetailDto } from './dto/project-detail.dto';
 import { toProjectDetailDto } from './mappers/project-detail.mapper';
 
+function collectProjectUploadUrls(project: Project): (string | null | undefined)[] {
+  return [
+    project.thumbnailImg,
+    ...(project.images ?? []).map((img) => img.img),
+  ];
+}
+
 @Injectable()
 export class AdminProjectsService {
+  private readonly logger = new Logger(AdminProjectsService.name);
+
   constructor(
     @InjectRepository(Project)
     private readonly projectRepo: Repository<Project>,
     private readonly dataSource: DataSource,
+    private readonly uploadsStorage: UploadsStorageService,
   ) {}
 
   async getById(id: number): Promise<ProjectDetailDto> {
@@ -42,11 +57,11 @@ export class AdminProjectsService {
   }
 
   async update(id: number, dto: UpsertProjectDto): Promise<ProjectDetailDto> {
-    const exists = await this.projectRepo.findOne({ where: { id } });
-    if (!exists) {
+    const existing = await this.findOneWithRelations(id);
+    if (!existing) {
       throw new NotFoundException(`Project not found: id=${id}`);
     }
-    if (dto.url !== exists.url) {
+    if (dto.url !== existing.url) {
       await this.assertUrlAvailable(dto.url, id);
     }
 
@@ -72,14 +87,49 @@ export class AdminProjectsService {
       await manager.save(Project, updated);
     });
 
+    // 업데이트 전후 참조 비교해 고아가 된 /uploads/* 파일만 정리.
+    const oldFiles = collectReferencedFilenames(collectProjectUploadUrls(existing));
+    const newFiles = collectReferencedFilenames([
+      dto.thumbnailImg,
+      ...dto.images.map((img) => img.img),
+    ]);
+    await this.cleanupStaleFiles(oldFiles, newFiles);
+
     const loaded = await this.findOneWithRelations(id);
     return toProjectDetailDto(loaded!);
   }
 
   async remove(id: number): Promise<void> {
+    const existing = await this.findOneWithRelations(id);
+    if (!existing) {
+      throw new NotFoundException(`Project not found: id=${id}`);
+    }
+    const filenames = collectReferencedFilenames(collectProjectUploadUrls(existing));
+
     const result = await this.projectRepo.delete(id);
     if (!result.affected) {
       throw new NotFoundException(`Project not found: id=${id}`);
+    }
+
+    await this.cleanupStaleFiles(filenames, new Set());
+  }
+
+  private async cleanupStaleFiles(
+    before: Set<string>,
+    after: Set<string>,
+  ): Promise<void> {
+    for (const filename of before) {
+      if (after.has(filename)) continue;
+      try {
+        await this.uploadsStorage.deleteByUrl(
+          UploadsStorageService.toUrl(filename),
+        );
+      } catch (err) {
+        // 파일 삭제 실패는 도메인 트랜잭션과 분리 — 로그만 남기고 진행
+        this.logger.error(
+          `[cleanupStaleFiles] ${filename} 삭제 실패: ${(err as Error).message}`,
+        );
+      }
     }
   }
 

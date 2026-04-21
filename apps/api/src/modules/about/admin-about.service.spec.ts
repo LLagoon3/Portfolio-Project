@@ -11,9 +11,11 @@ describe('AdminAboutService', () => {
   let profileRepo: jest.Mocked<Repository<AboutProfile>>;
   let txManager: { save: jest.Mock; delete: jest.Mock };
   let dataSource: jest.Mocked<Pick<DataSource, 'transaction'>>;
+  let uploadsStorage: { deleteByUrl: jest.Mock };
 
   beforeEach(async () => {
     txManager = { save: jest.fn(), delete: jest.fn() };
+    uploadsStorage = { deleteByUrl: jest.fn().mockResolvedValue(true) };
     dataSource = {
       transaction: jest
         .fn()
@@ -22,6 +24,9 @@ describe('AdminAboutService', () => {
         ),
     } as unknown as jest.Mocked<Pick<DataSource, 'transaction'>>;
 
+    const { UploadsStorageService } = await import(
+      '../uploads/uploads-storage.service'
+    );
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AdminAboutService,
@@ -32,6 +37,7 @@ describe('AdminAboutService', () => {
           },
         },
         { provide: DataSource, useValue: dataSource },
+        { provide: UploadsStorageService, useValue: uploadsStorage },
       ],
     }).compile();
 

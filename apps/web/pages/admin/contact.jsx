@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import AdminLayout from '../../components/admin/AdminLayout';
 import AdminTable from '../../components/admin/AdminTable';
 import StatusBadge from '../../components/admin/StatusBadge';
@@ -32,8 +32,14 @@ function formatDate(iso) {
 
 function AdminContactInbox({ initialPage, initialStatus }) {
 	const router = useRouter();
+	// 필터 탭 클릭 → router.push 로 쿼리만 변경 → getServerSideProps 재실행 → 새 props 주입.
+	// optimistic 상태 변경(드롭다운 PATCH) 을 위해 page 는 state 로 들고 있되,
+	// 라우팅 후 내려온 initialPage 로 다시 동기화한다. status 는 파생값이라 props 그대로 사용.
 	const [page, setPage] = useState(initialPage);
-	const [status, setStatus] = useState(initialStatus);
+	useEffect(() => {
+		setPage(initialPage);
+	}, [initialPage]);
+	const status = initialStatus;
 	const [pendingId, setPendingId] = useState(null);
 	const [error, setError] = useState('');
 

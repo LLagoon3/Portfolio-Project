@@ -1,5 +1,14 @@
 import { plainToInstance } from 'class-transformer';
-import { IsEnum, IsInt, IsOptional, IsString, Max, Min, validateSync } from 'class-validator';
+import {
+  IsEnum,
+  IsInt,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  Max,
+  Min,
+  validateSync,
+} from 'class-validator';
 
 export enum NodeEnv {
   Development = 'development',
@@ -38,10 +47,12 @@ class EnvironmentVariables {
   DB_DATABASE: string = 'portfolio';
 
   @IsString()
-  ADMIN_PASSWORD_HASH: string = '';
+  @IsNotEmpty()
+  ADMIN_PASSWORD_HASH!: string;
 
   @IsString()
-  JWT_SECRET: string = '';
+  @IsNotEmpty()
+  JWT_SECRET!: string;
 
   @IsOptional()
   @IsString()

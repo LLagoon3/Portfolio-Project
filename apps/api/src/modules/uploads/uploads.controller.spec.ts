@@ -17,6 +17,7 @@ const fakeFile = (
     path: '/app/uploads/abc-uuid.png',
     buffer: Buffer.alloc(0),
     stream: undefined as never,
+    ...overrides,
   }) as Express.Multer.File;
 
 describe('UploadsController', () => {

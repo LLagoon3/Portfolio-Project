@@ -15,7 +15,13 @@ function formatBytes(bytes) {
 	return `${Math.round(bytes / (1024 * 102.4)) / 10}MB`;
 }
 
-function ImageUploader({ value, onChange, previewAlt = 'Upload preview', className = '' }) {
+function ImageUploader({
+	value,
+	onChange,
+	previewAlt = 'Upload preview',
+	className = '',
+	preset,
+}) {
 	const inputRef = useRef(null);
 	const [uploading, setUploading] = useState(false);
 	const [error, setError] = useState('');
@@ -61,7 +67,10 @@ function ImageUploader({ value, onChange, previewAlt = 'Upload preview', classNa
 		try {
 			const form = new FormData();
 			form.append('file', fileList[0]);
-			const res = await fetch('/api/admin/uploads', {
+			const endpoint = preset
+				? `/api/admin/uploads?preset=${encodeURIComponent(preset)}`
+				: '/api/admin/uploads';
+			const res = await fetch(endpoint, {
 				method: 'POST',
 				credentials: 'include',
 				body: form,

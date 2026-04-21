@@ -99,12 +99,13 @@ function AdminAboutEditor({ initialAbout }) {
 						onChange={(e) => set('tagline', e.target.value)}
 					/>
 					<label className="block text-lg text-primary-dark dark:text-primary-light mb-1 font-general-regular">
-						프로필 이미지
+						프로필 이미지 (1:1 자동 crop)
 					</label>
 					<ImageUploader
 						value={form.profileImage}
 						onChange={(url) => set('profileImage', url)}
 						previewAlt={form.name ? `${form.name} profile` : 'Profile preview'}
+						preset="profile"
 					/>
 				</AdminFormSection>
 

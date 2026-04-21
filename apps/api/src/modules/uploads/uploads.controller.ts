@@ -1,30 +1,29 @@
 import {
   BadRequestException,
   Controller,
-  HttpException,
-  HttpStatus,
   Post,
+  Query,
   UploadedFile,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiConsumes, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiConsumes, ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { randomUUID } from 'node:crypto';
 import { existsSync, mkdirSync } from 'node:fs';
-import { extname, join } from 'node:path';
+import { rm, stat } from 'node:fs/promises';
+import { join } from 'node:path';
 import type { Request } from 'express';
 import { diskStorage } from 'multer';
+import sharp from 'sharp';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { getPresetSpec, resolvePreset, UploadPreset } from './upload-preset';
 
 export const UPLOADS_ROOT = process.env.UPLOADS_ROOT ?? '/app/uploads';
-// URL 경로. 공개 static 서빙 (web 컨테이너가 /app/apps/web/public/uploads 로 같은 볼륨 마운트) 기준.
 export const UPLOADS_URL_PREFIX = '/uploads';
 
 const ALLOWED_MIME = new Set(['image/jpeg', 'image/png', 'image/webp']);
 
-// multer FileFilterCallback 시그니처 (acceptFile 은 non-optional).
 type FileFilterCallback = (err: Error | null, acceptFile: boolean) => void;
 
 function ensureUploadsRoot(): void {
@@ -33,17 +32,27 @@ function ensureUploadsRoot(): void {
   }
 }
 
+export interface UploadResultDto {
+  url: string;
+  bytes: number;
+  mime: string;
+  width: number;
+  height: number;
+  preset: UploadPreset;
+}
+
 @ApiTags('Admin · Uploads')
 @Controller('api/admin/uploads')
 @UseGuards(JwtAuthGuard)
 export class UploadsController {
-  constructor(private readonly config: ConfigService) {}
-
   @Post()
-  @ApiOperation({ summary: '이미지 업로드 (multipart/form-data, field name: file)' })
+  @ApiOperation({
+    summary: '이미지 업로드 (multipart/form-data, field name: file) + preset 기반 서버 리사이즈',
+  })
   @ApiConsumes('multipart/form-data')
+  @ApiQuery({ name: 'preset', enum: UploadPreset, required: false })
   @ApiResponse({ status: 201 })
-  @ApiResponse({ status: 400, description: 'MIME 또는 크기 검증 실패' })
+  @ApiResponse({ status: 400 })
   @UseInterceptors(
     FileInterceptor('file', {
       storage: diskStorage({
@@ -51,9 +60,9 @@ export class UploadsController {
           ensureUploadsRoot();
           cb(null, UPLOADS_ROOT);
         },
-        filename: (_req, file, cb) => {
-          const ext = extname(file.originalname).toLowerCase() || '.bin';
-          cb(null, `${randomUUID()}${ext}`);
+        filename: (_req, _file, cb) => {
+          // 서버 리사이즈 후 항상 JPEG 로 재인코딩하므로 확장자도 .jpg 로 통일한다.
+          cb(null, `${randomUUID()}.jpg`);
         },
       }),
       fileFilter: (
@@ -75,21 +84,53 @@ export class UploadsController {
       },
     }),
   )
-  upload(
+  async upload(
     @UploadedFile() file: Express.Multer.File | undefined,
-  ): { url: string; bytes: number; mime: string } {
+    @Query('preset') presetQuery?: string,
+  ): Promise<UploadResultDto> {
     if (!file) {
       throw new BadRequestException('업로드된 파일이 없습니다.');
     }
-    return {
-      url: join(UPLOADS_URL_PREFIX, file.filename).replace(/\\/g, '/'),
-      bytes: file.size,
-      mime: file.mimetype,
-    };
+
+    let preset: UploadPreset;
+    try {
+      preset = resolvePreset(presetQuery);
+    } catch (err) {
+      await rm(file.path, { force: true });
+      throw new BadRequestException((err as Error).message);
+    }
+
+    const spec = getPresetSpec(preset);
+    try {
+      const buffer = await sharp(file.path)
+        .rotate() // EXIF orientation 적용
+        .resize({
+          width: spec.width,
+          height: spec.height,
+          fit: spec.fit,
+          // cover(썸네일/프로필) 는 공개 페이지 레이아웃 일관성을 위해 목표 크기까지
+          // 업스케일 허용. inside(갤러리) 는 원본 > 1600 일 때만 축소하고 그 이하는
+          // 원본 품질 유지.
+          withoutEnlargement: spec.fit === 'inside',
+        })
+        .jpeg({ quality: 88, mozjpeg: true })
+        .toBuffer({ resolveWithObject: true });
+
+      await sharp(buffer.data).toFile(file.path);
+      const stats = await stat(file.path);
+
+      return {
+        url: join(UPLOADS_URL_PREFIX, file.filename).replace(/\\/g, '/'),
+        bytes: stats.size,
+        mime: 'image/jpeg',
+        width: buffer.info.width,
+        height: buffer.info.height,
+        preset,
+      };
+    } catch (err) {
+      // 처리 실패 시 디스크에 깨진 파일을 남기지 않는다.
+      await rm(file.path, { force: true });
+      throw err;
+    }
   }
 }
-
-// multer 의 file size 초과 에러를 400 으로 매핑하고 싶으면 필요 시 exception filter 에서 처리.
-// 현재 전역 HttpExceptionFilter 가 이미 HttpException 계열을 일관 포맷으로 변환하므로 따로 두지 않는다.
-void HttpException;
-void HttpStatus;

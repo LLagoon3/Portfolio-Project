@@ -140,12 +140,13 @@ function ProjectForm({ initialValue, submitLabel = '저장', onSubmit }) {
 					onChange={(e) => set('category', e.target.value)}
 				/>
 				<label className="block text-lg text-primary-dark dark:text-primary-light mb-1 font-general-regular">
-					썸네일 이미지
+					썸네일 이미지 (16:9 자동 crop)
 				</label>
 				<ImageUploader
 					value={form.thumbnailImg}
 					onChange={(url) => set('thumbnailImg', url)}
 					previewAlt="Thumbnail preview"
+					preset="thumbnail"
 					className="mb-4"
 				/>
 				<FormInput
@@ -327,6 +328,7 @@ function ProjectForm({ initialValue, submitLabel = '저장', onSubmit }) {
 								value={item.img}
 								onChange={(url) => onItemChange({ img: url })}
 								previewAlt={item.title || 'Gallery preview'}
+								preset="gallery"
 							/>
 						</div>
 					)}

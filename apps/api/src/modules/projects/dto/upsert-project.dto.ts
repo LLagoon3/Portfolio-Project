@@ -2,6 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
   ArrayMaxSize,
+  ArrayMinSize,
   IsArray,
   IsNotEmpty,
   IsOptional,
@@ -50,6 +51,7 @@ export class UpsertTechnologyGroupDto {
   @ArrayMaxSize(100)
   @IsString({ each: true })
   @IsNotEmpty({ each: true })
+  @MaxLength(100, { each: true })
   techs!: string[];
 }
 
@@ -138,8 +140,9 @@ export class UpsertProjectDto {
   @Type(() => UpsertCompanyInfoDto)
   companyInfo!: UpsertCompanyInfoDto[];
 
-  @ApiProperty({ type: [UpsertTechnologyGroupDto] })
+  @ApiProperty({ type: [UpsertTechnologyGroupDto], minItems: 1 })
   @IsArray()
+  @ArrayMinSize(1)
   @ValidateNested({ each: true })
   @Type(() => UpsertTechnologyGroupDto)
   technologies!: UpsertTechnologyGroupDto[];

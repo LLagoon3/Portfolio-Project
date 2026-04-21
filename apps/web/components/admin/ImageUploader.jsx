@@ -27,15 +27,22 @@ function ImageUploader({ value, onChange, previewAlt = 'Upload preview', classNa
 		bytes: null,
 		mime: null,
 	});
+	// 방금 업로드한 URL 을 기억해둬서, value 변경이 "우리 업로드에서 온 것" 인지
+	// "외부에서 다른 URL 이 주입된 것" 인지 구분한다. 전자는 bytes/mime 을 유지,
+	// 후자는 네 필드 모두 초기화해 이전 업로드의 메타가 다른 이미지에 붙어 보이지 않도록 한다.
+	const lastUploadedUrlRef = useRef(null);
 
-	// value 가 바뀌면 해상도 재측정(업로드 메타는 handleFiles 가 별도로 덮어쓴다).
 	useEffect(() => {
-		setMeta((prev) => ({
-			width: null,
-			height: null,
-			bytes: prev.bytes,
-			mime: prev.mime,
-		}));
+		if (value && value === lastUploadedUrlRef.current) {
+			setMeta((prev) => ({
+				width: null,
+				height: null,
+				bytes: prev.bytes,
+				mime: prev.mime,
+			}));
+		} else {
+			setMeta({ width: null, height: null, bytes: null, mime: null });
+		}
 	}, [value]);
 
 	const handleImageLoad = useCallback((event) => {
@@ -79,6 +86,7 @@ function ImageUploader({ value, onChange, previewAlt = 'Upload preview', classNa
 				bytes: data.bytes ?? null,
 				mime: data.mime ?? null,
 			});
+			lastUploadedUrlRef.current = data.url;
 			onChange(data.url);
 		} catch (err) {
 			console.error('[ImageUploader] failed', err);

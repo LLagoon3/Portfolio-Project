@@ -36,6 +36,16 @@ class EnvironmentVariables {
 
   @IsString()
   DB_DATABASE: string = 'portfolio';
+
+  @IsString()
+  ADMIN_PASSWORD_HASH: string = '';
+
+  @IsString()
+  JWT_SECRET: string = '';
+
+  @IsOptional()
+  @IsString()
+  JWT_EXPIRES_IN?: string;
 }
 
 export function validateEnv(config: Record<string, unknown>): EnvironmentVariables {

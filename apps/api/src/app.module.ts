@@ -4,6 +4,7 @@ import { HealthModule } from './modules/health/health.module';
 import { ContactModule } from './modules/contact/contact.module';
 import { ProjectsModule } from './modules/projects/projects.module';
 import { AboutModule } from './modules/about/about.module';
+import { AuthModule } from './modules/auth/auth.module';
 import { DatabaseModule } from './database/database.module';
 import { validateEnv } from './config/env.validation';
 
@@ -20,6 +21,7 @@ import { validateEnv } from './config/env.validation';
     ContactModule,
     ProjectsModule,
     AboutModule,
+    AuthModule,
   ],
 })
 export class AppModule {}

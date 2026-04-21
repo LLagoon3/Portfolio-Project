@@ -327,6 +327,7 @@ function ProjectForm({ initialValue, submitLabel = '저장', onSubmit }) {
 								value={item.img}
 								onChange={(url) => onItemChange({ img: url })}
 								previewAlt={item.title || 'Gallery preview'}
+								preset="gallery"
 							/>
 						</div>
 					)}

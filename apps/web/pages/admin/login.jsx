@@ -30,8 +30,7 @@ function AdminLogin() {
 				setError('서버 오류로 로그인에 실패했습니다. 잠시 후 다시 시도해주세요.');
 				return;
 			}
-			const next = typeof router.query.next === 'string' ? router.query.next : '/admin';
-			router.replace(next);
+			router.replace('/admin');
 		} catch (err) {
 			console.error('[admin login] request failed', err);
 			setError('네트워크 오류로 로그인에 실패했습니다.');

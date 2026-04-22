@@ -1,10 +1,16 @@
 import {
   ConflictException,
   Injectable,
+  Logger,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, In, Repository } from 'typeorm';
+import { UploadsReferenceCheckerService } from '../uploads/uploads-reference-checker.service';
+import {
+  collectReferencedFilenames,
+  UploadsStorageService,
+} from '../uploads/uploads-storage.service';
 import { Project } from './entities/project.entity';
 import { ProjectCompanyInfo } from './entities/project-company-info.entity';
 import { ProjectDetail } from './entities/project-detail.entity';
@@ -15,12 +21,23 @@ import { UpsertProjectDto } from './dto/upsert-project.dto';
 import { ProjectDetailDto } from './dto/project-detail.dto';
 import { toProjectDetailDto } from './mappers/project-detail.mapper';
 
+function collectProjectUploadUrls(project: Project): (string | null | undefined)[] {
+  return [
+    project.thumbnailImg,
+    ...(project.images ?? []).map((img) => img.img),
+  ];
+}
+
 @Injectable()
 export class AdminProjectsService {
+  private readonly logger = new Logger(AdminProjectsService.name);
+
   constructor(
     @InjectRepository(Project)
     private readonly projectRepo: Repository<Project>,
     private readonly dataSource: DataSource,
+    private readonly uploadsStorage: UploadsStorageService,
+    private readonly uploadsRefChecker: UploadsReferenceCheckerService,
   ) {}
 
   async getById(id: number): Promise<ProjectDetailDto> {
@@ -42,11 +59,11 @@ export class AdminProjectsService {
   }
 
   async update(id: number, dto: UpsertProjectDto): Promise<ProjectDetailDto> {
-    const exists = await this.projectRepo.findOne({ where: { id } });
-    if (!exists) {
+    const existing = await this.findOneWithRelations(id);
+    if (!existing) {
       throw new NotFoundException(`Project not found: id=${id}`);
     }
-    if (dto.url !== exists.url) {
+    if (dto.url !== existing.url) {
       await this.assertUrlAvailable(dto.url, id);
     }
 
@@ -72,14 +89,61 @@ export class AdminProjectsService {
       await manager.save(Project, updated);
     });
 
+    // 업데이트 전후 참조 비교해 고아가 된 /uploads/* 파일만 정리.
+    // 현재 프로젝트는 이미 새 상태가 저장됐으므로 excludeProjectId 없이 검사해도 되지만,
+    // DB 조회 타이밍의 경쟁 상태 대비 현재 id 를 exclude 해도 안전.
+    const oldFiles = collectReferencedFilenames(collectProjectUploadUrls(existing));
+    const newFiles = collectReferencedFilenames([
+      dto.thumbnailImg,
+      ...dto.images.map((img) => img.img),
+    ]);
+    await this.cleanupStaleFiles(oldFiles, newFiles, { excludeProjectId: id });
+
     const loaded = await this.findOneWithRelations(id);
     return toProjectDetailDto(loaded!);
   }
 
   async remove(id: number): Promise<void> {
+    const existing = await this.findOneWithRelations(id);
+    if (!existing) {
+      throw new NotFoundException(`Project not found: id=${id}`);
+    }
+    const filenames = collectReferencedFilenames(collectProjectUploadUrls(existing));
+
     const result = await this.projectRepo.delete(id);
     if (!result.affected) {
       throw new NotFoundException(`Project not found: id=${id}`);
+    }
+
+    await this.cleanupStaleFiles(filenames, new Set(), { excludeProjectId: id });
+  }
+
+  private async cleanupStaleFiles(
+    before: Set<string>,
+    after: Set<string>,
+    exclude: { excludeProjectId?: number } = {},
+  ): Promise<void> {
+    for (const filename of before) {
+      if (after.has(filename)) continue;
+      const url = UploadsStorageService.toUrl(filename);
+      try {
+        // 다른 프로젝트/About 에서 여전히 이 URL 을 참조하면 파일을 남겨둔다.
+        const stillReferenced = await this.uploadsRefChecker.isReferenced(url, {
+          excludeProjectId: exclude.excludeProjectId,
+        });
+        if (stillReferenced) {
+          this.logger.log(
+            `[cleanupStaleFiles] ${filename} 은 다른 레코드가 여전히 참조 중 — 보존`,
+          );
+          continue;
+        }
+        await this.uploadsStorage.deleteByUrl(url);
+      } catch (err) {
+        // 파일 삭제/참조 확인 실패는 도메인 트랜잭션과 분리 — 로그만 남기고 진행
+        this.logger.error(
+          `[cleanupStaleFiles] ${filename} 정리 실패: ${(err as Error).message}`,
+        );
+      }
     }
   }
 

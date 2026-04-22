@@ -11,9 +11,13 @@ describe('AdminAboutService', () => {
   let profileRepo: jest.Mocked<Repository<AboutProfile>>;
   let txManager: { save: jest.Mock; delete: jest.Mock };
   let dataSource: jest.Mocked<Pick<DataSource, 'transaction'>>;
+  let uploadsStorage: { deleteByUrl: jest.Mock };
+  let uploadsRefChecker: { isReferenced: jest.Mock };
 
   beforeEach(async () => {
     txManager = { save: jest.fn(), delete: jest.fn() };
+    uploadsStorage = { deleteByUrl: jest.fn().mockResolvedValue(true) };
+    uploadsRefChecker = { isReferenced: jest.fn().mockResolvedValue(false) };
     dataSource = {
       transaction: jest
         .fn()
@@ -22,6 +26,12 @@ describe('AdminAboutService', () => {
         ),
     } as unknown as jest.Mocked<Pick<DataSource, 'transaction'>>;
 
+    const { UploadsStorageService } = await import(
+      '../uploads/uploads-storage.service'
+    );
+    const { UploadsReferenceCheckerService } = await import(
+      '../uploads/uploads-reference-checker.service'
+    );
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AdminAboutService,
@@ -32,6 +42,11 @@ describe('AdminAboutService', () => {
           },
         },
         { provide: DataSource, useValue: dataSource },
+        { provide: UploadsStorageService, useValue: uploadsStorage },
+        {
+          provide: UploadsReferenceCheckerService,
+          useValue: uploadsRefChecker,
+        },
       ],
     }).compile();
 
@@ -105,5 +120,64 @@ describe('AdminAboutService', () => {
   it('upsert: 저장 후 profile 이 null 이면 에러', async () => {
     profileRepo.findOne.mockResolvedValue(null);
     await expect(service.upsert(dto)).rejects.toThrow(/saved profile not found/);
+  });
+
+  it('upsert: 이전 프로필 URL 이 /uploads 이고 다른 참조가 없으면 삭제', async () => {
+    profileRepo.findOne
+      .mockResolvedValueOnce({
+        id: 1,
+        profileImage: '/uploads/old.jpg',
+      } as never)
+      .mockResolvedValueOnce({
+        id: 1,
+        name: 'x',
+        tagline: null,
+        profileImage: '/uploads/new.jpg',
+        bios: [],
+      } as never);
+    uploadsRefChecker.isReferenced.mockResolvedValue(false);
+
+    await service.upsert({ ...dto, profileImage: '/uploads/new.jpg', bio: [] });
+
+    expect(uploadsStorage.deleteByUrl).toHaveBeenCalledWith('/uploads/old.jpg');
+  });
+
+  it('upsert: 이전 프로필이 다른 레코드에서 참조 중이면 삭제하지 않는다', async () => {
+    profileRepo.findOne
+      .mockResolvedValueOnce({
+        id: 1,
+        profileImage: '/uploads/shared.jpg',
+      } as never)
+      .mockResolvedValueOnce({
+        id: 1,
+        name: 'x',
+        tagline: null,
+        profileImage: '/uploads/new.jpg',
+        bios: [],
+      } as never);
+    uploadsRefChecker.isReferenced.mockResolvedValue(true);
+
+    await service.upsert({ ...dto, profileImage: '/uploads/new.jpg', bio: [] });
+
+    expect(uploadsStorage.deleteByUrl).not.toHaveBeenCalled();
+  });
+
+  it('upsert: 이전 URL 이 /images (수동 자산) 이면 건드리지 않음', async () => {
+    profileRepo.findOne
+      .mockResolvedValueOnce({
+        id: 1,
+        profileImage: '/images/old.jpg',
+      } as never)
+      .mockResolvedValueOnce({
+        id: 1,
+        name: 'x',
+        tagline: null,
+        profileImage: '/uploads/new.jpg',
+        bios: [],
+      } as never);
+
+    await service.upsert({ ...dto, profileImage: '/uploads/new.jpg', bio: [] });
+
+    expect(uploadsStorage.deleteByUrl).not.toHaveBeenCalled();
   });
 });

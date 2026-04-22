@@ -11,6 +11,7 @@ import { ProjectCompanyInfo } from './entities/project-company-info.entity';
 import { ProjectTechnology } from './entities/project-technology.entity';
 import { ProjectTechnologyItem } from './entities/project-technology-item.entity';
 import { ProjectDetail } from './entities/project-detail.entity';
+import { UploadsModule } from '../uploads/uploads.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { ProjectDetail } from './entities/project-detail.entity';
       ProjectTechnologyItem,
       ProjectDetail,
     ]),
+    UploadsModule,
   ],
   controllers: [ProjectsController, AdminProjectsController],
   providers: [ProjectsService, ProjectsRepository, AdminProjectsService],

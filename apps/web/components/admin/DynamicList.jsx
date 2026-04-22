@@ -45,7 +45,7 @@ function DynamicList({
 			{items.map((item, i) => (
 				<div
 					key={item._key ?? i}
-					className="rounded-lg border border-gray-200 dark:border-ternary-dark bg-primary-light dark:bg-ternary-dark p-3 sm:p-4"
+					className="rounded-lg border border-gray-200 dark:border-white/10 bg-primary-light dark:bg-ternary-dark p-3 sm:p-4"
 				>
 					<div className="flex justify-between items-start gap-2 mb-2">
 						<span className="font-general-medium text-xs text-ternary-dark dark:text-ternary-light">

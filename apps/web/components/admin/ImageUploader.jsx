@@ -198,7 +198,7 @@ function ImageUploader({
 					onDragOver={handleDragOver}
 					onDragLeave={handleDragLeave}
 					onDrop={handleDrop}
-					className={`flex flex-col items-center justify-center gap-1 border border-dashed border-gray-300 dark:border-ternary-dark rounded-md px-4 py-6 text-ternary-dark dark:text-ternary-light hover:border-indigo-400 dark:hover:border-indigo-500 duration-300 ${dropRingClass}`}
+					className={`flex flex-col items-center justify-center gap-1 border border-dashed border-gray-300 dark:border-gray-500 rounded-md px-4 py-6 text-ternary-dark dark:text-ternary-light hover:border-indigo-400 dark:hover:border-indigo-400 duration-300 ${dropRingClass}`}
 				>
 					<FiUploadCloud className="w-6 h-6" />
 					<span className="text-sm font-general-medium">

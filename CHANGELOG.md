@@ -1,5 +1,44 @@
 # Changelog
 
+## [0.1.3](https://github.com/LLagoon3/Portfolio-Project/compare/portfolio-project-v0.1.2...portfolio-project-v0.1.3) (2026-04-22)
+
+
+### Features
+
+* **api:** cleanup:uploads 고아 파일 정리 스크립트와 운영 문서 추가 ([485c0b7](https://github.com/LLagoon3/Portfolio-Project/commit/485c0b77e0d0f314755fe3d3f18000d8fdcd848f)), closes [#37](https://github.com/LLagoon3/Portfolio-Project/issues/37)
+* **api:** UploadsStorageService 로 /uploads 파일 라이프사이클 공용화 ([fb95b41](https://github.com/LLagoon3/Portfolio-Project/commit/fb95b41e227426bd682f0d7481b176c621067ec5)), closes [#37](https://github.com/LLagoon3/Portfolio-Project/issues/37)
+* **api:** 어드민 About 편집 엔드포인트 추가 ([f747af8](https://github.com/LLagoon3/Portfolio-Project/commit/f747af89a1a2d5a2fedd7f1290a931a3b0883a37)), closes [#26](https://github.com/LLagoon3/Portfolio-Project/issues/26)
+* **api:** 어드민 Auth 모듈 (login/logout/me + JwtAuthGuard) 추가 ([71b99d1](https://github.com/LLagoon3/Portfolio-Project/commit/71b99d18940d63c241f257563ffd6b5d7c5254a5)), closes [#23](https://github.com/LLagoon3/Portfolio-Project/issues/23)
+* **api:** 어드민 Contact 수신함 엔드포인트 추가 ([1abc82f](https://github.com/LLagoon3/Portfolio-Project/commit/1abc82f541c559b4190a83d19feb5ff3b1d3c685)), closes [#27](https://github.com/LLagoon3/Portfolio-Project/issues/27)
+* **api:** 어드민 Projects CRUD 엔드포인트 추가 (이미지 업로드 제외) ([fd0b72e](https://github.com/LLagoon3/Portfolio-Project/commit/fd0b72e960a12607b600b805fbb866388196aab0)), closes [#24](https://github.com/LLagoon3/Portfolio-Project/issues/24)
+* **api:** 어드민 이미지 업로드 엔드포인트와 /uploads 정적 서빙 추가 ([eebc882](https://github.com/LLagoon3/Portfolio-Project/commit/eebc882dbd9c5e8da8f18818488ff5befbb9dda8)), closes [#25](https://github.com/LLagoon3/Portfolio-Project/issues/25)
+* **api:** 업로드 preset 도입과 sharp 기반 서버 사이드 리사이즈 ([fe4f38a](https://github.com/LLagoon3/Portfolio-Project/commit/fe4f38a9ece9a1062bf2aec074e45211a5d226e5)), closes [#36](https://github.com/LLagoon3/Portfolio-Project/issues/36)
+* **api:** 프로젝트/About update·remove 에 업로드 파일 즉시 정리 연결 ([6927a1b](https://github.com/LLagoon3/Portfolio-Project/commit/6927a1bf27c553d34859695aa385d4d59d7a6f3e)), closes [#37](https://github.com/LLagoon3/Portfolio-Project/issues/37)
+* **web:** /admin/about 편집 페이지 추가 ([4857d7c](https://github.com/LLagoon3/Portfolio-Project/commit/4857d7c2ec2a4f6f0e24a93e86449020f093b5c6)), closes [#26](https://github.com/LLagoon3/Portfolio-Project/issues/26)
+* **web:** /admin/contact 수신함 목록/상세 페이지 추가 ([b76ba1d](https://github.com/LLagoon3/Portfolio-Project/commit/b76ba1d778393e3501e032fe1839234296b3a4e3)), closes [#27](https://github.com/LLagoon3/Portfolio-Project/issues/27)
+* **web:** ImageUploader preset 전파와 공개 페이지 비율 고정 ([734397c](https://github.com/LLagoon3/Portfolio-Project/commit/734397c95ef1e917abfd7d3fb3e91a069d12db11)), closes [#36](https://github.com/LLagoon3/Portfolio-Project/issues/36)
+* **web:** ImageUploader 교체 UX 개선 (Replace 버튼·drop 교체·메타 표시) ([4aa3b42](https://github.com/LLagoon3/Portfolio-Project/commit/4aa3b4273b8e124814cb90b9ff0315a7e9cc6c5b)), closes [#35](https://github.com/LLagoon3/Portfolio-Project/issues/35)
+* **web:** ImageUploader 컴포넌트와 /uploads 프록시 rewrite 추가 ([c4885ad](https://github.com/LLagoon3/Portfolio-Project/commit/c4885adf980a70187ed5e6911bf66db4c8e9dd76)), closes [#25](https://github.com/LLagoon3/Portfolio-Project/issues/25)
+* **web:** 어드민 Projects 관리 UI (목록·생성·편집)와 공용 컴포넌트 추가 ([b32d0a2](https://github.com/LLagoon3/Portfolio-Project/commit/b32d0a2f7c697d03ade677a593774cfda5f06635)), closes [#24](https://github.com/LLagoon3/Portfolio-Project/issues/24)
+* **web:** 어드민 공용 레이아웃과 /admin/login · /admin 대시보드 추가 ([d02c387](https://github.com/LLagoon3/Portfolio-Project/commit/d02c38745d64991105a096c130d0a804ce79cf74)), closes [#23](https://github.com/LLagoon3/Portfolio-Project/issues/23)
+
+
+### Bug Fixes
+
+* **api:** admin 관련 env 를 IsNotEmpty 로 강화 ([51672cf](https://github.com/LLagoon3/Portfolio-Project/commit/51672cfcaa407ccb3af83fbc890f89ea09ad9afd))
+* **api:** cleanup:uploads 프로덕션 컨테이너 대응 엔트리포인트 추가 ([31a3b58](https://github.com/LLagoon3/Portfolio-Project/commit/31a3b585ec052062272e5507843e6842eb9567ce))
+* **api:** Multer 에러를 400 으로 매핑하는 안전망 추가 ([d1c4c40](https://github.com/LLagoon3/Portfolio-Project/commit/d1c4c40da92a990b6f00e30220fbde7889dc41a6))
+* **api:** uploads 테스트의 미사용 overrides 변수 제거 (lint) ([94003d1](https://github.com/LLagoon3/Portfolio-Project/commit/94003d17979a7ef5c04f1d356097a64703fd2782))
+* **api:** UpsertAboutDto 에 입력 trim + 공백-only 거부 ([e8bd98d](https://github.com/LLagoon3/Portfolio-Project/commit/e8bd98d10d9045f5af6f332e9f7d4d2eca7d5f46))
+* **api:** UpsertProjectDto 의 technologies 최소 1개 강제 및 techs 길이 제한 ([6a29752](https://github.com/LLagoon3/Portfolio-Project/commit/6a29752a6a6d05c7f75abaac5ed1091571e585c5))
+* **api:** 업로드 정리 시 다른 레코드의 참조 확인 (데이터 손실 방지) ([4fa895b](https://github.com/LLagoon3/Portfolio-Project/commit/4fa895b31b38d23596583b1aaeb07393c113a5ce))
+* **web:** About 폼 제출 시 Bio 단락도 trim 후 빈 값 필터링 ([fa7b8a1](https://github.com/LLagoon3/Portfolio-Project/commit/fa7b8a132e24897cc6b74aa13ec2f19f90f504d8))
+* **web:** admin 로그인의 미사용 next 쿼리 처리 제거 ([410457a](https://github.com/LLagoon3/Portfolio-Project/commit/410457a4e3349266a2959793e63f38cde8fff68c))
+* **web:** contact 수신함 페이지의 필터 변경 시 stale state 해소 ([e8bddc2](https://github.com/LLagoon3/Portfolio-Project/commit/e8bddc23866a2ecde36a34328e14d832e944a904))
+* **web:** ImageUploader 의 외부 value 변경 시 이전 메타 잔존 문제 해소 ([03d20e6](https://github.com/LLagoon3/Portfolio-Project/commit/03d20e628bd30fe1bea31d1330d1af038d6b56c2))
+* **web:** ProjectForm 썸네일 업로더에 preset="thumbnail" 실제로 전달 ([5f4fadb](https://github.com/LLagoon3/Portfolio-Project/commit/5f4fadb9cb37acab6f18456ed791c1584eeecbef))
+* **web:** ProjectForm 에서 technologies 최소 1 그룹 보장 ([74c3f2c](https://github.com/LLagoon3/Portfolio-Project/commit/74c3f2cfd12b22d032e3e7b57a86248ac1fbfd17))
+
 ## [0.1.2](https://github.com/LLagoon3/Portfolio-Project/compare/portfolio-project-v0.1.1...portfolio-project-v0.1.2) (2026-04-20)
 
 

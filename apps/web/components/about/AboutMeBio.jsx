@@ -5,13 +5,16 @@ function AboutMeBio({ name, tagline, profileImage, bio = [] }) {
 	return (
 		<div className="block sm:flex sm:gap-10 mt-10 sm:mt-20">
 			<div className="w-full sm:w-1/4 mb-7 sm:mb-0">
-				<Image
-					src={profileImage}
-					width={200}
-					height={200}
-					className="rounded-lg"
-					alt={name ? `${name} profile` : 'Profile Image'}
-				/>
+				{/* profile preset 이 1:1 로 정규화되므로 프레임도 1:1 로 고정. */}
+				<div className="relative w-48 sm:w-full aspect-square overflow-hidden rounded-full">
+					<Image
+						src={profileImage}
+						alt={name ? `${name} profile` : 'Profile Image'}
+						fill
+						sizes="(min-width: 640px) 25vw, 192px"
+						style={{ objectFit: 'cover' }}
+					/>
+				</div>
 			</div>
 
 			<div className="font-general-regular w-full sm:w-3/4 text-left">

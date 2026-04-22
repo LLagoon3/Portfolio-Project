@@ -20,15 +20,14 @@ const ProjectSingle = ({ url, img, title, category }) => {
 				passHref
 			>
 				<div className="rounded-xl shadow-lg hover:shadow-xl cursor-pointer mb-10 sm:mb-0 bg-secondary-light dark:bg-ternary-dark">
-					<div>
+					{/* thumbnail preset 이 16:9 로 정규화되므로 카드 썸네일도 같은 비율로 고정. */}
+					<div className="relative w-full aspect-video overflow-hidden rounded-t-xl">
 						<Image
 							src={img}
-							className="rounded-t-xl border-none"
 							alt={title}
-							sizes="100vw"
-							style={{ width: '100%', height: 'auto' }}
-							width={100}
-							height={90}
+							fill
+							sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+							style={{ objectFit: 'cover' }}
 						/>
 					</div>
 					<div className="text-center px-4 py-6">

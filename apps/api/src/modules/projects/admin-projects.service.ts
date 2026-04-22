@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, In, Repository } from 'typeorm';
+import { UploadsReferenceCheckerService } from '../uploads/uploads-reference-checker.service';
 import {
   collectReferencedFilenames,
   UploadsStorageService,
@@ -36,6 +37,7 @@ export class AdminProjectsService {
     private readonly projectRepo: Repository<Project>,
     private readonly dataSource: DataSource,
     private readonly uploadsStorage: UploadsStorageService,
+    private readonly uploadsRefChecker: UploadsReferenceCheckerService,
   ) {}
 
   async getById(id: number): Promise<ProjectDetailDto> {
@@ -88,12 +90,14 @@ export class AdminProjectsService {
     });
 
     // 업데이트 전후 참조 비교해 고아가 된 /uploads/* 파일만 정리.
+    // 현재 프로젝트는 이미 새 상태가 저장됐으므로 excludeProjectId 없이 검사해도 되지만,
+    // DB 조회 타이밍의 경쟁 상태 대비 현재 id 를 exclude 해도 안전.
     const oldFiles = collectReferencedFilenames(collectProjectUploadUrls(existing));
     const newFiles = collectReferencedFilenames([
       dto.thumbnailImg,
       ...dto.images.map((img) => img.img),
     ]);
-    await this.cleanupStaleFiles(oldFiles, newFiles);
+    await this.cleanupStaleFiles(oldFiles, newFiles, { excludeProjectId: id });
 
     const loaded = await this.findOneWithRelations(id);
     return toProjectDetailDto(loaded!);
@@ -111,23 +115,33 @@ export class AdminProjectsService {
       throw new NotFoundException(`Project not found: id=${id}`);
     }
 
-    await this.cleanupStaleFiles(filenames, new Set());
+    await this.cleanupStaleFiles(filenames, new Set(), { excludeProjectId: id });
   }
 
   private async cleanupStaleFiles(
     before: Set<string>,
     after: Set<string>,
+    exclude: { excludeProjectId?: number } = {},
   ): Promise<void> {
     for (const filename of before) {
       if (after.has(filename)) continue;
+      const url = UploadsStorageService.toUrl(filename);
       try {
-        await this.uploadsStorage.deleteByUrl(
-          UploadsStorageService.toUrl(filename),
-        );
+        // 다른 프로젝트/About 에서 여전히 이 URL 을 참조하면 파일을 남겨둔다.
+        const stillReferenced = await this.uploadsRefChecker.isReferenced(url, {
+          excludeProjectId: exclude.excludeProjectId,
+        });
+        if (stillReferenced) {
+          this.logger.log(
+            `[cleanupStaleFiles] ${filename} 은 다른 레코드가 여전히 참조 중 — 보존`,
+          );
+          continue;
+        }
+        await this.uploadsStorage.deleteByUrl(url);
       } catch (err) {
-        // 파일 삭제 실패는 도메인 트랜잭션과 분리 — 로그만 남기고 진행
+        // 파일 삭제/참조 확인 실패는 도메인 트랜잭션과 분리 — 로그만 남기고 진행
         this.logger.error(
-          `[cleanupStaleFiles] ${filename} 삭제 실패: ${(err as Error).message}`,
+          `[cleanupStaleFiles] ${filename} 정리 실패: ${(err as Error).message}`,
         );
       }
     }

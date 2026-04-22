@@ -60,10 +60,12 @@ describe('AdminProjectsService', () => {
   let dataSource: DSMock;
   let txManager: { save: jest.Mock; delete: jest.Mock; find: jest.Mock };
   let uploadsStorage: { deleteByUrl: jest.Mock };
+  let uploadsRefChecker: { isReferenced: jest.Mock };
 
   beforeEach(async () => {
     txManager = { save: jest.fn(), delete: jest.fn(), find: jest.fn() };
     uploadsStorage = { deleteByUrl: jest.fn().mockResolvedValue(true) };
+    uploadsRefChecker = { isReferenced: jest.fn().mockResolvedValue(false) };
 
     dataSource = {
       transaction: jest
@@ -75,6 +77,9 @@ describe('AdminProjectsService', () => {
 
     const { UploadsStorageService } = await import(
       '../uploads/uploads-storage.service'
+    );
+    const { UploadsReferenceCheckerService } = await import(
+      '../uploads/uploads-reference-checker.service'
     );
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -88,6 +93,10 @@ describe('AdminProjectsService', () => {
         },
         { provide: DataSource, useValue: dataSource },
         { provide: UploadsStorageService, useValue: uploadsStorage },
+        {
+          provide: UploadsReferenceCheckerService,
+          useValue: uploadsRefChecker,
+        },
       ],
     }).compile();
 
@@ -262,6 +271,32 @@ describe('AdminProjectsService', () => {
         '/uploads/drop.jpg',
         '/uploads/old-thumb.jpg',
       ]);
+    });
+
+    it('다른 레코드가 여전히 참조 중인 URL 은 삭제하지 않는다', async () => {
+      const existing = baseProject({
+        id: 5,
+        url: 'same-slug',
+        thumbnailImg: '/uploads/shared.jpg',
+        images: [] as never,
+      });
+      projectRepo.findOne
+        .mockResolvedValueOnce(existing)
+        .mockResolvedValueOnce(
+          baseProject({ id: 5, url: 'same-slug', thumbnailImg: '/uploads/new-only.jpg' }),
+        );
+      txManager.find.mockResolvedValue([]);
+      // old 파일은 다른 곳에서 참조, new-only 는 신규라 이전 cleanup 후보 아님
+      uploadsRefChecker.isReferenced.mockImplementation(async (url: string) =>
+        url === '/uploads/shared.jpg',
+      );
+
+      await service.update(
+        5,
+        baseDto({ url: 'same-slug', thumbnailImg: '/uploads/new-only.jpg' }),
+      );
+
+      expect(uploadsStorage.deleteByUrl).not.toHaveBeenCalled();
     });
   });
 });

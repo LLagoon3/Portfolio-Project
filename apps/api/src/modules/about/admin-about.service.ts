@@ -1,6 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
+import { UploadsReferenceCheckerService } from '../uploads/uploads-reference-checker.service';
 import {
   resolveUploadFilename,
   UploadsStorageService,
@@ -20,6 +21,7 @@ export class AdminAboutService {
     private readonly profileRepo: Repository<AboutProfile>,
     private readonly dataSource: DataSource,
     private readonly uploadsStorage: UploadsStorageService,
+    private readonly uploadsRefChecker: UploadsReferenceCheckerService,
   ) {}
 
   async upsert(dto: UpsertAboutDto): Promise<AboutResponseDto> {
@@ -51,10 +53,21 @@ export class AdminAboutService {
       const newFilename = resolveUploadFilename(dto.profileImage);
       if (oldFilename && oldFilename !== newFilename) {
         try {
-          await this.uploadsStorage.deleteByUrl(previousImageUrl);
+          // 다른 프로젝트에서 같은 /uploads URL 을 참조하면 파일을 남겨둔다.
+          const stillReferenced = await this.uploadsRefChecker.isReferenced(
+            previousImageUrl,
+            { excludeAboutId: 1 },
+          );
+          if (stillReferenced) {
+            this.logger.log(
+              `[upsert] 이전 프로필 이미지 ${oldFilename} 는 다른 레코드가 참조 중 — 보존`,
+            );
+          } else {
+            await this.uploadsStorage.deleteByUrl(previousImageUrl);
+          }
         } catch (err) {
           this.logger.error(
-            `[upsert] 이전 프로필 이미지 삭제 실패: ${(err as Error).message}`,
+            `[upsert] 이전 프로필 이미지 정리 실패: ${(err as Error).message}`,
           );
         }
       }

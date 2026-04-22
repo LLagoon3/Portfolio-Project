@@ -29,6 +29,15 @@
 
 ## 주기적 청소 스크립트 (safety net)
 
+두 가지 엔트리포인트가 있다. 실행 환경에 따라 골라 쓴다.
+
+- `cleanup:uploads` — **개발/체크아웃 환경용**. `ts-node` 로 직접 실행 (devDependency 필요)
+- `cleanup:uploads:prod` — **프로덕션 컨테이너 / 컴파일 이후 환경용**. `node dist/scripts/cleanup-uploads.js` 를 바로 실행 (runtime 이미지에 ts-node 가 없어서 이 엔트리가 필요)
+
+두 변형 모두 같은 `--dry-run` / `--verbose` 옵션을 지원한다.
+
+### 개발 환경 (소스 체크아웃)
+
 ```bash
 # 어느 파일이 고아인지만 확인 (삭제하지 않음)
 DB_HOST=... DB_PORT=... DB_USERNAME=... DB_PASSWORD=... DB_DATABASE=... \
@@ -44,10 +53,19 @@ ADMIN_PASSWORD_HASH=... JWT_SECRET=... \
 npm run -w apps/api cleanup:uploads -- --dry-run --verbose
 ```
 
-컨테이너 안에서 실행할 수도 있다.
+### 프로덕션 컨테이너
+
+컨테이너의 WORKDIR 은 `/app` (워크스페이스 루트) 이라 `-w apps/api` 로 워크스페이스를 명시해야 한다. 환경변수는 이미 `.env` 로 주입되어 있다.
 
 ```bash
-docker compose exec api npm run cleanup:uploads
+# 어느 파일이 고아인지만 확인 (삭제하지 않음)
+docker compose exec api npm run -w apps/api cleanup:uploads:prod -- --dry-run
+
+# 실제 삭제
+docker compose exec api npm run -w apps/api cleanup:uploads:prod
+
+# 참조된 파일도 같이 보기
+docker compose exec api npm run -w apps/api cleanup:uploads:prod -- --dry-run --verbose
 ```
 
 스크립트는 DB(`PROJECT.thumbnail_img`, `PROJECT_IMAGE.img`, `ABOUT_PROFILE.profile_image`) 가 참조하는 `/uploads/*` 파일명 집합을 만들고, 그 집합에 없는 업로드 디렉터리의 모든 파일을 정리한다.

@@ -1,7 +1,7 @@
 // 어드민 폼의 섹션 단위 래퍼. 제목/설명/본문을 일관된 간격으로 묶는다.
 function AdminFormSection({ title, description, action, children }) {
 	return (
-		<section className="mb-8 rounded-xl border border-gray-200 dark:border-secondary-dark bg-secondary-light dark:bg-secondary-dark p-5 sm:p-6">
+		<section className="mb-8 rounded-xl border border-gray-200 dark:border-ternary-dark bg-secondary-light dark:bg-secondary-dark p-5 sm:p-6">
 			<header className="flex items-start justify-between gap-3 mb-4">
 				<div>
 					<h2 className="font-general-medium text-xl text-primary-dark dark:text-primary-light">

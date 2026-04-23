@@ -119,6 +119,7 @@ function AdminContactInbox({ initialPage, initialStatus }) {
 					{
 						key: 'createdAt',
 						label: '시간',
+						className: 'whitespace-nowrap',
 						render: (row) => (
 							<span className="text-xs text-ternary-dark dark:text-ternary-light">
 								{formatDate(row.createdAt)}
@@ -149,7 +150,7 @@ function AdminContactInbox({ initialPage, initialStatus }) {
 									value={row.status}
 									disabled={pendingId === row.id}
 									onChange={(e) => handleStatusChange(row, e.target.value)}
-									className="px-2 py-1 text-xs border border-gray-300 dark:border-primary-dark border-opacity-50 bg-ternary-light dark:bg-ternary-dark rounded font-general-regular disabled:opacity-50"
+									className="pl-2 pr-6 py-1 text-xs border border-gray-300 dark:border-primary-dark border-opacity-50 bg-ternary-light dark:bg-ternary-dark rounded font-general-regular disabled:opacity-50"
 									aria-label="Change status"
 								>
 									{STATUS_OPTIONS.map((opt) => (

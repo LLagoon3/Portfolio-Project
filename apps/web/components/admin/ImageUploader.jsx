@@ -167,7 +167,7 @@ function ImageUploader({
 							disabled={uploading}
 							aria-label="Replace image"
 							title="교체"
-							className="p-1 rounded-full bg-white/90 dark:bg-secondary-dark/90 text-ternary-dark hover:text-indigo-500 shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+							className="p-1 rounded-full bg-white/90 dark:bg-secondary-dark/90 text-ternary-dark dark:text-ternary-light hover:text-indigo-500 dark:hover:text-indigo-300 shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
 						>
 							<FiRefreshCw className={`w-4 h-4 ${uploading ? 'animate-spin' : ''}`} />
 						</button>
@@ -177,7 +177,7 @@ function ImageUploader({
 							disabled={uploading}
 							aria-label="Remove image"
 							title="제거"
-							className="p-1 rounded-full bg-white/90 dark:bg-secondary-dark/90 text-ternary-dark hover:text-red-500 shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+							className="p-1 rounded-full bg-white/90 dark:bg-secondary-dark/90 text-ternary-dark dark:text-ternary-light hover:text-red-500 dark:hover:text-red-400 shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
 						>
 							<FiX className="w-4 h-4" />
 						</button>
@@ -198,7 +198,7 @@ function ImageUploader({
 					onDragOver={handleDragOver}
 					onDragLeave={handleDragLeave}
 					onDrop={handleDrop}
-					className={`flex flex-col items-center justify-center gap-1 border border-dashed border-gray-300 dark:border-ternary-dark rounded-md px-4 py-6 text-ternary-dark dark:text-ternary-light hover:border-indigo-400 dark:hover:border-indigo-500 duration-300 ${dropRingClass}`}
+					className={`flex flex-col items-center justify-center gap-1 border border-dashed border-gray-300 dark:border-gray-500 rounded-md px-4 py-6 text-ternary-dark dark:text-ternary-light hover:border-indigo-400 dark:hover:border-indigo-400 duration-300 ${dropRingClass}`}
 				>
 					<FiUploadCloud className="w-6 h-6" />
 					<span className="text-sm font-general-medium">

@@ -46,7 +46,7 @@ function AdminTable({ columns, rows, actions, emptyMessage = '데이터가 없�
 								</td>
 							))}
 							{showActions && (
-								<td className="px-4 py-3 text-right">
+								<td className="px-4 py-3 text-right whitespace-nowrap">
 									<div className="flex justify-end gap-2">
 										{actions(row)}
 									</div>

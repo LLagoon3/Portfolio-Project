@@ -4,7 +4,7 @@ import Link from 'next/link';
 
 const itemVariants = {
 	hidden: { opacity: 0, y: 20 },
-	visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: 'easeOut' } },
+	visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: 'easeOut' } },
 };
 
 const ProjectSingle = ({ url, img, title, category }) => {

@@ -2,17 +2,14 @@ import { motion } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
 
+const itemVariants = {
+	hidden: { opacity: 0, y: 12 },
+	visible: { opacity: 1, y: 0, transition: { duration: 0.3, ease: 'easeOut' } },
+};
+
 const ProjectSingle = ({ url, img, title, category }) => {
 	return (
-		<motion.div
-			initial={false}
-			animate={{ opacity: 1, delay: 1 }}
-			transition={{
-				ease: 'easeInOut',
-				duration: 0.7,
-				delay: 0.15,
-			}}
-		>
+		<motion.div variants={itemVariants}>
 			<Link
 				href="/projects/[url]"
 				as={`/projects/${url}`}

@@ -1,7 +1,13 @@
+import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { FiSearch } from 'react-icons/fi';
 import ProjectSingle from './ProjectSingle';
 import ProjectsFilter from './ProjectsFilter';
+
+const gridVariants = {
+	hidden: { opacity: 0 },
+	visible: { opacity: 1, transition: { staggerChildren: 0.06 } },
+};
 
 function ProjectsGrid({ projects = [] }) {
 	const [searchProject, setSearchProject] = useState('');
@@ -99,11 +105,16 @@ function ProjectsGrid({ projects = [] }) {
 				</div>
 			</div>
 
-			<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 mt-6 sm:gap-5">
+			<motion.div
+				className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 mt-6 sm:gap-5"
+				variants={gridVariants}
+				initial="hidden"
+				animate="visible"
+			>
 				{filteredProjects.map((project) => (
 					<ProjectSingle key={project.id ?? project.url} {...project} />
 				))}
-			</div>
+			</motion.div>
 		</section>
 	);
 }

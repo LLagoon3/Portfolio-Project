@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useRouter } from 'next/router';
 import { AnimatePresence, motion } from 'framer-motion';
 import { FiSun, FiMoon, FiX, FiMenu } from 'react-icons/fi';
 import HireMeModal from '../HireMeModal';
@@ -16,9 +17,18 @@ const navLinks = [
 ];
 
 function AppHeader() {
+	const router = useRouter();
 	const [showMenu, setShowMenu] = useState(false);
 	const [showModal, setShowModal] = useState(false);
 	const [activeTheme, setTheme, mounted] = useThemeSwitcher();
+
+	// 라우트 이동이 시작될 때 모바일 메뉴를 닫는다. AnimatePresence exit
+	// 트랜지션이 페이지 전환 애니메이션과 병렬로 재생돼 자연스럽게 접힌다.
+	useEffect(() => {
+		const handleRouteChange = () => setShowMenu(false);
+		router.events.on('routeChangeStart', handleRouteChange);
+		return () => router.events.off('routeChangeStart', handleRouteChange);
+	}, [router.events]);
 
 	function toggleMenu() {
 		if (!showMenu) {

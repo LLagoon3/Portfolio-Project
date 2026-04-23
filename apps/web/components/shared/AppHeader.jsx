@@ -228,14 +228,14 @@ function AppHeader() {
 					</div>
 				</div>
 			</div>
-			<div>
-				{showModal ? (
+			<AnimatePresence>
+				{showModal && (
 					<HireMeModal
 						onClose={showHireMeModal}
 						onRequest={showHireMeModal}
 					/>
-				) : null}
-			</div>
+				)}
+			</AnimatePresence>
 		</motion.nav>
 	);
 }

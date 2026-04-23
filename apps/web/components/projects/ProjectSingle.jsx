@@ -16,7 +16,11 @@ const ProjectSingle = ({ url, img, title, category }) => {
 				aria-label={title}
 				passHref
 			>
-				<div className="rounded-xl shadow-lg hover:shadow-xl cursor-pointer mb-10 sm:mb-0 bg-secondary-light dark:bg-ternary-dark">
+				<motion.div
+					whileHover={{ y: -4 }}
+					transition={{ duration: 0.2, ease: 'easeOut' }}
+					className="rounded-xl shadow-lg hover:shadow-xl cursor-pointer mb-10 sm:mb-0 bg-secondary-light dark:bg-ternary-dark"
+				>
 					{/* thumbnail preset 이 16:9 로 정규화되므로 카드 썸네일도 같은 비율로 고정. */}
 					<div className="relative w-full aspect-video overflow-hidden rounded-t-xl">
 						<Image
@@ -37,7 +41,7 @@ const ProjectSingle = ({ url, img, title, category }) => {
 							</span>
 						)}
 					</div>
-				</div>
+				</motion.div>
 			</Link>
 		</motion.div>
 	);

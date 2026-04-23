@@ -2,24 +2,25 @@ import { motion } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
 
+const itemVariants = {
+	hidden: { opacity: 0, y: 20 },
+	visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: 'easeOut' } },
+};
+
 const ProjectSingle = ({ url, img, title, category }) => {
 	return (
-		<motion.div
-			initial={false}
-			animate={{ opacity: 1, delay: 1 }}
-			transition={{
-				ease: 'easeInOut',
-				duration: 0.7,
-				delay: 0.15,
-			}}
-		>
+		<motion.div variants={itemVariants}>
 			<Link
 				href="/projects/[url]"
 				as={`/projects/${url}`}
 				aria-label={title}
 				passHref
 			>
-				<div className="rounded-xl shadow-lg hover:shadow-xl cursor-pointer mb-10 sm:mb-0 bg-secondary-light dark:bg-ternary-dark">
+				<motion.div
+					whileHover={{ y: -4 }}
+					transition={{ duration: 0.2, ease: 'easeOut' }}
+					className="rounded-xl shadow-lg hover:shadow-xl cursor-pointer mb-10 sm:mb-0 bg-secondary-light dark:bg-ternary-dark"
+				>
 					{/* thumbnail preset 이 16:9 로 정규화되므로 카드 썸네일도 같은 비율로 고정. */}
 					<div className="relative w-full aspect-video overflow-hidden rounded-t-xl">
 						<Image
@@ -40,7 +41,7 @@ const ProjectSingle = ({ url, img, title, category }) => {
 							</span>
 						)}
 					</div>
-				</div>
+				</motion.div>
 			</Link>
 		</motion.div>
 	);

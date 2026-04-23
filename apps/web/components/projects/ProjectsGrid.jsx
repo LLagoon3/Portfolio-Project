@@ -1,7 +1,16 @@
+import { AnimatePresence, motion } from 'framer-motion';
 import { useState } from 'react';
 import { FiSearch } from 'react-icons/fi';
 import ProjectSingle from './ProjectSingle';
 import ProjectsFilter from './ProjectsFilter';
+
+const gridVariants = {
+	hidden: { opacity: 1 },
+	visible: {
+		opacity: 1,
+		transition: { delayChildren: 0.15, staggerChildren: 0.15 },
+	},
+};
 
 function ProjectsGrid({ projects = [] }) {
 	const [searchProject, setSearchProject] = useState('');
@@ -99,11 +108,22 @@ function ProjectsGrid({ projects = [] }) {
 				</div>
 			</div>
 
-			<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 mt-6 sm:gap-5">
-				{filteredProjects.map((project) => (
-					<ProjectSingle key={project.id ?? project.url} {...project} />
-				))}
-			</div>
+			{/* 자체 AnimatePresence 로 감싸 상위 _app.jsx 의 initial={false}
+			    가 PresenceContext 를 통해 내려와 stagger 첫 렌더 애니메이션을
+			    차단하는 것을 우회한다. */}
+			<AnimatePresence>
+				<motion.div
+					key="projects-grid"
+					className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 mt-6 sm:gap-5"
+					variants={gridVariants}
+					initial="hidden"
+					animate="visible"
+				>
+					{filteredProjects.map((project) => (
+						<ProjectSingle key={project.id ?? project.url} {...project} />
+					))}
+				</motion.div>
+			</AnimatePresence>
 		</section>
 	);
 }

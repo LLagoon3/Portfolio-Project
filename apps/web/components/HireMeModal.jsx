@@ -13,17 +13,24 @@ const selectOptions = [
 function HireMeModal({ onClose, onRequest }) {
 	return (
 		<motion.div
-			initial={false}
+			initial={{ opacity: 0 }}
 			animate={{ opacity: 1 }}
 			exit={{ opacity: 0 }}
-			className="font-general-medium fixed inset-0 z-30 transition-all duration-500"
+			transition={{ duration: 0.2, ease: 'easeOut' }}
+			className="font-general-medium fixed inset-0 z-30"
 		>
 			{/* Modal Backdrop */}
 			<div className="bg-filter bg-black bg-opacity-50 fixed inset-0 w-full h-full z-20"></div>
 
 			{/* Modal Content */}
 			<main className="flex flex-col items-center justify-center h-full w-full">
-				<div className="modal-wrapper flex items-center z-30">
+				<motion.div
+					className="modal-wrapper flex items-center z-30"
+					initial={{ opacity: 0, scale: 0.95 }}
+					animate={{ opacity: 1, scale: 1 }}
+					exit={{ opacity: 0, scale: 0.95 }}
+					transition={{ duration: 0.22, ease: 'easeOut' }}
+				>
 					<div className="modal max-w-md mx-5 xl:max-w-xl lg:max-w-xl md:max-w-xl bg-secondary-light dark:bg-primary-dark max-h-screen shadow-lg flex-row rounded-lg relative">
 						<div className="modal-header flex justify-between gap-10 p-5 border-b border-ternary-light dark:border-ternary-dark">
 							<h5 className=" text-primary-dark dark:text-primary-light text-xl">
@@ -106,7 +113,7 @@ function HireMeModal({ onClose, onRequest }) {
 							/>
 						</div>
 					</div>
-				</div>
+				</motion.div>
 			</main>
 		</motion.div>
 	);

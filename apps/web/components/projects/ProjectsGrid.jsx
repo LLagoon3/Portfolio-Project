@@ -5,8 +5,11 @@ import ProjectSingle from './ProjectSingle';
 import ProjectsFilter from './ProjectsFilter';
 
 const gridVariants = {
-	hidden: { opacity: 0 },
-	visible: { opacity: 1, transition: { staggerChildren: 0.06 } },
+	hidden: { opacity: 1 },
+	visible: {
+		opacity: 1,
+		transition: { delayChildren: 0.1, staggerChildren: 0.1 },
+	},
 };
 
 function ProjectsGrid({ projects = [] }) {

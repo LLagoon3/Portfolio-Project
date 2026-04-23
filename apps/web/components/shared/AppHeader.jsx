@@ -82,7 +82,7 @@ function AppHeader() {
 						<button
 							onClick={toggleMenu}
 							type="button"
-							className="focus:outline-none text-secondary-dark dark:text-ternary-light text-3xl"
+							className="focus:outline-none text-secondary-dark dark:text-ternary-light text-3xl relative w-8 h-8"
 							aria-label="Hamburger Menu"
 							aria-expanded={showMenu}
 						>
@@ -94,7 +94,7 @@ function AppHeader() {
 										animate={{ rotate: 0, opacity: 1 }}
 										exit={{ rotate: 90, opacity: 0 }}
 										transition={{ duration: 0.15, ease: 'easeInOut' }}
-										className="inline-flex"
+										className="absolute inset-0 flex items-center justify-center"
 									>
 										<FiX />
 									</motion.span>
@@ -105,7 +105,7 @@ function AppHeader() {
 										animate={{ rotate: 0, opacity: 1 }}
 										exit={{ rotate: -90, opacity: 0 }}
 										transition={{ duration: 0.15, ease: 'easeInOut' }}
-										className="inline-flex"
+										className="absolute inset-0 flex items-center justify-center"
 									>
 										<FiMenu />
 									</motion.span>

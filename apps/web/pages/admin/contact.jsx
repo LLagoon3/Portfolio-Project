@@ -119,6 +119,7 @@ function AdminContactInbox({ initialPage, initialStatus }) {
 					{
 						key: 'createdAt',
 						label: '시간',
+						className: 'whitespace-nowrap',
 						render: (row) => (
 							<span className="text-xs text-ternary-dark dark:text-ternary-light">
 								{formatDate(row.createdAt)}

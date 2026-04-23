@@ -16,6 +16,42 @@ const navLinks = [
 	{ href: '/contact', label: 'Contact' },
 ];
 
+// 테마 토글 버튼 안에 들어가는 아이콘. 햄버거와 동일한 rotate+fade 크로스
+// 트랜지션을 쓰되 dark ↔ light 전환 특성상 mounted 가 false 일 땐 SSR 결과와
+// 같은 sun 아이콘을 그대로 보여주고 애니메이션은 최초 전환부터 적용한다.
+function ThemeSwitchIcon({ mounted, activeTheme }) {
+	const isDark = mounted && activeTheme === 'dark';
+	return (
+		<span className="relative block w-5 h-5">
+			<AnimatePresence initial={false} mode="wait">
+				{isDark ? (
+					<motion.span
+						key="moon"
+						initial={{ rotate: -90, opacity: 0 }}
+						animate={{ rotate: 0, opacity: 1 }}
+						exit={{ rotate: 90, opacity: 0 }}
+						transition={{ duration: 0.2, ease: 'easeInOut' }}
+						className="absolute inset-0 flex items-center justify-center"
+					>
+						<FiMoon className="text-ternary-dark hover:text-gray-400 dark:text-ternary-light dark:hover:text-primary-light text-xl" />
+					</motion.span>
+				) : (
+					<motion.span
+						key="sun"
+						initial={{ rotate: 90, opacity: 0 }}
+						animate={{ rotate: 0, opacity: 1 }}
+						exit={{ rotate: -90, opacity: 0 }}
+						transition={{ duration: 0.2, ease: 'easeInOut' }}
+						className="absolute inset-0 flex items-center justify-center"
+					>
+						<FiSun className="text-gray-200 hover:text-gray-50 text-xl" />
+					</motion.span>
+				)}
+			</AnimatePresence>
+		</span>
+	);
+}
+
 function AppHeader() {
 	const router = useRouter();
 	const [showMenu, setShowMenu] = useState(false);
@@ -82,11 +118,7 @@ function AppHeader() {
 							aria-label="Theme Switcher"
 							className="bg-primary-light dark:bg-ternary-dark p-3 shadow-sm rounded-xl cursor-pointer"
 						>
-							{mounted && activeTheme === 'dark' ? (
-								<FiMoon className="text-ternary-dark hover:text-gray-400 dark:text-ternary-light dark:hover:text-primary-light text-xl" />
-							) : (
-								<FiSun className="text-gray-200 hover:text-gray-50 text-xl" />
-							)}
+							<ThemeSwitchIcon mounted={mounted} activeTheme={activeTheme} />
 						</div>
 						<div>
 						<button
@@ -192,11 +224,7 @@ function AppHeader() {
 						aria-label="Theme Switcher"
 						className="ml-8 bg-primary-light dark:bg-ternary-dark p-3 shadow-sm rounded-xl cursor-pointer"
 					>
-						{mounted && activeTheme === 'dark' ? (
-							<FiMoon className="text-ternary-dark hover:text-gray-400 dark:text-ternary-light dark:hover:text-primary-light text-xl" />
-						) : (
-							<FiSun className="text-gray-200 hover:text-gray-50 text-xl" />
-						)}
+						<ThemeSwitchIcon mounted={mounted} activeTheme={activeTheme} />
 					</div>
 				</div>
 			</div>

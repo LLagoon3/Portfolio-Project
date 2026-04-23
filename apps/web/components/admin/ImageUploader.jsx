@@ -148,39 +148,41 @@ function ImageUploader({
 		<div className={`flex flex-col gap-2 ${className}`}>
 			{value ? (
 				<div
-					className={`relative inline-block rounded-md ${dropRingClass}`}
+					className="inline-block"
 					onDragOver={handleDragOver}
 					onDragLeave={handleDragLeave}
 					onDrop={handleDrop}
 				>
-					{/* eslint-disable-next-line @next/next/no-img-element */}
-					<img
-						src={value}
-						alt={previewAlt}
-						onLoad={handleImageLoad}
-						className="rounded-md max-h-40 border border-gray-200 dark:border-ternary-dark"
-					/>
-					<div className="absolute top-1 right-1 flex gap-1">
-						<button
-							type="button"
-							onClick={openPicker}
-							disabled={uploading}
-							aria-label="Replace image"
-							title="교체"
-							className="p-1 rounded-full bg-white/90 dark:bg-secondary-dark/90 text-ternary-dark hover:text-indigo-500 shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
-						>
-							<FiRefreshCw className={`w-4 h-4 ${uploading ? 'animate-spin' : ''}`} />
-						</button>
-						<button
-							type="button"
-							onClick={clear}
-							disabled={uploading}
-							aria-label="Remove image"
-							title="제거"
-							className="p-1 rounded-full bg-white/90 dark:bg-secondary-dark/90 text-ternary-dark hover:text-red-500 shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
-						>
-							<FiX className="w-4 h-4" />
-						</button>
+					<div className={`relative inline-block rounded-md ${dropRingClass}`}>
+						{/* eslint-disable-next-line @next/next/no-img-element */}
+						<img
+							src={value}
+							alt={previewAlt}
+							onLoad={handleImageLoad}
+							className="rounded-md max-h-40 block border border-gray-200 dark:border-ternary-dark"
+						/>
+						<div className="absolute top-1 right-1 flex gap-1">
+							<button
+								type="button"
+								onClick={openPicker}
+								disabled={uploading}
+								aria-label="Replace image"
+								title="교체"
+								className="p-1 rounded-full bg-white/90 dark:bg-secondary-dark/90 text-ternary-dark dark:text-ternary-light hover:text-indigo-500 dark:hover:text-indigo-300 shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+							>
+								<FiRefreshCw className={`w-4 h-4 ${uploading ? 'animate-spin' : ''}`} />
+							</button>
+							<button
+								type="button"
+								onClick={clear}
+								disabled={uploading}
+								aria-label="Remove image"
+								title="제거"
+								className="p-1 rounded-full bg-white/90 dark:bg-secondary-dark/90 text-ternary-dark dark:text-ternary-light hover:text-red-500 dark:hover:text-red-400 shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+							>
+								<FiX className="w-4 h-4" />
+							</button>
+						</div>
 					</div>
 					{metaLabel && (
 						<p className="mt-1 text-xs text-ternary-dark dark:text-ternary-light font-general-regular">

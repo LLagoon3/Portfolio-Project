@@ -25,6 +25,15 @@ export class AboutProfile {
   @Column({ name: 'profile_image', length: 500 })
   profileImage!: string;
 
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  address!: string | null;
+
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  email!: string | null;
+
+  @Column({ type: 'varchar', length: 50, nullable: true })
+  phone!: string | null;
+
   @CreateDateColumn({ name: 'created_at' })
   createdAt!: Date;
 

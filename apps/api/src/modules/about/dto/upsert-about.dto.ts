@@ -3,6 +3,7 @@ import { Transform } from 'class-transformer';
 import {
   ArrayMaxSize,
   IsArray,
+  IsEmail,
   IsNotEmpty,
   IsOptional,
   IsString,
@@ -15,6 +16,13 @@ const trimIfString = (value: unknown): unknown =>
 const trimArray = (value: unknown): unknown =>
   Array.isArray(value) ? value.map(trimIfString) : value;
 
+// 빈 문자열·공백-only 는 null 로 정규화 (선택 필드 공통 규칙).
+const trimToNull = (value: unknown): unknown => {
+  if (typeof value !== 'string') return value;
+  const trimmed = value.trim();
+  return trimmed.length === 0 ? null : trimmed;
+};
+
 export class UpsertAboutDto {
   @ApiProperty({ maxLength: 100 })
   @Transform(({ value }) => trimIfString(value))
@@ -24,12 +32,7 @@ export class UpsertAboutDto {
   name!: string;
 
   @ApiProperty({ maxLength: 255, nullable: true, required: false })
-  @Transform(({ value }) => {
-    // 빈 문자열/공백-only 는 명시적으로 null 로 정규화 (tagline 은 null 허용)
-    if (typeof value !== 'string') return value;
-    const trimmed = value.trim();
-    return trimmed.length === 0 ? null : trimmed;
-  })
+  @Transform(({ value }) => trimToNull(value))
   @IsOptional()
   @IsString()
   @MaxLength(255)
@@ -49,4 +52,25 @@ export class UpsertAboutDto {
   @IsString({ each: true })
   @IsNotEmpty({ each: true })
   bio!: string[];
+
+  @ApiProperty({ maxLength: 255, nullable: true, required: false })
+  @Transform(({ value }) => trimToNull(value))
+  @IsOptional()
+  @IsString()
+  @MaxLength(255)
+  address?: string | null;
+
+  @ApiProperty({ maxLength: 255, nullable: true, required: false })
+  @Transform(({ value }) => trimToNull(value))
+  @IsOptional()
+  @IsEmail()
+  @MaxLength(255)
+  email?: string | null;
+
+  @ApiProperty({ maxLength: 50, nullable: true, required: false })
+  @Transform(({ value }) => trimToNull(value))
+  @IsOptional()
+  @IsString()
+  @MaxLength(50)
+  phone?: string | null;
 }

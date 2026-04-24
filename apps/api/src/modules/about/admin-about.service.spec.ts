@@ -101,6 +101,56 @@ describe('AdminAboutService', () => {
     expect(result.tagline).toBeNull();
   });
 
+  it('upsert: address/email/phone 값과 null 모두 전달된다', async () => {
+    profileRepo.findOne.mockResolvedValue({
+      id: 1,
+      name: 'Lagoon',
+      tagline: null,
+      profileImage: '/p.jpg',
+      address: 'Seoul',
+      email: 'me@example.com',
+      phone: '+82 10-1234-5678',
+      bios: [],
+    } as never);
+
+    const payload: UpsertAboutDto = {
+      ...dto,
+      bio: [],
+      address: 'Seoul',
+      email: 'me@example.com',
+      phone: '+82 10-1234-5678',
+    };
+    const result = await service.upsert(payload);
+
+    const savedEntity = txManager.save.mock.calls[0][1] as AboutProfile;
+    expect(savedEntity.address).toBe('Seoul');
+    expect(savedEntity.email).toBe('me@example.com');
+    expect(savedEntity.phone).toBe('+82 10-1234-5678');
+    expect(result.address).toBe('Seoul');
+    expect(result.email).toBe('me@example.com');
+    expect(result.phone).toBe('+82 10-1234-5678');
+  });
+
+  it('upsert: address/email/phone 생략 시 null 로 저장', async () => {
+    profileRepo.findOne.mockResolvedValue({
+      id: 1,
+      name: 'Lagoon',
+      tagline: null,
+      profileImage: '/p.jpg',
+      address: null,
+      email: null,
+      phone: null,
+      bios: [],
+    } as never);
+
+    await service.upsert({ ...dto, bio: [] });
+
+    const savedEntity = txManager.save.mock.calls[0][1] as AboutProfile;
+    expect(savedEntity.address).toBeNull();
+    expect(savedEntity.email).toBeNull();
+    expect(savedEntity.phone).toBeNull();
+  });
+
   it('upsert: bio 는 입력 순서대로 sort_order 0..N-1 부여', async () => {
     profileRepo.findOne.mockResolvedValue({
       id: 1,

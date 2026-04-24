@@ -10,5 +10,8 @@ export function toAboutResponseDto(profile: AboutProfile): AboutResponseDto {
     tagline: profile.tagline,
     profileImage: profile.profileImage,
     bio: sortedBios.map((b) => b.paragraph),
+    address: profile.address ?? null,
+    email: profile.email ?? null,
+    phone: profile.phone ?? null,
   };
 }

@@ -29,6 +29,9 @@ describe('AboutController', () => {
       tagline: 'Backend Developer',
       profileImage: '/images/profile.jpeg',
       bio: ['첫 단락', '두 단락'],
+      address: null,
+      email: null,
+      phone: null,
     };
     service.get.mockResolvedValue(data);
 

@@ -18,6 +18,9 @@ function toFormState(about) {
 			_key: `bio-${i}-${Math.random()}`,
 			paragraph,
 		})),
+		address: about?.address ?? '',
+		email: about?.email ?? '',
+		phone: about?.phone ?? '',
 	};
 }
 
@@ -46,6 +49,9 @@ function AdminAboutEditor({ initialAbout }) {
 				bio: form.bio
 					.map((b) => b.paragraph.trim())
 					.filter((p) => p.length > 0),
+				address: form.address.trim() || null,
+				email: form.email.trim() || null,
+				phone: form.phone.trim() || null,
 			};
 			const saved = await fetchAdmin('/api/admin/about', {
 				method: 'PUT',
@@ -106,6 +112,60 @@ function AdminAboutEditor({ initialAbout }) {
 						onChange={(url) => set('profileImage', url)}
 						previewAlt={form.name ? `${form.name} profile` : 'Profile preview'}
 						preset="profile"
+					/>
+				</AdminFormSection>
+
+				<AdminFormSection
+					title="연락처"
+					description="공개 /contact 페이지 하단 Contact details 에 노출됩니다. 각 항목은 선택이며 비워두면 해당 줄이 숨겨집니다."
+				>
+					<label
+						className="block text-lg text-primary-dark dark:text-primary-light mb-1 font-general-regular"
+						htmlFor="about-address"
+					>
+						주소
+					</label>
+					<input
+						id="about-address"
+						name="address"
+						type="text"
+						placeholder="Seoul, South Korea"
+						aria-label="Address"
+						className="w-full px-5 py-2 mb-4 border border-gray-300 dark:border-primary-dark border-opacity-50 text-primary-dark dark:text-secondary-light bg-ternary-light dark:bg-ternary-dark rounded-md shadow-sm text-md font-general-regular"
+						value={form.address}
+						onChange={(e) => set('address', e.target.value)}
+					/>
+					<label
+						className="block text-lg text-primary-dark dark:text-primary-light mb-1 font-general-regular"
+						htmlFor="about-email"
+					>
+						이메일
+					</label>
+					<input
+						id="about-email"
+						name="email"
+						type="email"
+						placeholder="me@example.com"
+						aria-label="Email"
+						className="w-full px-5 py-2 mb-4 border border-gray-300 dark:border-primary-dark border-opacity-50 text-primary-dark dark:text-secondary-light bg-ternary-light dark:bg-ternary-dark rounded-md shadow-sm text-md font-general-regular"
+						value={form.email}
+						onChange={(e) => set('email', e.target.value)}
+					/>
+					<label
+						className="block text-lg text-primary-dark dark:text-primary-light mb-1 font-general-regular"
+						htmlFor="about-phone"
+					>
+						전화번호
+					</label>
+					<input
+						id="about-phone"
+						name="phone"
+						type="text"
+						placeholder="+82 10-1234-5678"
+						aria-label="Phone"
+						className="w-full px-5 py-2 border border-gray-300 dark:border-primary-dark border-opacity-50 text-primary-dark dark:text-secondary-light bg-ternary-light dark:bg-ternary-dark rounded-md shadow-sm text-md font-general-regular"
+						value={form.phone}
+						onChange={(e) => set('phone', e.target.value)}
 					/>
 				</AdminFormSection>
 

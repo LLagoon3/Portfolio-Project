@@ -38,6 +38,9 @@ export class AdminAboutService {
       profile.name = dto.name;
       profile.tagline = dto.tagline ?? null;
       profile.profileImage = dto.profileImage;
+      profile.address = dto.address ?? null;
+      profile.email = dto.email ?? null;
+      profile.phone = dto.phone ?? null;
       profile.bios = dto.bio.map((paragraph, idx) => {
         const bio = new AboutBio();
         bio.paragraph = paragraph;

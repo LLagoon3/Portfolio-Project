@@ -10,6 +10,9 @@ const baseProfile = (overrides: Partial<AboutProfile> = {}): AboutProfile =>
     name: 'Lagoon',
     tagline: 'Backend Developer',
     profileImage: '/images/profile.jpeg',
+    address: null,
+    email: null,
+    phone: null,
     createdAt: new Date('2026-01-01T00:00:00.000Z'),
     bios: [
       {
@@ -66,6 +69,9 @@ describe('AboutService', () => {
       tagline: 'Backend Developer',
       profileImage: '/images/profile.jpeg',
       bio: ['첫 단락', '두 번째로 보여줄 단락'],
+      address: null,
+      email: null,
+      phone: null,
     });
   });
 

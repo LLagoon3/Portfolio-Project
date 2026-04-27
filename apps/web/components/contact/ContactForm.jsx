@@ -37,13 +37,13 @@ function ContactForm() {
 			}
 			setStatus({
 				state: 'success',
-				message: 'Your message has been sent successfully.',
+				message: '메시지가 전송되었습니다.',
 			});
 			setForm({ name: '', email: '', subject: '', message: '' });
 		} catch (err) {
 			setStatus({
 				state: 'error',
-				message: err.message || 'Failed to send message.',
+				message: err.message || '메시지 전송에 실패했습니다.',
 			});
 		}
 	};
@@ -60,35 +60,35 @@ function ContactForm() {
 					</p>
 
 					<FormInput
-						inputLabel="Full Name"
+						inputLabel="이름"
 						labelFor="name"
 						inputType="text"
 						inputId="name"
 						inputName="name"
-						placeholderText="Your Name"
-						ariaLabelName="Name"
+						placeholderText="홍길동"
+						ariaLabelName="이름"
 						value={form.name}
 						onChange={handleChange}
 					/>
 					<FormInput
-						inputLabel="Email"
+						inputLabel="이메일"
 						labelFor="email"
 						inputType="email"
 						inputId="email"
 						inputName="email"
-						placeholderText="Your email"
-						ariaLabelName="Email"
+						placeholderText="you@example.com"
+						ariaLabelName="이메일"
 						value={form.email}
 						onChange={handleChange}
 					/>
 					<FormInput
-						inputLabel="Subject"
+						inputLabel="제목"
 						labelFor="subject"
 						inputType="text"
 						inputId="subject"
 						inputName="subject"
-						placeholderText="Subject"
-						ariaLabelName="Subject"
+						placeholderText="문의 제목"
+						ariaLabelName="제목"
 						value={form.subject}
 						onChange={handleChange}
 					/>
@@ -98,7 +98,7 @@ function ContactForm() {
 							className="block text-lg text-primary-dark dark:text-primary-light mb-1"
 							htmlFor="message"
 						>
-							Message
+							문의 내용
 						</label>
 						<textarea
 							className="w-full px-5 py-2 border border-gray-300 dark:border-primary-dark border-opacity-50 text-primary-dark dark:text-secondary-light bg-ternary-light dark:bg-ternary-dark rounded-md shadow-sm text-md"
@@ -106,7 +106,7 @@ function ContactForm() {
 							name="message"
 							cols="14"
 							rows="6"
-							aria-label="Message"
+							aria-label="문의 내용"
 							value={form.message}
 							onChange={handleChange}
 							required
@@ -115,10 +115,10 @@ function ContactForm() {
 
 					<div className="mt-6">
 						<Button
-							title={status.state === 'loading' ? 'Sending...' : 'Send Message'}
+							title={status.state === 'loading' ? '보내는 중…' : '보내기'}
 							type="submit"
 							size="lg"
-							ariaLabel="Send Message"
+							ariaLabel="보내기"
 							disabled={status.state === 'loading'}
 							className="tracking-wider rounded-lg"
 						/>
@@ -146,10 +146,10 @@ function ContactForm() {
 							</svg>
 							<div className="font-general-medium">
 								<p className="text-green-800 dark:text-green-200 text-base">
-									Your message has been sent successfully
+									메시지가 전송되었습니다.
 								</p>
 								<p className="text-green-700 dark:text-green-300/80 text-sm mt-0.5">
-									We&apos;ll get back to you shortly. Thank you!
+									확인 후 빠르게 회신드리겠습니다. 감사합니다.
 								</p>
 							</div>
 						</div>
@@ -176,7 +176,7 @@ function ContactForm() {
 							</svg>
 							<div className="font-general-medium">
 								<p className="text-red-800 dark:text-red-200 text-base">
-									Failed to send
+									전송에 실패했습니다.
 								</p>
 								<p className="text-red-700 dark:text-red-300/80 text-sm mt-0.5">
 									{status.message}

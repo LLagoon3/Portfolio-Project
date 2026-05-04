@@ -14,6 +14,10 @@ const EMPTY_ABOUT = {
 	bio: [],
 };
 
+// 나중에 다시 활용할 수 있게 about 하위 섹션들은 삭제하지 않고 토글로 숨김 처리.
+const SHOW_ABOUT_COUNTER = false;
+const SHOW_ABOUT_CLIENTS = false;
+
 function About({ about }) {
 	return (
 		<div>
@@ -33,23 +37,26 @@ function About({ about }) {
 				/>
 			</motion.div>
 
-			{/** Counter without paddings */}
-			<motion.div
-				initial={false}
-				animate={{ opacity: 1, delay: 1 }}
-				exit={{ opacity: 0 }}
-			>
-				<AboutCounter />
-			</motion.div>
+			{SHOW_ABOUT_COUNTER && (
+				<motion.div
+					initial={false}
+					animate={{ opacity: 1, delay: 1 }}
+					exit={{ opacity: 0 }}
+				>
+					<AboutCounter />
+				</motion.div>
+			)}
 
-			<motion.div
-				initial={false}
-				animate={{ opacity: 1, delay: 1 }}
-				exit={{ opacity: 0 }}
-				className="container mx-auto"
-			>
-				<AboutClients />
-			</motion.div>
+			{SHOW_ABOUT_CLIENTS && (
+				<motion.div
+					initial={false}
+					animate={{ opacity: 1, delay: 1 }}
+					exit={{ opacity: 0 }}
+					className="container mx-auto"
+				>
+					<AboutClients />
+				</motion.div>
+			)}
 		</div>
 	);
 }

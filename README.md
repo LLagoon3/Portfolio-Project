@@ -133,8 +133,16 @@ PR 및 push 시 자동 실행:
 2. Self-hosted runner 에서 `IMAGE_TAG=main-<short-sha>` 로 `scripts/deploy.sh` 실행
 3. `scripts/deploy.sh`:
    - `git fetch/reset` 으로 호스트의 compose 파일·.env 동기화 (호스트는 더 이상 `docker build` 를 수행하지 않음 — compose 정의를 읽기 위한 동기화 목적)
+   - `DEPLOY_SHA` 가 더 이상 `origin/main` 의 tip 이 아니면 배포 중단 (늦게 끝난 이전 커밋 CI 로 stale 이미지 되감기 방지)
    - `docker compose pull` 로 GHCR 에서 해당 SHA 이미지 가져오기
    - `docker compose up -d` 로 새 이미지로 컨테이너 교체
+
+#### 최초 GHCR 전환 시 확인 사항
+
+GHCR 패키지는 **첫 push 시 레포 visibility 와 동일하게 생성**된다. 본 레포는 public 이므로 패키지도 public 으로 자동 생성될 것이 기대된다. 다만 첫 main push 직후 다음을 한 번 확인하여, runner 호스트의 `docker compose pull` 이 무인증으로 동작하는지 보장한다.
+
+- GitHub 저장소 페이지 → **Packages** 탭 → `portfolio-web` / `portfolio-api` visibility 가 `public` 인지 확인
+- private 으로 생성되었다면 패키지 설정에서 visibility 를 `public` 으로 변경하거나, runner 호스트에서 `docker login ghcr.io -u <user> -p <token>` 으로 인증 설정 필요
 
 ### 롤백 절차
 

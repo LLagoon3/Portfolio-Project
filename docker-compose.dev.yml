@@ -7,6 +7,10 @@ services:
   api:
     ports: !override
       - "${API_PORT:-7351}:7341"
+    # base 의 env_file: [.env] 는 list concat 으로 누적되므로 !override 로 완전 교체한다.
+    # 이게 없으면 dev 컨테이너에도 prod 의 .env (CORS_ORIGIN 등) 가 inject 되어 .env.dev 가 무시된다.
+    env_file: !override
+      - .env.dev
     # prod mysql 컨테이너에는 dev 네트워크가 join 하지 않는다.
     # 호스트 게이트웨이로 접근해 prod 가 외부로 노출한 3307 포트를 사용한다.
     extra_hosts:

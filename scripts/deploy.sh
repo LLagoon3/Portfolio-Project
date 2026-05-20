@@ -37,7 +37,10 @@ export WEB_IMAGE_TAG="$TAG"
 export API_IMAGE_TAG="$TAG"
 
 echo "=== Pulling images (tag=$TAG) ==="
-docker compose pull
+# mysql 은 mutable 태그(mysql:8.0) 라 매 pull 마다 digest 가 바뀔 수 있고,
+# 그러면 뒤이은 up -d 가 mysql 까지 recreate 한다. web/api 만 명시적으로 pull 한다.
+# mysql 자체 설정/이미지 변경 시에는 수동으로 `docker compose up -d mysql` 호출 필요.
+docker compose pull web api
 
 echo "=== Restarting containers ==="
 docker compose up -d

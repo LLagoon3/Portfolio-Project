@@ -41,10 +41,15 @@ services:
     depends_on:
       mysql:
         condition: service_healthy
+        # dev 프로파일에서는 mysql 서비스가 비활성화되므로, 의존성 검증을 건너뛰도록 required: false 로 둔다.
+        # prod 프로파일에서는 mysql 이 존재하므로 healthcheck 대기 동작은 그대로 유지된다.
+        required: false
     restart: unless-stopped
 
   mysql:
     image: mysql:8.0
+    # dev 스택은 prod mysql 컨테이너를 공유한다. 기본 프로파일에서 제외하여 dev compose 가 mysql 을 별도로 띄우지 않게 한다.
+    profiles: ["prod"]
     ports:
       - "${DB_PORT:-3307}:3306"
     environment:

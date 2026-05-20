@@ -15,7 +15,8 @@ concurrency:
 jobs:
   deploy:
     runs-on: [self-hosted, portfolio]
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    # push 이벤트(= dev 브랜치 머지)로 발생한 CI 성공만 배포 대상. PR/그 외 트리거로 도는 CI 완료는 무시한다.
+    if: ${{ github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push' }}
 
     steps:
       - name: Checkout

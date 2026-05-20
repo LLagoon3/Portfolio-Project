@@ -40,11 +40,16 @@ npm run api:dev      # API 개발 서버 (localhost:7341)
 
 ### Docker (전체 실행)
 
+web/api 이미지는 GHCR(`ghcr.io/llagoon3/portfolio-{web,api}`) 에 push 된 이미지를 그대로 pull 해 사용한다. 레포가 public 이므로 `docker login` 은 불필요.
+
 ```bash
-docker compose up -d   # web + api + mysql 전체 실행
+docker compose pull    # GHCR 에서 web/api 이미지 가져오기
+docker compose up -d   # web + api + mysql 전체 실행 (mysql 은 mysql:8.0 그대로)
 docker compose ps      # 컨테이너 상태 확인
 docker compose down    # 전체 종료
 ```
+
+로컬에서 직접 소스 변경분으로 시험하려면 `docker compose up -d --build` 대신 일시적으로 `docker-compose.override.yml` 에 `build:` 블록을 따로 정의하거나, 단발성으로 `docker build -f apps/<web|api>/Dockerfile -t <local-tag> .` 후 compose 의 image 를 override 하면 된다.
 
 ## 주요 스크립트
 
@@ -111,12 +116,33 @@ PR 및 push 시 자동 실행:
 
 - **web-check**: lint + build
 - **api-check**: lint + build + test (Jest)
-- **docker-build**: web/api Docker 이미지 빌드 검증
+- **docker-build**: web/api Docker 이미지 빌드 (matrix). `main`/`dev` push 트리거에서는 빌드 후 **GHCR 로 push** 까지 수행하고, PR 트리거에서는 빌드 검증만 한다.
+
+이미지는 `ghcr.io/llagoon3/portfolio-{web,api}` 에 다음 태그로 push 된다.
+
+| 태그 | 용도 | 예시 |
+|------|------|------|
+| `<branch>-<short-sha>` | 불변. 롤백/특정 배포 재현용 | `main-abc1234`, `dev-def5678` |
+| `<branch>-latest` | 알리아스. 가장 최근 빌드를 가리킴 | `main-latest`, `dev-latest` |
 
 ### CD (Self-hosted Runner)
 
-`main` 브랜치에 push 시 CI 통과 후 자동 배포:
+`main` 브랜치에 push 시 CI 통과 후 자동 배포된다.
 
-1. CI 워크플로우 성공 확인
-2. Self-hosted runner에서 `scripts/deploy.sh` 실행
-3. Docker Compose로 컨테이너 재빌드 및 재시작
+1. CI 워크플로우 성공 확인 (workflow_run)
+2. Self-hosted runner 에서 `IMAGE_TAG=main-<short-sha>` 로 `scripts/deploy.sh` 실행
+3. `scripts/deploy.sh`:
+   - `git fetch/reset` 으로 호스트의 compose 파일·.env 동기화 (호스트는 더 이상 `docker build` 를 수행하지 않음 — compose 정의를 읽기 위한 동기화 목적)
+   - `docker compose pull` 로 GHCR 에서 해당 SHA 이미지 가져오기
+   - `docker compose up -d` 로 새 이미지로 컨테이너 교체
+
+### 롤백 절차
+
+이미지는 GHCR 에 영구 보존되므로 환경변수만 바꿔 즉시 복귀 가능.
+
+```bash
+# self-hosted runner 호스트에서 직접 실행
+IMAGE_TAG=main-<old-short-sha> bash scripts/deploy.sh
+```
+
+복귀 후 정상 확인되면 다음 main push 가 자동으로 `main-latest` 로 다시 끌어올린다.

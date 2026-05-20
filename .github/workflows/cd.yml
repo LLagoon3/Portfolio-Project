@@ -24,4 +24,7 @@ jobs:
       - name: Deploy
         env:
           DEPLOY_SHA: ${{ github.event.workflow_run.head_sha }}
-        run: bash scripts/deploy.sh
+        # CI 가 GHCR 에 푸시한 정확한 SHA 태그(main-<short>)로 배포한다. deploy.sh 는 IMAGE_TAG 미설정 시 main-latest 로 폴백.
+        run: |
+          export IMAGE_TAG="main-${DEPLOY_SHA:0:7}"
+          bash scripts/deploy.sh

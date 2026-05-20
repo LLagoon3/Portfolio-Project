@@ -40,11 +40,15 @@ npm run api:dev      # API 개발 서버 (localhost:7341)
 
 ### Docker (전체 실행)
 
+mysql 서비스에는 `prod` 프로파일이 부여되어 있으므로 web/api/mysql 을 함께 띄우려면 `--profile prod` 를 명시한다 (미명시 시 mysql 은 기동되지 않음).
+
 ```bash
-docker compose up -d   # web + api + mysql 전체 실행
-docker compose ps      # 컨테이너 상태 확인
-docker compose down    # 전체 종료
+docker compose --profile prod --env-file .env up -d   # web + api + mysql 전체 실행
+docker compose ps                                     # 컨테이너 상태 확인
+docker compose --profile prod down                    # 전체 종료
 ```
+
+> Docker Compose v2.20+ 가 필요하다. `docker-compose.dev.yml` 이 사용하는 `!override` YAML 태그가 구버전에서는 인식되지 않는다.
 
 ## 주요 스크립트
 

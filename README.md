@@ -115,8 +115,32 @@ PR 및 push 시 자동 실행:
 
 ### CD (Self-hosted Runner)
 
-`main` 브랜치에 push 시 CI 통과 후 자동 배포:
+`main` / `dev` 브랜치에 push 시 CI 통과 후 각각 prod / dev 스택으로 자동 배포된다.
 
-1. CI 워크플로우 성공 확인
-2. Self-hosted runner에서 `scripts/deploy.sh` 실행
-3. Docker Compose로 컨테이너 재빌드 및 재시작
+| 환경 | 트리거 브랜치 | 워크플로우 | 작업 디렉터리 | compose project | env-file | 포트(web/api) |
+|------|---------------|------------|---------------|------------------|----------|----------------|
+| prod | `main` | `.github/workflows/cd.yml` | `Portfolio-Project` | `portfolio-project` (`--profile prod`) | `.env` | 7340 / 7341 |
+| dev | `dev` | `.github/workflows/cd-dev.yml` | `Portfolio-Project-dev` | `portfolio-dev` (override: `docker-compose.dev.yml`) | `.env.dev` | 7350 / 7351 |
+
+배포 흐름은 동일하다:
+
+1. CI 워크플로우 성공 확인 (workflow_run)
+2. Self-hosted runner 에서 `scripts/deploy.sh [prod|dev]` 실행
+3. 인자에 따라 작업 디렉터리/브랜치/compose 옵션이 분기되어 컨테이너 재빌드 및 재시작
+
+#### dev 환경 특징
+
+- **prod DB 공유**: dev api 는 `extra_hosts` 로 호스트 게이트웨이를 통해 prod mysql(노출 포트 3307)에 접근한다. dev 에서의 모든 쓰기(어드민 로그인 시도, 콘텐츠 수정, 연락 폼 제출)는 prod 데이터에 그대로 반영된다.
+- **uploads 볼륨 공유**: dev api 는 prod 의 `portfolio-project_uploads` 볼륨을 external 로 마운트하여 동일 파일을 서빙한다.
+- **외부 도메인**: `portfolio-dev.llagoon.dev` (웹) / `portfolio-dev-api.llagoon.dev` (API). 외부 라우팅(리버스 프록시/터널)은 호스트 측에서 별도 설정.
+- **mysql 자동 기동 제외**: `docker-compose.yml` 의 mysql 서비스에 `profiles: ["prod"]` 가 부여되어 dev 스택은 mysql 을 띄우지 않는다. prod 배포 시에도 `--profile prod` 가 명시되어 기존 동작은 유지된다.
+
+#### dev 환경 최초 셋업 (호스트, 1회)
+
+```bash
+git clone <repo-url> /home/lagoon3/.openclaw/workspace/Portfolio-Project-dev
+cd /home/lagoon3/.openclaw/workspace/Portfolio-Project-dev && git checkout dev
+# .env.dev 작성 (prod .env 기반: WEB_PORT=7350, API_PORT=7351, CORS_ORIGIN 에 dev 도메인 2개 포함)
+```
+
+수동 배포: `bash scripts/deploy.sh dev`

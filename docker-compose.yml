@@ -1,10 +1,6 @@
 services:
   web:
-    build:
-      context: .
-      dockerfile: apps/web/Dockerfile
-      args:
-        API_INTERNAL_URL: "${WEB_API_INTERNAL_URL:-http://api:7341}"
+    image: "ghcr.io/llagoon3/portfolio-web:${WEB_IMAGE_TAG:-main-latest}"
     ports:
       - "${WEB_PORT:-7340}:7340"
     environment:
@@ -16,9 +12,7 @@ services:
     restart: unless-stopped
 
   api:
-    build:
-      context: .
-      dockerfile: apps/api/Dockerfile
+    image: "ghcr.io/llagoon3/portfolio-api:${API_IMAGE_TAG:-main-latest}"
     ports:
       - "${API_PORT:-7341}:7341"
     # admin 쪽 env 는 .env 값이 bcrypt($$)/난수(공백 포함) 등을 포함할 수 있어

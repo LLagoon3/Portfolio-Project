@@ -1,0 +1,23 @@
+services:
+  web:
+    # !override 로 base 의 ports 리스트 누적을 회피한다 (기본은 list concat).
+    ports: !override
+      - "${WEB_PORT:-7350}:7340"
+
+  api:
+    ports: !override
+      - "${API_PORT:-7351}:7341"
+    # prod mysql 컨테이너에는 dev 네트워크가 join 하지 않는다.
+    # 호스트 게이트웨이로 접근해 prod 가 외부로 노출한 3307 포트를 사용한다.
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      DB_HOST: host.docker.internal
+      DB_PORT: "3307"
+
+# dev api 가 DB row 에서 참조하는 업로드 파일을 그대로 서빙하도록 prod 의 uploads 볼륨을 external 로 마운트한다.
+# base 의 익명 `uploads:` 볼륨을 덮어쓴다.
+volumes:
+  uploads:
+    external: true
+    name: portfolio-project_uploads

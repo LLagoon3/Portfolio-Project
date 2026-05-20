@@ -134,8 +134,9 @@ PR 및 push 시 자동 실행:
 3. `scripts/deploy.sh`:
    - `git fetch/reset` 으로 호스트의 compose 파일·.env 동기화 (호스트는 더 이상 `docker build` 를 수행하지 않음 — compose 정의를 읽기 위한 동기화 목적)
    - `DEPLOY_SHA` 가 더 이상 `origin/main` 의 tip 이 아니면 배포 중단 (늦게 끝난 이전 커밋 CI 로 stale 이미지 되감기 방지)
-   - `docker compose pull` 로 GHCR 에서 해당 SHA 이미지 가져오기
-   - `docker compose up -d` 로 새 이미지로 컨테이너 교체
+   - `docker compose pull web api` 로 GHCR 에서 해당 SHA 이미지만 가져오기 (mysql 은 mutable 태그 digest 변경으로 인한 재기동 회피 목적으로 pull 대상에서 제외)
+   - `docker compose up -d` 로 새 이미지로 web/api 컨테이너 교체. mysql 은 image/config 변경이 없으므로 그대로 유지됨
+   - mysql 자체 설정·이미지 변경이 필요한 경우 호스트에서 수동으로 `docker compose up -d mysql` 호출
 
 #### 최초 GHCR 전환 시 확인 사항
 

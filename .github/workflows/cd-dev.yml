@@ -1,0 +1,31 @@
+name: CD (dev)
+
+on:
+  workflow_run:
+    workflows: ["CI"]
+    branches:
+      - dev
+    types:
+      - completed
+
+concurrency:
+  group: deploy-dev
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: [self-hosted, portfolio]
+    # push 이벤트(= dev 브랜치 머지)로 발생한 CI 성공만 배포 대상. PR/그 외 트리거로 도는 CI 완료는 무시한다.
+    if: ${{ github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push' }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Deploy
+        env:
+          DEPLOY_SHA: ${{ github.event.workflow_run.head_sha }}
+        # CI 가 GHCR 에 푸시한 정확한 SHA 태그(dev-<short>)로 배포한다. deploy.sh 는 IMAGE_TAG 미설정 시 dev-latest 로 폴백.
+        run: |
+          export IMAGE_TAG="dev-${DEPLOY_SHA:0:7}"
+          bash scripts/deploy.sh dev

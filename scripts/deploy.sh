@@ -12,6 +12,17 @@ cd "$PROJECT_DIR"
 echo "=== Syncing compose files & .env from git ==="
 git fetch origin "$BRANCH"
 
+# 늦게 끝난 이전 커밋의 CI 가 최신 배포 이후 도착해 stale 이미지로 되감기는 상황 방지.
+# CD 가 전달한 DEPLOY_SHA 가 더 이상 origin/$BRANCH 의 tip 이 아니면 배포 중단.
+# 수동 롤백(DEPLOY_SHA 미설정 + IMAGE_TAG 지정) 경로는 이 가드와 충돌하지 않는다.
+if [ -n "$DEPLOY_SHA" ]; then
+  LATEST_SHA="$(git rev-parse "origin/$BRANCH")"
+  if [ "$DEPLOY_SHA" != "$LATEST_SHA" ]; then
+    echo "=== Skip stale deploy: DEPLOY_SHA=$DEPLOY_SHA origin/$BRANCH=$LATEST_SHA ===" >&2
+    exit 0
+  fi
+fi
+
 if [ -n "$DEPLOY_SHA" ]; then
   echo "=== Checking out exact SHA: $DEPLOY_SHA ==="
   git checkout "$DEPLOY_SHA"

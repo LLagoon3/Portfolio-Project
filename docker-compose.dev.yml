@@ -1,0 +1,38 @@
+services:
+  web:
+    # !override 로 base 의 ports 리스트 누적을 회피한다 (기본은 list concat).
+    ports: !override
+      - "${WEB_PORT:-7350}:7340"
+
+  api:
+    ports: !override
+      - "${API_PORT:-7351}:7341"
+    # base 의 env_file: [.env] 는 list concat 으로 누적되므로 !override 로 완전 교체한다.
+    # 이게 없으면 dev 컨테이너에도 prod 의 .env (CORS_ORIGIN 등) 가 inject 되어 .env.dev 가 무시된다.
+    env_file: !override
+      - .env.dev
+    # shared-db: prod mysql 만 좁게 공유하는 네트워크 (prod compose 가 만든 portfolio-project_shared-db).
+    # prod 의 default 네트워크 전체를 공유하면 dev api 가 hostname `api` 로 같이 등록되어
+    # prod web 의 DNS 가 비결정적으로 dev api 로 라우팅될 수 있어 mysql 만 한 단계 격리한다.
+    networks:
+      - default
+      - shared-db
+    environment:
+      # mysql 컨테이너의 compose 서비스명. shared-db 네트워크에서 DNS 로 해석됨.
+      DB_HOST: mysql
+      # prod 컨테이너 내부 포트(3306). 3307 은 호스트 노출용이라 컨테이너 간 통신엔 안 씀.
+      DB_PORT: "3306"
+
+# dev api 가 DB row 에서 참조하는 업로드 파일을 그대로 서빙하도록 prod 의 uploads 볼륨을 external 로 마운트한다.
+# base 의 익명 `uploads:` 볼륨을 덮어쓴다.
+volumes:
+  uploads:
+    external: true
+    name: portfolio-project_uploads
+
+# dev api 가 prod mysql 컨테이너에만 좁게 접근하기 위한 external 네트워크.
+# portfolio-project_shared-db 는 prod compose (portfolio-project) 의 top-level networks 에 정의된 shared-db.
+networks:
+  shared-db:
+    external: true
+    name: portfolio-project_shared-db

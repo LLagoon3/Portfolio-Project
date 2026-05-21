@@ -25,14 +25,19 @@ describe('AboutRepository', () => {
     typeormRepo = module.get(getRepositoryToken(AboutProfile));
   });
 
-  it('findProfile: id=1 과 bios relation 옵션을 전달한다', async () => {
+  it('findProfile: id=1 과 bios/stats/principles/journeys relation 옵션을 전달한다', async () => {
     typeormRepo.findOne.mockResolvedValue(null);
 
     await repository.findProfile();
 
     expect(typeormRepo.findOne).toHaveBeenCalledWith({
       where: { id: 1 },
-      relations: { bios: true },
+      relations: {
+        bios: true,
+        stats: true,
+        principles: true,
+        journeys: true,
+      },
     });
   });
 });

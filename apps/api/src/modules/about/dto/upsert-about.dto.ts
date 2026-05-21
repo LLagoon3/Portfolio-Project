@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Transform } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import {
   ArrayMaxSize,
   IsArray,
@@ -8,6 +8,7 @@ import {
   IsOptional,
   IsString,
   MaxLength,
+  ValidateNested,
 } from 'class-validator';
 
 const trimIfString = (value: unknown): unknown =>
@@ -22,6 +23,75 @@ const trimToNull = (value: unknown): unknown => {
   const trimmed = value.trim();
   return trimmed.length === 0 ? null : trimmed;
 };
+
+// Bold 리디자인 후속 — 신규 nested DTO 4개.
+
+export class UpsertStatDto {
+  @ApiProperty({ maxLength: 100 })
+  @Transform(({ value }) => trimIfString(value))
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(100)
+  label!: string;
+
+  @ApiProperty({ maxLength: 100 })
+  @Transform(({ value }) => trimIfString(value))
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(100)
+  value!: string;
+
+  @ApiProperty({ maxLength: 255, nullable: true, required: false })
+  @Transform(({ value }) => trimToNull(value))
+  @IsOptional()
+  @IsString()
+  @MaxLength(255)
+  sub?: string | null;
+}
+
+export class UpsertPrincipleDto {
+  @ApiProperty({ maxLength: 200 })
+  @Transform(({ value }) => trimIfString(value))
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(200)
+  title!: string;
+
+  @ApiProperty()
+  @Transform(({ value }) => trimIfString(value))
+  @IsString()
+  @IsNotEmpty()
+  body!: string;
+}
+
+export class UpsertJourneyDto {
+  @ApiProperty({ maxLength: 100, description: '자유 표현 — "2026.01 — Now" 등' })
+  @Transform(({ value }) => trimIfString(value))
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(100)
+  year!: string;
+
+  @ApiProperty({ maxLength: 200 })
+  @Transform(({ value }) => trimIfString(value))
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(200)
+  title!: string;
+
+  @ApiProperty({ maxLength: 200, nullable: true, required: false })
+  @Transform(({ value }) => trimToNull(value))
+  @IsOptional()
+  @IsString()
+  @MaxLength(200)
+  role?: string | null;
+
+  @ApiProperty()
+  @Transform(({ value }) => trimIfString(value))
+  @IsString()
+  @IsNotEmpty()
+  body!: string;
+}
 
 export class UpsertAboutDto {
   @ApiProperty({ maxLength: 100 })
@@ -73,4 +143,45 @@ export class UpsertAboutDto {
   @IsString()
   @MaxLength(50)
   phone?: string | null;
+
+  // Bold 리디자인 후속 — 5개 신규 필드. 모두 optional / 빈 배열 default.
+
+  @ApiProperty({ maxLength: 255, nullable: true, required: false })
+  @Transform(({ value }) => trimToNull(value))
+  @IsOptional()
+  @IsString()
+  @MaxLength(255)
+  availability?: string | null;
+
+  @ApiProperty({ type: [UpsertStatDto], required: false })
+  @IsOptional()
+  @IsArray()
+  @ArrayMaxSize(20)
+  @ValidateNested({ each: true })
+  @Type(() => UpsertStatDto)
+  stats?: UpsertStatDto[];
+
+  @ApiProperty({ type: [UpsertPrincipleDto], required: false })
+  @IsOptional()
+  @IsArray()
+  @ArrayMaxSize(20)
+  @ValidateNested({ each: true })
+  @Type(() => UpsertPrincipleDto)
+  principles?: UpsertPrincipleDto[];
+
+  @ApiProperty({ type: [UpsertJourneyDto], required: false })
+  @IsOptional()
+  @IsArray()
+  @ArrayMaxSize(50)
+  @ValidateNested({ each: true })
+  @Type(() => UpsertJourneyDto)
+  journey?: UpsertJourneyDto[];
+
+  @ApiProperty({ type: [String], required: false })
+  @Transform(({ value }) => trimArray(value))
+  @IsOptional()
+  @IsArray()
+  @ArrayMaxSize(30)
+  @IsString({ each: true })
+  stacks?: string[];
 }

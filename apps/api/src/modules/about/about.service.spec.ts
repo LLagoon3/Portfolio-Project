@@ -72,6 +72,12 @@ describe('AboutService', () => {
       address: null,
       email: null,
       phone: null,
+      // Bold 리디자인 후속 — 신규 필드는 빈 default 로 반환됨
+      availability: null,
+      stats: [],
+      principles: [],
+      journey: [],
+      stacks: [],
     });
   });
 

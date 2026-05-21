@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import PagesMetaHead from '../../PagesMetaHead';
 import useThemeSwitcher from '../../../hooks/useThemeSwitcher';
 import BoldHeader from './BoldHeader';
 import BoldFooter from './BoldFooter';
@@ -10,6 +9,7 @@ import CursorDot from './CursorDot';
 // - 다크 ink 배경 + grain 텍스처 + scroll progress + cursor dot
 // - DARK/LIGHT 토글 시 wrapper 에 .bold-light 클래스 추가하여 CSS 변수 swap
 // - 기존 DefaultLayout 페이지에는 영향 없음 (getLayout 미지정 시 fallback)
+// - <Head> 메타는 페이지에서 직접 <PagesMetaHead title=... /> 호출
 export default function BoldLayout({ children }) {
 	const [activeTheme, , mounted] = useThemeSwitcher();
 	// useThemeSwitcher 의 activeTheme 는 "다음에 토글할 값" 이므로
@@ -22,14 +22,14 @@ export default function BoldLayout({ children }) {
 	}, [activeTheme, mounted]);
 
 	return (
-		<div className={`bold-root bold-grain min-h-screen ${isLight ? 'bold-light' : ''}`}
+		<div
+			className={`bold-root bold-grain min-h-screen ${isLight ? 'bold-light' : ''}`}
 			style={{
 				background: 'var(--ink)',
 				color: 'var(--paper)',
 				fontFamily: 'GeneralSans-Variable, system-ui, sans-serif',
 			}}
 		>
-			<PagesMetaHead />
 			<ScrollProgress />
 			<CursorDot />
 			<BoldHeader />

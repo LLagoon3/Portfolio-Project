@@ -1,5 +1,7 @@
+import Link from 'next/link';
+
 // 둥근 풀-필 CTA. variant: 'cta' (indigo solid) | 'ghost' (border + transparent).
-// as: 'a' (기본) | 'button'. 외부 링크/내부 라우팅 둘 다 호출자가 결정.
+// as: 'a' (기본 — 외부/anchor) | 'link' (Next.js 내부 라우팅) | 'button'.
 export default function PillButton({
 	variant = 'cta',
 	as = 'a',
@@ -41,6 +43,13 @@ export default function PillButton({
 			<button type={type || 'button'} {...sharedProps}>
 				{children}
 			</button>
+		);
+	}
+	if (as === 'link') {
+		return (
+			<Link href={href} {...sharedProps}>
+				{children}
+			</Link>
 		);
 	}
 	return (

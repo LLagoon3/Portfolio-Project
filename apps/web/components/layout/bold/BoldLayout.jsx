@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import useThemeSwitcher from '../../../hooks/useThemeSwitcher';
 import BoldHeader from './BoldHeader';
 import BoldFooter from './BoldFooter';
 import ScrollProgress from './ScrollProgress';
@@ -11,15 +10,21 @@ import CursorDot from './CursorDot';
 // - 기존 DefaultLayout 페이지에는 영향 없음 (getLayout 미지정 시 fallback)
 // - <Head> 메타는 페이지에서 직접 <PagesMetaHead title=... /> 호출
 export default function BoldLayout({ children }) {
-	const [activeTheme, , mounted] = useThemeSwitcher();
-	// useThemeSwitcher 의 activeTheme 는 "다음에 토글할 값" 이므로
-	// 현재 theme 는 그 반대.
+	// useThemeSwitcher 는 호출하는 컴포넌트마다 독립된 useState 인스턴스를 가지므로
+	// (BoldHeader 의 토글이 여기로 전파되지 않음), 단일 source of truth 인
+	// <html> className 을 직접 관찰한다. useThemeSwitcher 가 <html> 의 'dark'/'light'
+	// 클래스를 토글하므로 그 변화를 MutationObserver 로 캡처.
 	const [isLight, setIsLight] = useState(false);
 
 	useEffect(() => {
-		if (!mounted) return;
-		setIsLight(activeTheme === 'dark');
-	}, [activeTheme, mounted]);
+		if (typeof window === 'undefined') return;
+		const root = document.documentElement;
+		const update = () => setIsLight(root.classList.contains('light'));
+		update();
+		const mo = new MutationObserver(update);
+		mo.observe(root, { attributes: true, attributeFilter: ['class'] });
+		return () => mo.disconnect();
+	}, []);
 
 	return (
 		<div

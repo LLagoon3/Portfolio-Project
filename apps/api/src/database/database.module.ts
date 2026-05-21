@@ -17,6 +17,11 @@ import databaseConfig from '../config/database.config';
         database: config.get<string>('database.database'),
         autoLoadEntities: true,
         synchronize: config.get<boolean>('database.synchronize'),
+        // database.config.ts 에 정의된 migrations / migrationsRun 옵션을 useFactory
+        // 반환 객체에 포함시켜야 typeorm 이 인식한다 (이전엔 누락되어 컨테이너
+        // 부팅 시 pending migration 자동 실행이 동작하지 않았음).
+        migrations: config.get<string[]>('database.migrations'),
+        migrationsRun: config.get<boolean>('database.migrationsRun'),
       }),
     }),
   ],

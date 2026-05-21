@@ -7,10 +7,22 @@ import { AdminAboutController } from './admin-about.controller';
 import { AdminAboutService } from './admin-about.service';
 import { AboutProfile } from './entities/about-profile.entity';
 import { AboutBio } from './entities/about-bio.entity';
+import { AboutStat } from './entities/about-stat.entity';
+import { AboutPrinciple } from './entities/about-principle.entity';
+import { AboutJourney } from './entities/about-journey.entity';
 import { UploadsModule } from '../uploads/uploads.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([AboutProfile, AboutBio]), UploadsModule],
+  imports: [
+    TypeOrmModule.forFeature([
+      AboutProfile,
+      AboutBio,
+      AboutStat,
+      AboutPrinciple,
+      AboutJourney,
+    ]),
+    UploadsModule,
+  ],
   controllers: [AboutController, AdminAboutController],
   providers: [AboutService, AboutRepository, AdminAboutService],
 })

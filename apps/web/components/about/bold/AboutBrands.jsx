@@ -1,20 +1,10 @@
 import Reveal from '../../primitives/Reveal';
 import Eyebrow from '../../primitives/Eyebrow';
 
-// 시안의 'Companies' 섹션을 라군의 신입 컨텍스트에 맞게 'Tech Stack' 으로 의미 재정의.
-// 후속 PR 에서 백엔드 keywords[] 또는 stacks[] 필드 도입 시 동적화.
-const STACKS = [
-	'NestJS',
-	'Express',
-	'TypeScript',
-	'MySQL',
-	'MongoDB',
-	'Redis',
-	'Docker',
-	'Grafana / Loki',
-];
+// stacks 가 빈 배열이면 섹션 미렌더.
+export default function AboutBrands({ stacks = [] }) {
+	if (!stacks.length) return null;
 
-export default function AboutBrands() {
 	return (
 		<section
 			className="py-20 lg:py-24 border-t"
@@ -42,13 +32,13 @@ export default function AboutBrands() {
 						color: 'var(--paper-faint)',
 					}}
 				>
-					CORE · {String(STACKS.length).padStart(2, '0')}
+					CORE · {String(stacks.length).padStart(2, '0')}
 				</div>
 			</Reveal>
 
 			<div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 lg:gap-4">
-				{STACKS.map((label, idx) => (
-					<Reveal key={label} delay={(idx % 4) * 0.06}>
+				{stacks.map((label, idx) => (
+					<Reveal key={`${label}-${idx}`} delay={(idx % 4) * 0.06}>
 						<div
 							className="bold-interactive grid place-items-center rounded-[12px] transition-all"
 							style={{

@@ -4,11 +4,12 @@ import Reveal from '../../primitives/Reveal';
 import WordReveal from '../../primitives/WordReveal';
 import Eyebrow from '../../primitives/Eyebrow';
 
-export default function AboutHero({ name, tagline, profileImage }) {
+export default function AboutHero({ name, tagline, profileImage, availability }) {
 	const displayName = name || '이석호';
 	const heroTagline =
 		tagline ||
 		'서비스의 동작 원리와 운영 구조를 함께 이해하며, 성능·안정성·운영 효율을 개선하는 백엔드 개발자입니다.';
+	const statusLabel = availability;
 
 	return (
 		<section className="pt-28 lg:pt-40 pb-16 lg:pb-24">
@@ -39,19 +40,21 @@ export default function AboutHero({ name, tagline, profileImage }) {
 					<span className="w-6 h-px" style={{ background: 'var(--line-strong)' }} />
 					<Eyebrow>About — 2026</Eyebrow>
 				</div>
-				<div className="hidden sm:flex items-center gap-2">
-					<span className="relative flex h-2 w-2">
-						<span
-							className="absolute inline-flex h-full w-full rounded-full opacity-75 animate-ping"
-							style={{ background: '#22c55e' }}
-						/>
-						<span
-							className="relative inline-flex rounded-full h-2 w-2"
-							style={{ background: '#22c55e' }}
-						/>
-					</span>
-					<Eyebrow>신입 채용 검토 중</Eyebrow>
-				</div>
+				{statusLabel && (
+					<div className="hidden sm:flex items-center gap-2">
+						<span className="relative flex h-2 w-2">
+							<span
+								className="absolute inline-flex h-full w-full rounded-full opacity-75 animate-ping"
+								style={{ background: '#22c55e' }}
+							/>
+							<span
+								className="relative inline-flex rounded-full h-2 w-2"
+								style={{ background: '#22c55e' }}
+							/>
+						</span>
+						<Eyebrow>{statusLabel}</Eyebrow>
+					</div>
+				)}
 			</Reveal>
 
 			{/* 거대 이름 + portrait */}

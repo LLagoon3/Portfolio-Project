@@ -21,8 +21,17 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          # workflow_run 트리거는 GITHUB_SHA/REF 가 default branch(main) tip 으로 잡혀서
+          # actions/checkout 의 default 가 main 의 옛 워크플로우/스크립트를 가져온다.
+          # CI 가 돌았던 dev 의 정확한 head_sha 로 명시해 같은 commit 의 스크립트로 동작 보장.
+          ref: ${{ github.event.workflow_run.head_sha }}
+          # 호스트 워크스페이스 보호 — runner work directory 가 호스트 워크스페이스와
+          # 겹치더라도 별도 서브디렉토리(deploy-checkout)에 체크아웃해 호스트 git 상태를 보호.
+          path: deploy-checkout
 
       - name: Deploy
+        working-directory: deploy-checkout
         env:
           DEPLOY_SHA: ${{ github.event.workflow_run.head_sha }}
         # CI 가 GHCR 에 푸시한 정확한 SHA 태그(dev-<short>)로 배포한다. deploy.sh 는 IMAGE_TAG 미설정 시 dev-latest 로 폴백.

@@ -11,8 +11,18 @@ const STATS = [
 ];
 
 export default function AboutStrip({ bioFirst }) {
+	// bio[0] 가 마크다운 헤더(`## 1. 한 줄 소개`) 로 시작할 수 있어 평문 렌더 시
+	// 헤더가 그대로 노출된다. 가벼운 분리로 `#` 시작 라인만 skip 하고 본문만 남긴다.
+	// 코드 블록 안의 `#` 까지 영향받지만 라군 bio 에 해당 케이스 없음 — 필요 시 react-markdown 도입.
+	const stripMarkdownHeaders = (raw) =>
+		(raw || '')
+			.split('\n')
+			.filter((line) => !line.trim().startsWith('#'))
+			.join('\n')
+			.trim();
+
 	const text =
-		bioFirst ||
+		stripMarkdownHeaders(bioFirst) ||
 		'백엔드와 운영 인프라를 중심으로 일합니다. 잘 짠 코드가 아니라 잘 굴러가는 시스템을 만드는 일에 집중하고, 야간 알람이 사라진 새벽이 가장 큰 보상이라고 믿습니다.';
 
 	return (

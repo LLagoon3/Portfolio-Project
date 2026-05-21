@@ -245,3 +245,86 @@ a {
 		opacity: 0.5;
 	}
 }
+
+/* ============================================================================
+ * Bold redesign (5-page redesign series, issue #70)
+ * 페이지 단위로 점진 적용. BoldLayout 자손에서만 토큰을 사용하므로 기존
+ * DefaultLayout 페이지에는 영향이 없다. reduced-motion 글로벌 룰만 모든
+ * 페이지에 적용되며, 기존 모션 컴포넌트도 함께 혜택을 받는다.
+ * ========================================================================= */
+
+:root {
+	--ink: #070e17;
+	--paper: #fbfaf7;
+	--paper-dim: color-mix(in oklab, var(--paper) 60%, transparent);
+	--paper-faint: color-mix(in oklab, var(--paper) 35%, transparent);
+	--indigo: #6366f1;
+	--indigo-soft: #818cf8;
+	--indigo-glow: rgba(99, 102, 241, 0.35);
+	--line: rgba(255, 255, 255, 0.08);
+	--line-strong: rgba(255, 255, 255, 0.16);
+}
+
+/* BoldLayout wrapper 에 .bold-light 가 토글되어 변수 swap (DARK/LIGHT) */
+.bold-light {
+	--ink: #fbfaf7;
+	--paper: #0a0f17;
+	--line: rgba(13, 36, 56, 0.08);
+	--line-strong: rgba(13, 36, 56, 0.18);
+}
+
+/* grain 텍스처 — BoldLayout 의 wrapper 에 .bold-grain 적용 */
+.bold-grain::before {
+	content: '';
+	position: fixed;
+	inset: 0;
+	pointer-events: none;
+	z-index: 1;
+	opacity: 0.06;
+	mix-blend-mode: overlay;
+	background-image: radial-gradient(
+			circle at 25% 30%,
+			rgba(255, 255, 255, 0.6) 0,
+			transparent 0.2px
+		),
+		radial-gradient(
+			circle at 75% 70%,
+			rgba(255, 255, 255, 0.6) 0,
+			transparent 0.2px
+		);
+	background-size:
+		3px 3px,
+		5px 5px;
+}
+
+/* marquee 무한 슬라이드 — 트랙을 2배 복제하고 0 → -50% 평행이동 */
+@keyframes bold-marquee {
+	from {
+		transform: translateX(0);
+	}
+	to {
+		transform: translateX(-50%);
+	}
+}
+
+/* word-rise — framer-motion 대신 CSS 폴백이 필요할 때 사용 */
+@keyframes bold-word-rise {
+	from {
+		transform: translateY(105%);
+	}
+	to {
+		transform: translateY(0);
+	}
+}
+
+/* 글로벌 prefers-reduced-motion — 기존 페이지의 모션도 자동 비활성 */
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.001ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.001ms !important;
+		scroll-behavior: auto !important;
+	}
+}

@@ -1,6 +1,12 @@
 import Link from 'next/link';
 import Image from 'next/image';
 
+// 이미지 로드 전 placeholder — Bold 톤의 ink(#070E17) 4:5 단색 SVG dataURL.
+// next/image 의 placeholder="blur" 가 자동 블러 + fade-in 처리. 외부 URL/uploads 라
+// blurDataURL 자동 생성이 안 되므로 명시.
+const INK_BLUR =
+	'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0IDUiPjxyZWN0IHdpZHRoPSI0IiBoZWlnaHQ9IjUiIGZpbGw9IiMwNzBFMTciLz48L3N2Zz4=';
+
 // 4:5 카드 — 번호 / 카테고리 / 호버 화살표 회전.
 // img src 는 /uploads/... 형태일 수 있고, 외부 URL 일 수도 있음.
 // next.config.js rewrites 가 /uploads/* 를 API 로 프록시.
@@ -56,6 +62,8 @@ export default function HomeProjectCard({ index, project }) {
 						fill
 						sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
 						style={{ objectFit: 'cover' }}
+						placeholder="blur"
+						blurDataURL={INK_BLUR}
 						className="transition-transform duration-1000 group-hover:scale-[1.06]"
 					/>
 				) : (

@@ -265,6 +265,16 @@ a {
 	--line-strong: rgba(255, 255, 255, 0.16);
 }
 
+/* PillButton 의 자식 svg 가 hover 시 살짝 오른쪽으로 미세 이동.
+ * 화살표 / 외부 링크 아이콘 등 모든 CTA arrow 에 일관된 micro feedback.
+ * cubic-bezier 는 다른 Bold 모션 (Reveal/WordReveal/Marquee) 과 통일. */
+.bold-pill svg {
+	transition: transform 0.3s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.bold-pill:hover svg {
+	transform: translateX(3px);
+}
+
 /* 앵커 클릭(#work 등) 시 즉시 점프가 아닌 부드러운 스크롤.
  * Bold 페이지의 '작업 보기' 같은 CTA 가 자연스럽게 동작한다.
  * reduced-motion 글로벌 룰이 scroll-behavior: auto 로 자동 override. */

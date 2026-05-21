@@ -24,7 +24,8 @@ export default function PillButton({
 		color: 'var(--paper)',
 		background: 'rgba(255, 255, 255, 0.02)',
 	};
-	const baseClass = `bold-interactive inline-flex items-center gap-2 font-general-medium text-[15px] rounded-full transition-all duration-300 ${
+	// 'bold-pill' 클래스로 hover 시 자식 svg 가 살짝 미세 이동 (globals.css 에서 정의).
+	const baseClass = `bold-interactive bold-pill inline-flex items-center gap-2 font-general-medium text-[15px] rounded-full transition-all duration-300 ${
 		isCTA
 			? 'px-[1.4rem] py-[0.85rem] hover:-translate-y-[2px]'
 			: 'px-[1.3rem] py-[0.8rem]'

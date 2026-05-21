@@ -25,10 +25,12 @@ export default function ContactCTA({ email }) {
 					className="bold-interactive block font-general-semibold hover:opacity-80 transition-opacity break-words"
 					style={{
 						// 글자수 + 화면 너비 기반 동적 폰트로 한 줄 보장.
-						// 수식: (100vw - 좌우 px-5 padding 2.5rem) / 이메일 글자수 / 영문 폭 비율(≈0.55)
+						// 수식: (100vw - 좌우 padding + 안전 마진 3rem) / (이메일 글자수 + 끝 '.' 1)
+						//        / 영문 폭 비율(≈0.7)
 						//   = 한 줄에 fit 되는 fontSize. min(8rem, ...) 으로 큰 화면 cap.
-						// 0.55 는 GeneralSans-Semibold 의 평균 영문 글자 가로 비율 근사값.
-						fontSize: `min(8rem, calc((100vw - 2.5rem) / ${target.length} / 0.55))`,
+						// 비율 0.7 은 GeneralSans-Semibold 의 영문 평균 폭 + 다양한 글자 폭 차이
+						// (m/w/@ wider) 까지 고려한 보수값. 첫 시도 0.55 는 줄바꿈 발생.
+						fontSize: `min(8rem, calc((100vw - 3rem) / ${target.length + 1} / 0.7))`,
 						letterSpacing: '-0.05em',
 						lineHeight: 1,
 						color: 'var(--paper)',

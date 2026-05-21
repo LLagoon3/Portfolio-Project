@@ -54,6 +54,11 @@ services:
       TZ: Asia/Seoul
     volumes:
       - mysql_data:/var/lib/mysql
+    # default: prod web/api 의 기존 접근 경로 유지
+    # shared-db: dev 스택이 external join 해서 mysql 에만 접근하기 위한 좁은 공유 네트워크
+    networks:
+      - default
+      - shared-db
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 10s
@@ -65,3 +70,9 @@ services:
 volumes:
   mysql_data:
   uploads:
+
+# dev 스택이 prod mysql 만 좁게 공유하기 위한 네트워크.
+# prod 의 default 네트워크 전체를 공유하면 dev api 가 hostname `api` 로 같이 등록되어
+# prod web 의 DNS 가 비결정적으로 dev api 로 라우팅될 위험이 있으므로 mysql 만 한 단계 격리.
+networks:
+  shared-db:

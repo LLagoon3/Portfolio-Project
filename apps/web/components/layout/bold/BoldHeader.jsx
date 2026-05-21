@@ -1,5 +1,8 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
+import logoLight from '../../../public/images/logo-light.svg';
+import logoDark from '../../../public/images/logo-dark.svg';
 import useThemeSwitcher from '../../../hooks/useThemeSwitcher';
 import HireMeModal from '../../HireMeModal';
 
@@ -40,26 +43,20 @@ export default function BoldHeader() {
 				<nav className="max-w-[1640px] mx-auto px-6 lg:px-12 h-16 flex items-center justify-between">
 					<Link
 						href="/"
-						className="bold-interactive flex items-center gap-3"
+						className="bold-interactive flex items-center"
 						aria-label="홈"
 					>
-						<span
-							className="w-7 h-7 rounded-md grid place-items-center"
-							style={{ background: 'var(--indigo)' }}
-						>
-							<span
-								className="text-[11px] text-white"
-								style={{ fontFamily: 'ui-monospace, "SF Mono", Menlo, monospace' }}
-							>
-								SL
-							</span>
-						</span>
-						<span
-							className="font-general-semibold text-base"
-							style={{ letterSpacing: '-0.02em', color: 'var(--paper)' }}
-						>
-							이석호
-						</span>
+						{/* 기존 DefaultLayout 의 AppHeader 와 동일한 로고 swap 패턴.
+						    useThemeSwitcher 의 activeTheme 가 "다음 토글 값" 이라
+						    activeTheme==='dark' = 현재 light → 어두운 글자 로고(logoDark) 가 적절. */}
+						<Image
+							src={mounted && activeTheme === 'dark' ? logoDark : logoLight}
+							alt="Lagoon Portfolio"
+							className="w-28 cursor-pointer"
+							width={150}
+							height={120}
+							priority
+						/>
 					</Link>
 
 					<div className="flex items-center gap-3 sm:gap-8 text-xs sm:text-sm">

@@ -22,9 +22,11 @@ export default function ContactCTA({ email }) {
 				<Eyebrow className="mb-6">— Let&apos;s talk</Eyebrow>
 				<a
 					href={`mailto:${target}`}
-					className="bold-interactive block font-general-semibold hover:opacity-80 transition-opacity break-all"
+					className="bold-interactive block font-general-semibold hover:opacity-80 transition-opacity break-words"
 					style={{
-						fontSize: 'clamp(2.6rem, 9vw, 8rem)',
+						// 모바일에서 큰 이메일이 break-all 로 어색하게 잘리던 문제를 해결.
+						// break-words 로 단어 경계 우선 + 모바일 fontSize 하한을 약간 낮춰 줄바꿈 횟수 자체를 줄임.
+						fontSize: 'clamp(2rem, 9vw, 8rem)',
 						letterSpacing: '-0.05em',
 						lineHeight: 1,
 						color: 'var(--paper)',
@@ -35,7 +37,13 @@ export default function ContactCTA({ email }) {
 				</a>
 			</Reveal>
 
-			<Reveal delay={0.08} className="grid grid-cols-12 gap-6 mt-16 lg:mt-20">
+			{/* 본문/메타 영역의 Reveal viewport amount 가 0.15 라 페이지 끝의 이 영역이
+			    trigger 안 되어 initial opacity 0 으로 잔존하던 문제. amount 0 으로 즉시 trigger. */}
+			<Reveal
+				delay={0.08}
+				amount={0}
+				className="grid grid-cols-12 gap-6 mt-16 lg:mt-20"
+			>
 				<div className="col-span-12 lg:col-span-8">
 					<p className="leading-relaxed max-w-xl" style={{ color: 'var(--paper-dim)' }}>
 						백엔드 개발자로서 더 나은 서비스를 만드는 팀에 기여하고 싶습니다.

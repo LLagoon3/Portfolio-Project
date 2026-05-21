@@ -36,11 +36,18 @@ export default function AboutStrip({ bioFirst }) {
 					>
 						기능 구현을 넘어
 						<br />
+						서비스의{' '}
 						<span style={{ color: 'var(--indigo-soft)', fontStyle: 'italic' }}>
-							서비스의 안정성과
+							안정성
 						</span>
+						과
 						<br />
-						유지보수성을 고민합니다.
+						<span style={{ color: 'var(--indigo-soft)', fontStyle: 'italic' }}>
+							유지보수성
+						</span>
+						을
+						<br />
+						고민합니다.
 					</h2>
 				</Reveal>
 				<Reveal delay={0.16} className="col-span-12 lg:col-span-7">

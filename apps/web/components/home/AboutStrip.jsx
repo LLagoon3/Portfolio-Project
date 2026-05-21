@@ -1,19 +1,21 @@
 import Reveal from '../primitives/Reveal';
 import Eyebrow from '../primitives/Eyebrow';
-import StatCounter from '../primitives/StatCounter';
 import PillButton from '../primitives/PillButton';
 
-// stat[] 필드가 API 에 없어 임시 하드코딩. 후속 PR 에서 about.stats[] 도입 시 교체.
-const STATS = [
-	{ end: 8, suffix: '', accent: '+', label: 'Years' },
-	{ end: 14, suffix: '', accent: null, label: 'Shipped' },
-	{ end: 99.98, decimals: 2, suffix: '', accent: '%', label: 'Avg Uptime' },
-];
-
 export default function AboutStrip({ bioFirst }) {
+	// bio[0] 가 마크다운 헤더(`## 1. 한 줄 소개`) 로 시작할 수 있어 평문 렌더 시
+	// 헤더가 그대로 노출된다. 가벼운 분리로 `#` 시작 라인만 skip 하고 본문만 남긴다.
+	// 코드 블록 안의 `#` 까지 영향받지만 라군 bio 에 해당 케이스 없음 — 필요 시 react-markdown 도입.
+	const stripMarkdownHeaders = (raw) =>
+		(raw || '')
+			.split('\n')
+			.filter((line) => !line.trim().startsWith('#'))
+			.join('\n')
+			.trim();
+
 	const text =
-		bioFirst ||
-		'백엔드와 운영 인프라를 중심으로 일합니다. 잘 짠 코드가 아니라 잘 굴러가는 시스템을 만드는 일에 집중하고, 야간 알람이 사라진 새벽이 가장 큰 보상이라고 믿습니다.';
+		stripMarkdownHeaders(bioFirst) ||
+		'서비스의 동작 원리와 운영 구조를 함께 이해하며, 성능·안정성·운영 효율을 개선하는 백엔드 개발자입니다.';
 
 	return (
 		<section
@@ -32,13 +34,13 @@ export default function AboutStrip({ bioFirst }) {
 							lineHeight: 1,
 						}}
 					>
-						코드를 쓰지만,
+						기능 구현을 넘어
 						<br />
 						<span style={{ color: 'var(--indigo-soft)', fontStyle: 'italic' }}>
-							팀의 시간을
+							서비스의 안정성과
 						</span>
 						<br />
-						벌어줍니다.
+						유지보수성을 고민합니다.
 					</h2>
 				</Reveal>
 				<Reveal delay={0.16} className="col-span-12 lg:col-span-7">
@@ -52,33 +54,6 @@ export default function AboutStrip({ bioFirst }) {
 					>
 						{text}
 					</p>
-
-					<div className="grid grid-cols-3 gap-6 lg:gap-10 mt-10">
-						{STATS.map((stat) => (
-							<div
-								key={stat.label}
-								className="pt-[1.4rem]"
-								style={{ borderTop: '1px solid var(--line-strong)' }}
-							>
-								<div
-									className="font-general-semibold"
-									style={{
-										fontSize: 'clamp(2.2rem, 4vw, 3.4rem)',
-										letterSpacing: '-0.04em',
-										lineHeight: 1,
-									}}
-								>
-									<StatCounter
-										end={stat.end}
-										decimals={stat.decimals || 0}
-										suffix={stat.suffix}
-										accentSuffix={stat.accent}
-									/>
-								</div>
-								<Eyebrow className="mt-3">{stat.label}</Eyebrow>
-							</div>
-						))}
-					</div>
 
 					<div className="mt-10">
 						<PillButton variant="ghost" as="link" href="/about" ariaLabel="About 더 보기">

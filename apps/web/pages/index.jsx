@@ -30,7 +30,7 @@ export default function Home({ projects, about }) {
 		<>
 			<PagesMetaHead title="Home" />
 			<HomeHero tagline={about?.tagline} />
-			<KeywordMarquee projects={featured} />
+			<KeywordMarquee />
 			<HomeProjects projects={featured} />
 			<AboutStrip bioFirst={bioFirst} />
 			<ContactCTA />

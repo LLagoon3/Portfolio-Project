@@ -25,7 +25,7 @@ export default function HomeHero({ tagline }) {
 							style={{ background: '#22c55e' }}
 						/>
 					</span>
-					<Eyebrow>새 협업 가능 · 2026 Q3</Eyebrow>
+					<Eyebrow>신입 채용 검토 중</Eyebrow>
 				</div>
 				<div className="hidden sm:block">
 					<Eyebrow>서울, 한국 · KST</Eyebrow>
@@ -43,8 +43,7 @@ export default function HomeHero({ tagline }) {
 				items={[
 					{ text: '이석호' },
 					{ br: true },
-					{ text: '포트폴리오' },
-					{ text: '2026.', accent: true },
+					{ text: '포트폴리오', accent: true },
 				]}
 			/>
 

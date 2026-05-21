@@ -139,11 +139,20 @@ PR 및 push 시 자동 실행:
 1. CI 워크플로우 성공 확인 (workflow_run)
 2. Self-hosted runner 에서 `IMAGE_TAG=<env>-<short-sha>` 로 `scripts/deploy.sh [prod|dev]` 실행
 3. `scripts/deploy.sh`:
-   - `git fetch/reset origin/main` 으로 호스트의 compose 정의 동기화 (인프라 단일 출처). dev 의 코드는 GHCR 이미지 안에 들어있으므로 호스트 git 상태와 무관
+   - **deploy 전용 디렉토리** (`~/.cache/portfolio-deploy`) 에서 `git fetch/reset origin/main` 으로 compose 정의 동기화. 첫 실행 시 자동으로 `git clone --branch main --depth 1` (호스트 운영자 setup 불필요). 호스트의 워크스페이스 디렉토리(`ORIG_PROJECT_DIR`) 의 작업 중인 git 상태는 영향받지 않는다
    - (prod 만) `DEPLOY_SHA` 가 더 이상 `origin/main` 의 tip 이 아니면 배포 중단 (stale 이미지 되감기 방지)
-   - `docker compose -p <project> ... pull web api` 로 GHCR 에서 해당 SHA 이미지만 가져오기 (mysql 은 mutable 태그 digest 변경으로 인한 재기동 회피 목적으로 pull 대상에서 제외)
+   - `docker compose -p <project> ... --env-file <ORIG_PROJECT_DIR>/.env[.dev] pull web api` 로 GHCR 에서 해당 SHA 이미지만 가져오기. `.env` / `.env.dev` 는 git tracked 가 아니므로 호스트 워크스페이스의 절대경로로 직접 참조 (mysql 은 mutable 태그 digest 변경으로 인한 재기동 회피 목적으로 pull 대상에서 제외)
    - `docker compose -p <project> ... up -d` 로 새 이미지로 web/api 컨테이너 교체. mysql (prod 만) 은 그대로 유지됨
    - mysql 자체 설정·이미지 변경이 필요한 경우 호스트에서 `docker compose --profile prod up -d mysql` 수동 호출
+
+**디렉토리 역할 분리**:
+
+| 디렉토리 | 용도 |
+|---|---|
+| `ORIG_PROJECT_DIR` (`/home/lagoon3/.openclaw/workspace/Portfolio-Project`) | 운영자 작업 (브랜치 / commit / PR). `.env`, `.env.dev` 등 환경 파일 보관 |
+| `DEPLOY_DIR` (`~/.cache/portfolio-deploy`) | deploy.sh 가 매번 `git reset --hard origin/main` 으로 sync. compose 정의 단일 출처. 운영자가 직접 손댈 일 없음 |
+
+docker named volume (`mysql_data`, `uploads`) 과 compose project name 은 디렉토리 위치와 무관하게 동작하므로 분리에 따른 컨테이너 / 데이터 영향 없음.
 
 #### dev 환경 특징
 

@@ -1,11 +1,14 @@
-import { motion } from 'framer-motion';
-import AboutClients from '../components/about/AboutClients';
-import AboutCounter from '../components/about/AboutCounter';
-import AboutMeBio from '../components/about/AboutMeBio';
+import BoldLayout from '../components/layout/bold/BoldLayout';
 import PagesMetaHead from '../components/PagesMetaHead';
+import AboutHero from '../components/about/bold/AboutHero';
+import AboutBioSection from '../components/about/bold/AboutBioSection';
+import AboutCounters from '../components/about/bold/AboutCounters';
+import AboutPrinciples from '../components/about/bold/AboutPrinciples';
+import AboutJourney from '../components/about/bold/AboutJourney';
+import AboutBrands from '../components/about/bold/AboutBrands';
+import AboutContactCTA from '../components/about/bold/AboutContactCTA';
 
-const API_BASE_URL =
-	process.env.API_INTERNAL_URL || 'http://localhost:7341';
+const API_BASE_URL = process.env.API_INTERNAL_URL || 'http://localhost:7341';
 
 const EMPTY_ABOUT = {
 	name: '',
@@ -14,52 +17,26 @@ const EMPTY_ABOUT = {
 	bio: [],
 };
 
-// 나중에 다시 활용할 수 있게 about 하위 섹션들은 삭제하지 않고 토글로 숨김 처리.
-const SHOW_ABOUT_COUNTER = false;
-const SHOW_ABOUT_CLIENTS = false;
-
 function About({ about }) {
 	return (
-		<div>
+		<>
 			<PagesMetaHead title="About Me" />
-
-			<motion.div
-				initial={false}
-				animate={{ opacity: 1, delay: 1 }}
-				exit={{ opacity: 0 }}
-				className="container mx-auto"
-			>
-				<AboutMeBio
-					name={about.name}
-					tagline={about.tagline}
-					profileImage={about.profileImage}
-					bio={about.bio}
-				/>
-			</motion.div>
-
-			{SHOW_ABOUT_COUNTER && (
-				<motion.div
-					initial={false}
-					animate={{ opacity: 1, delay: 1 }}
-					exit={{ opacity: 0 }}
-				>
-					<AboutCounter />
-				</motion.div>
-			)}
-
-			{SHOW_ABOUT_CLIENTS && (
-				<motion.div
-					initial={false}
-					animate={{ opacity: 1, delay: 1 }}
-					exit={{ opacity: 0 }}
-					className="container mx-auto"
-				>
-					<AboutClients />
-				</motion.div>
-			)}
-		</div>
+			<AboutHero
+				name={about.name}
+				tagline={about.tagline}
+				profileImage={about.profileImage}
+			/>
+			<AboutBioSection bio={about.bio} />
+			<AboutCounters />
+			<AboutPrinciples />
+			<AboutJourney />
+			<AboutBrands />
+			<AboutContactCTA />
+		</>
 	);
 }
+
+About.getLayout = (page) => <BoldLayout>{page}</BoldLayout>;
 
 export async function getServerSideProps() {
 	try {

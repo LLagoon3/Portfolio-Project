@@ -15,6 +15,10 @@ const navLinks = [
 export default function BoldHeader() {
 	const [activeTheme, setTheme, mounted] = useThemeSwitcher();
 	const [showModal, setShowModal] = useState(false);
+	// 토글 클릭 횟수 — 매 클릭마다 ◐ 아이콘이 한 바퀴 더 돈다 (180deg 가 자연).
+	const [toggleSpin, setToggleSpin] = useState(0);
+	// scrollY > 50 일 때 헤더 backdrop 강화 (hero 위에서는 얕고, 본문에서는 진해짐).
+	const [scrolled, setScrolled] = useState(false);
 
 	// showModal 변화에 따라 <html> overflow-y-hidden 동기화.
 	// unmount 시점에도 반드시 해제 (모달 열린 상태로 페이지 이동 시 lock 잔존 방지).
@@ -27,17 +31,33 @@ export default function BoldHeader() {
 		};
 	}, [showModal]);
 
+	// scroll 위치 따라 backdrop opacity 단계 토글. passive listener.
+	useEffect(() => {
+		if (typeof window === 'undefined') return undefined;
+		const update = () => setScrolled(window.scrollY > 50);
+		update();
+		window.addEventListener('scroll', update, { passive: true });
+		return () => window.removeEventListener('scroll', update);
+	}, []);
+
 	const toggleModal = () => {
 		setShowModal((v) => !v);
+	};
+
+	const handleThemeToggle = () => {
+		setTheme(activeTheme);
+		setToggleSpin((n) => n + 1);
 	};
 
 	return (
 		<>
 			<header
-				className="fixed top-0 inset-x-0 z-50 backdrop-blur-md border-b"
+				className="fixed top-0 inset-x-0 z-50 backdrop-blur-md border-b transition-[background,border-color] duration-300"
 				style={{
-					background: 'color-mix(in oklab, var(--ink) 70%, transparent)',
-					borderColor: 'var(--line)',
+					background: scrolled
+						? 'color-mix(in oklab, var(--ink) 88%, transparent)'
+						: 'color-mix(in oklab, var(--ink) 60%, transparent)',
+					borderColor: scrolled ? 'var(--line-strong)' : 'var(--line)',
 				}}
 			>
 				<nav className="max-w-[1640px] mx-auto px-6 lg:px-12 h-16 flex items-center justify-between">
@@ -77,7 +97,7 @@ export default function BoldHeader() {
 					<div className="flex items-center gap-2 sm:gap-3">
 						<button
 							type="button"
-							onClick={() => setTheme(activeTheme)}
+							onClick={handleThemeToggle}
 							aria-label="테마 전환"
 							className="bold-interactive text-xs rounded-full px-2.5 sm:px-3 py-1.5 transition"
 							style={{
@@ -89,7 +109,13 @@ export default function BoldHeader() {
 							<span className="hidden sm:inline">
 								{mounted ? (activeTheme === 'dark' ? 'LIGHT' : 'DARK') : 'DARK / LIGHT'}
 							</span>
-							<span className="sm:hidden" aria-hidden="true">◐</span>
+							<span
+								className="sm:hidden inline-block transition-transform duration-500 ease-[cubic-bezier(0.2,0.7,0.2,1)]"
+								style={{ transform: `rotate(${toggleSpin * 180}deg)` }}
+								aria-hidden="true"
+							>
+								◐
+							</span>
 						</button>
 						<button
 							type="button"

@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.1.4](https://github.com/LLagoon3/Portfolio-Project/compare/portfolio-project-v0.1.3...portfolio-project-v0.1.4) (2026-05-21)
+
+
+### Bug Fixes
+
+* **repo:** dev api 가 prod default 네트워크 대신 mysql 전용 좁은 네트워크 사용 ([57d72e3](https://github.com/LLagoon3/Portfolio-Project/commit/57d72e35daf5ef1a1b70d274ea73c8c5f0f35eff)), closes [#65](https://github.com/LLagoon3/Portfolio-Project/issues/65)
+* **repo:** dev api 가 prod mysql 컨테이너에 직접 접근하도록 네트워크 join ([1ac168e](https://github.com/LLagoon3/Portfolio-Project/commit/1ac168e9c7221990633cf84e81cb375807ea51e0)), closes [#65](https://github.com/LLagoon3/Portfolio-Project/issues/65)
+* **repo:** dev compose overlay 가 .env.dev 만 로드하도록 env_file override ([62aabc8](https://github.com/LLagoon3/Portfolio-Project/commit/62aabc87a131775bf1af08b043475969f0fb3a3a)), closes [#63](https://github.com/LLagoon3/Portfolio-Project/issues/63)
+* **repo:** 배포 시 mysql 컨테이너 재기동 회피 ([5516bf5](https://github.com/LLagoon3/Portfolio-Project/commit/5516bf59d352bdef6a6f7b996acf51e95bfaea50)), closes [#60](https://github.com/LLagoon3/Portfolio-Project/issues/60)
+
 ## [0.1.3](https://github.com/LLagoon3/Portfolio-Project/compare/portfolio-project-v0.1.2...portfolio-project-v0.1.3) (2026-04-22)
 
 

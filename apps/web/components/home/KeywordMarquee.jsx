@@ -1,25 +1,20 @@
 import Reveal from '../primitives/Reveal';
 import Marquee from '../primitives/Marquee';
 
-// 고정 키워드 + 프로젝트 카테고리 unique 를 mix.
-const BASE_KEYWORDS = [
-	'Backend Architecture',
+// 라군의 실제 스택 / 관심 영역. 영문 통일 (시안 톤 유지).
+const KEYWORDS = [
 	'Realtime Systems',
-	'Distributed Data',
-	'Developer Experience',
-	'API Design',
+	'Performance Optimization',
 	'Observability',
+	'Operations Automation',
+	'Redis & Caching',
+	'MCP & AI Integration',
 ];
 
-export default function KeywordMarquee({ projects = [] }) {
-	const categorySet = Array.from(
-		new Set(projects.map((p) => p.category).filter(Boolean))
-	);
-	const items = [...BASE_KEYWORDS, ...categorySet];
-
+export default function KeywordMarquee() {
 	return (
 		<Reveal>
-			<Marquee items={items} duration={36} />
+			<Marquee items={KEYWORDS} duration={36} />
 		</Reveal>
 	);
 }

@@ -1,5 +1,7 @@
+import { useState } from 'react';
 import Reveal from '../primitives/Reveal';
 import Eyebrow from '../primitives/Eyebrow';
+import Toast from '../primitives/Toast';
 
 // 환경변수 미설정 시 fallback. 후속 PR 에서 about.contactEmail 필드 도입 시 SSR 로 교체.
 const DEFAULT_EMAIL =
@@ -11,6 +13,19 @@ const NOTION_URL =
 
 export default function ContactCTA({ email }) {
 	const target = email || DEFAULT_EMAIL;
+	const [toastVisible, setToastVisible] = useState(false);
+
+	// mailto 기본 동작은 유지하면서 클립보드 복사 + 토스트.
+	// clipboard API 가 지원 안 되거나 실패하면 fallback 없이 silent — mailto 는 정상 동작.
+	const handleEmailClick = (e) => {
+		if (typeof navigator !== 'undefined' && navigator.clipboard) {
+			navigator.clipboard
+				.writeText(target)
+				.then(() => setToastVisible(true))
+				.catch(() => undefined);
+		}
+		// mailto 는 default 동작에 맡김 — preventDefault 안 함.
+	};
 
 	return (
 		<section
@@ -22,13 +37,16 @@ export default function ContactCTA({ email }) {
 				<Eyebrow className="mb-6">— Let&apos;s talk</Eyebrow>
 				<a
 					href={`mailto:${target}`}
+					onClick={handleEmailClick}
 					className="bold-interactive block font-general-semibold hover:opacity-80 transition-opacity break-words"
 					style={{
 						// 글자수 + 화면 너비 기반 동적 폰트로 한 줄 보장.
-						// 수식: (100vw - 좌우 px-5 padding 2.5rem) / 이메일 글자수 / 영문 폭 비율(≈0.55)
+						// 수식: (100vw - 좌우 padding + 안전 마진 3rem) / (이메일 글자수 + 끝 '.' 1)
+						//        / 영문 폭 비율(≈0.7)
 						//   = 한 줄에 fit 되는 fontSize. min(8rem, ...) 으로 큰 화면 cap.
-						// 0.55 는 GeneralSans-Semibold 의 평균 영문 글자 가로 비율 근사값.
-						fontSize: `min(8rem, calc((100vw - 2.5rem) / ${target.length} / 0.55))`,
+						// 비율 0.7 은 GeneralSans-Semibold 의 영문 평균 폭 + 다양한 글자 폭 차이
+						// (m/w/@ wider) 까지 고려한 보수값. 첫 시도 0.55 는 줄바꿈 발생.
+						fontSize: `min(8rem, calc((100vw - 3rem) / ${target.length + 1} / 0.7))`,
 						letterSpacing: '-0.05em',
 						lineHeight: 1,
 						color: 'var(--paper)',
@@ -86,6 +104,11 @@ export default function ContactCTA({ email }) {
 					</div>
 				</div>
 			</Reveal>
+			<Toast
+				visible={toastVisible}
+				message="이메일 주소가 복사됐어요"
+				onClose={() => setToastVisible(false)}
+			/>
 		</section>
 	);
 }

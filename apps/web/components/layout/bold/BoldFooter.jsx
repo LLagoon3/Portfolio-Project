@@ -14,7 +14,7 @@ export default function BoldFooter() {
 				}}
 			>
 				<span>© {year} SEOKHO LEE — LAGOON PORTFOLIO</span>
-				<span>BUILT IN SEOUL ✦</span>
+				<span>BUILT IN SEOUL ·</span>
 			</div>
 		</footer>
 	);

@@ -72,6 +72,15 @@ if [ ! -f "$ENV_FILE_ABS" ]; then
   echo "=== Missing env file: $ENV_FILE_ABS ===" >&2
   exit 1
 fi
+
+# docker-compose.yml / docker-compose.dev.yml 의 service-level `env_file:` 디렉티브는
+# compose CLI 의 `--env-file` 과 다른 메커니즘이고, **compose 파일 디렉토리**(=DEPLOY_DIR)
+# 기준으로 path 를 해석한다. 따라서 `--env-file` 만 절대경로로 줘도 service env_file 은
+# DEPLOY_DIR 내부의 `.env` / `.env.dev` 를 찾고 실패한다.
+# 호스트 ORIG_PROJECT_DIR 의 실파일을 DEPLOY_DIR 에 symlink 해서 두 메커니즘 모두 만족시킨다.
+# idempotent — 매번 실행해도 동일 결과.
+ln -sf "$ENV_FILE_ABS" "$DEPLOY_DIR/$ENV_FILE"
+
 COMPOSE=(docker compose -p "$COMPOSE_PROJECT" "${COMPOSE_FILES[@]}" "${COMPOSE_PROFILES[@]}" --env-file "$ENV_FILE_ABS")
 
 echo "=== Pulling images (env=$ENV_NAME tag=$TAG) ==="

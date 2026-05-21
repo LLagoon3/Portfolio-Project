@@ -1,27 +1,10 @@
 import Reveal from '../../primitives/Reveal';
 import Eyebrow from '../../primitives/Eyebrow';
 
-// 라군 profile.md 의 핵심 강점 4개. 후속 PR 에서 /api/about.principles[] 도입.
-const PRINCIPLES = [
-	{
-		title: '원인을 끝까지 파고든다',
-		body: '문제가 생기면 겉으로 드러난 증상보다, 왜 이런 문제가 발생했는지부터 확인합니다. 다음에 또 안 일어나도록.',
-	},
-	{
-		title: '운영을 고려한 백엔드 시야',
-		body: 'API 개발에만 머물지 않고 로그, 성능, 데이터 흐름, 장애 대응, 운영 효율까지 함께 봅니다.',
-	},
-	{
-		title: '실시간성과 성능 최적화',
-		body: 'Redis, 캐시, 큐, 인덱스, 페이지네이션. 백엔드에서 자주 마주치는 성능 문제를 실제 프로젝트에서 다뤘습니다.',
-	},
-	{
-		title: '원리를 이해하고 쓴다',
-		body: '커스텀 웹 프레임워크 프로젝트에서 Node.js net 모듈 위 HTTP 파싱, Router, Middleware 까지 직접 구현. 내부 동작 원리를 이해하려 합니다.',
-	},
-];
+// principles 가 빈 배열이면 섹션 미렌더.
+export default function AboutPrinciples({ principles = [] }) {
+	if (!principles.length) return null;
 
-export default function AboutPrinciples() {
 	return (
 		<section
 			className="py-20 lg:py-24 border-t"
@@ -48,7 +31,7 @@ export default function AboutPrinciples() {
 								paddingRight: '0.1em',
 							}}
 						>
-							네 가지 원칙.
+							{principles.length}가지 원칙.
 						</span>
 					</h2>
 				</Reveal>
@@ -58,14 +41,14 @@ export default function AboutPrinciples() {
 						style={{ color: 'var(--paper-dim)' }}
 					>
 						기술은 결국 서비스를 더 잘 굴러가게 만드는 도구라고 생각합니다.
-						아래는 어떤 코드를 쓸지 고민할 때 기준으로 삼는 네 가지 원칙입니다.
+						아래는 어떤 코드를 쓸지 고민할 때 기준으로 삼는 원칙들입니다.
 					</p>
 				</Reveal>
 			</div>
 
 			<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
-				{PRINCIPLES.map((p, idx) => (
-					<Reveal key={p.title} delay={idx * 0.08}>
+				{principles.map((p, idx) => (
+					<Reveal key={`${p.title}-${idx}`} delay={idx * 0.08}>
 						<div
 							className="bold-interactive rounded-[18px] p-6 transition-all"
 							style={{

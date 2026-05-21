@@ -15,6 +15,11 @@ const EMPTY_ABOUT = {
 	tagline: null,
 	profileImage: '/images/profile.jpeg',
 	bio: [],
+	availability: null,
+	stats: [],
+	principles: [],
+	journey: [],
+	stacks: [],
 };
 
 function About({ about }) {
@@ -25,12 +30,13 @@ function About({ about }) {
 				name={about.name}
 				tagline={about.tagline}
 				profileImage={about.profileImage}
+				availability={about.availability}
 			/>
 			<AboutBioSection bio={about.bio} />
-			<AboutCounters />
-			<AboutPrinciples />
-			<AboutJourney />
-			<AboutBrands />
+			<AboutCounters stats={about.stats} />
+			<AboutPrinciples principles={about.principles} />
+			<AboutJourney journey={about.journey} />
+			<AboutBrands stacks={about.stacks} />
 			<AboutContactCTA />
 		</>
 	);

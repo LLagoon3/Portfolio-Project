@@ -17,8 +17,14 @@ export default function WordReveal({
 		<div className={`bold-word-reveal ${className}`} style={style}>
 			{items.map((item, idx) => {
 				if (item.br) return <br key={`br-${idx}`} />;
+				// italic accent 단어의 마지막 글자가 inline-block + overflow-hidden 박스 밖으로
+				// 살짝 비져나가 잘리는 현상이 있어 paddingRight 로 박스 너비 보강.
 				const innerStyle = item.accent
-					? { color: 'var(--indigo-soft)', fontStyle: 'italic' }
+					? {
+							color: 'var(--indigo-soft)',
+							fontStyle: 'italic',
+							paddingRight: '0.1em',
+						}
 					: undefined;
 				const sep = idx < items.length - 1 && !items[idx + 1]?.br ? ' ' : '';
 

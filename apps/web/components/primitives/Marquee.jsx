@@ -45,7 +45,7 @@ export default function Marquee({ items = [], duration = 36, className = '' }) {
 									fontSize: '1.2rem',
 								}}
 							>
-								✦
+								·
 							</span>
 						</span>
 					))

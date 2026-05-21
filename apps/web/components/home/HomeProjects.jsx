@@ -41,7 +41,7 @@ export default function HomeProjects({ projects = [] }) {
 			{/* 헤더 */}
 			<Reveal className="flex items-end justify-between mb-10 lg:mb-14">
 				<div>
-					<Eyebrow className="mb-4">— Selected Work, 2026</Eyebrow>
+					<Eyebrow className="mb-4">— Selected Work</Eyebrow>
 					<h2
 						className="font-general-semibold"
 						style={{
@@ -50,7 +50,7 @@ export default function HomeProjects({ projects = [] }) {
 							lineHeight: 0.88,
 						}}
 					>
-						작업들
+						Projects
 						<span style={{ color: 'var(--indigo-soft)' }}>.</span>
 					</h2>
 				</div>

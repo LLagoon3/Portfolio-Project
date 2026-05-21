@@ -265,6 +265,14 @@ a {
 	--line-strong: rgba(255, 255, 255, 0.16);
 }
 
+/* Bold 페이지의 한국어 본문은 단어 중간이 아닌 단어 경계에서 줄바꿈되도록 한다.
+ * CJK 의 default 는 글자 단위 줄바꿈 → 'word-break: keep-all' 로 단어 단위 유지.
+ * 너무 긴 영문 단어 (예: URL) 가 컨테이너 폭을 넘으면 break-word 로 풀어준다. */
+.bold-root p {
+	word-break: keep-all;
+	overflow-wrap: break-word;
+}
+
 /* BoldLayout wrapper 에 .bold-light 가 토글되어 변수 swap (DARK/LIGHT).
  * 라이트모드는 어두운 글자 + 밝은 배경이라 다크모드 톤 (60% paper-dim) 으로는 대비 부족.
  * paper-dim 80%, paper-faint 50% 로 진하게 조정해 nav 링크 / 보조 메타 가독성 보강. */

@@ -24,9 +24,11 @@ export default function ContactCTA({ email }) {
 					href={`mailto:${target}`}
 					className="bold-interactive block font-general-semibold hover:opacity-80 transition-opacity break-words"
 					style={{
-						// 모바일에서 큰 이메일이 break-all 로 어색하게 잘리던 문제를 해결.
-						// break-words 로 단어 경계 우선 + 모바일 fontSize 하한을 약간 낮춰 줄바꿈 횟수 자체를 줄임.
-						fontSize: 'clamp(2rem, 9vw, 8rem)',
+						// 글자수 + 화면 너비 기반 동적 폰트로 한 줄 보장.
+						// 수식: (100vw - 좌우 px-5 padding 2.5rem) / 이메일 글자수 / 영문 폭 비율(≈0.55)
+						//   = 한 줄에 fit 되는 fontSize. min(8rem, ...) 으로 큰 화면 cap.
+						// 0.55 는 GeneralSans-Semibold 의 평균 영문 글자 가로 비율 근사값.
+						fontSize: `min(8rem, calc((100vw - 2.5rem) / ${target.length} / 0.55))`,
 						letterSpacing: '-0.05em',
 						lineHeight: 1,
 						color: 'var(--paper)',
@@ -47,6 +49,7 @@ export default function ContactCTA({ email }) {
 				<div className="col-span-12 lg:col-span-8">
 					<p className="leading-relaxed max-w-xl" style={{ color: 'var(--paper-dim)' }}>
 						백엔드 개발자로서 더 나은 서비스를 만드는 팀에 기여하고 싶습니다.
+						<br />
 						언제든 편하게 연락 주세요.
 					</p>
 				</div>

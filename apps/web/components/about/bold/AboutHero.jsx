@@ -60,15 +60,18 @@ export default function AboutHero({ name, tagline, profileImage }) {
 					<WordReveal
 						className="font-general-semibold"
 						style={{
+							// 큰 글씨에서 lineHeight 0.88 은 한국어 자모가 윗줄 / 아랫줄 사이 겹쳐 보임.
+							// 1.0 으로 늘려 여백 확보 (Bold 톤 유지하면서 가독성 우선).
 							fontSize: 'clamp(2.6rem, 10.5vw, 11rem)',
 							letterSpacing: '-0.04em',
-							lineHeight: 0.88,
+							lineHeight: 1.0,
 						}}
 						items={[
-							{ text: '안녕,' },
-							{ text: '저는' },
+							{ text: '안녕하세요,' },
 							{ br: true },
-							{ text: displayName, accent: true },
+							{ text: '개발자' },
+							// noSep: '이석호' + '입니다.' 사이 공백 없이 자연스러운 한국어 결합.
+							{ text: displayName, accent: true, noSep: true },
 							{ text: '입니다.' },
 						]}
 					/>

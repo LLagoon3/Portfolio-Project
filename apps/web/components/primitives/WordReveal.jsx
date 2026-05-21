@@ -26,7 +26,12 @@ export default function WordReveal({
 							paddingRight: '0.1em',
 						}
 					: undefined;
-				const sep = idx < items.length - 1 && !items[idx + 1]?.br ? ' ' : '';
+				// 다음 단어와 공백 분리. 단 noSep 가 true 면 공백 없이 직접 붙임
+				// (예: '이석호' + '입니다' 처럼 한국어 토씨와 함께 가는 경우).
+				const sep =
+					idx < items.length - 1 && !items[idx + 1]?.br && !item.noSep
+						? ' '
+						: '';
 
 				if (reduced) {
 					return (

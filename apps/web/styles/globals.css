@@ -265,10 +265,14 @@ a {
 	--line-strong: rgba(255, 255, 255, 0.16);
 }
 
-/* BoldLayout wrapper 에 .bold-light 가 토글되어 변수 swap (DARK/LIGHT) */
+/* BoldLayout wrapper 에 .bold-light 가 토글되어 변수 swap (DARK/LIGHT).
+ * 라이트모드는 어두운 글자 + 밝은 배경이라 다크모드 톤 (60% paper-dim) 으로는 대비 부족.
+ * paper-dim 80%, paper-faint 50% 로 진하게 조정해 nav 링크 / 보조 메타 가독성 보강. */
 .bold-light {
 	--ink: #fbfaf7;
 	--paper: #0a0f17;
+	--paper-dim: color-mix(in oklab, var(--paper) 80%, transparent);
+	--paper-faint: color-mix(in oklab, var(--paper) 50%, transparent);
 	--line: rgba(13, 36, 56, 0.08);
 	--line-strong: rgba(13, 36, 56, 0.18);
 }

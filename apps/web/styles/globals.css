@@ -291,6 +291,72 @@ html {
 		color 0.4s cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 
+/* About Bio 섹션의 마크다운 prose 스타일.
+ * ReactMarkdown 이 렌더하는 p / strong / h3 / ul / li 에 적용. */
+.bold-prose {
+	color: color-mix(in oklab, var(--paper) 78%, transparent);
+	line-height: 1.7;
+	font-size: clamp(1rem, 1.05vw, 1.1rem);
+}
+.bold-prose p {
+	margin: 0 0 1.1rem;
+}
+.bold-prose p:last-child {
+	margin-bottom: 0;
+}
+.bold-prose strong {
+	color: var(--paper);
+	font-weight: 600;
+}
+.bold-prose h1,
+.bold-prose h2,
+.bold-prose h3,
+.bold-prose h4 {
+	font-family: 'GeneralSans-Semibold', sans-serif;
+	color: var(--paper);
+	margin: 1.5rem 0 0.5rem;
+}
+.bold-prose h3 {
+	font-size: 1.25rem;
+}
+.bold-prose ul,
+.bold-prose ol {
+	padding-left: 0;
+	list-style: none;
+	margin: 0.4rem 0 1.1rem;
+}
+.bold-prose li {
+	position: relative;
+	padding-left: 1.5rem;
+	margin: 0.4rem 0;
+}
+.bold-prose li::before {
+	content: '';
+	position: absolute;
+	left: 0;
+	top: 0.7em;
+	width: 16px;
+	height: 1px;
+	background: var(--indigo-soft);
+}
+.bold-prose a {
+	color: var(--indigo-soft);
+	text-decoration: underline;
+}
+
+/* About Journey 타임라인 row — 좌 130px year / 우 내용. 모바일 stack. */
+.bold-tl-row {
+	display: grid;
+	grid-template-columns: 130px 1fr;
+	gap: 28px;
+}
+@media (max-width: 768px) {
+	.bold-tl-row {
+		grid-template-columns: 1fr;
+		gap: 8px;
+	}
+}
+
 /* Bold 페이지의 한국어 본문은 단어 중간이 아닌 단어 경계에서 줄바꿈되도록 한다.
  * CJK 의 default 는 글자 단위 줄바꿈 → 'word-break: keep-all' 로 단어 단위 유지.
  * 너무 긴 영문 단어 (예: URL) 가 컨테이너 폭을 넘으면 break-word 로 풀어준다. */

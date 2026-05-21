@@ -265,6 +265,22 @@ a {
 	--line-strong: rgba(255, 255, 255, 0.16);
 }
 
+/* 앵커 클릭(#work 등) 시 즉시 점프가 아닌 부드러운 스크롤.
+ * Bold 페이지의 '작업 보기' 같은 CTA 가 자연스럽게 동작한다.
+ * reduced-motion 글로벌 룰이 scroll-behavior: auto 로 자동 override. */
+html {
+	scroll-behavior: smooth;
+}
+
+/* Bold 페이지 wrapper 의 DARK/LIGHT 전환 시 색상을 부드럽게 보간.
+ * CSS 변수 자체는 보간되지 않지만, background-color/color 의 변경은
+ * transition 대상이 되어 즉시 점프가 아닌 fade 가 일어난다. */
+.bold-root {
+	transition:
+		background-color 0.4s cubic-bezier(0.2, 0.7, 0.2, 1),
+		color 0.4s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
 /* Bold 페이지의 한국어 본문은 단어 중간이 아닌 단어 경계에서 줄바꿈되도록 한다.
  * CJK 의 default 는 글자 단위 줄바꿈 → 'word-break: keep-all' 로 단어 단위 유지.
  * 너무 긴 영문 단어 (예: URL) 가 컨테이너 폭을 넘으면 break-word 로 풀어준다. */

@@ -13,12 +13,13 @@ export default function Toast({ visible, message, onClose, duration = 2000 }) {
 		<div
 			role="status"
 			aria-live="polite"
-			className="fixed z-[80] left-1/2 -translate-x-1/2 bottom-8 px-4 py-2.5 rounded-full text-sm pointer-events-none"
+			className="fixed z-[80] left-1/2 -translate-x-1/2 bottom-8 px-4 py-2.5 rounded-2xl text-sm pointer-events-none text-center"
 			style={{
 				background: 'var(--paper)',
 				color: 'var(--ink)',
 				fontFamily: 'ui-monospace, "SF Mono", Menlo, monospace',
 				boxShadow: '0 8px 30px -10px rgba(0,0,0,0.3)',
+				whiteSpace: 'pre-line',
 				opacity: visible ? 1 : 0,
 				transform: visible
 					? 'translate(-50%, 0)'

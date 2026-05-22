@@ -73,10 +73,7 @@ export default function BoldContactForm() {
 	};
 
 	return (
-		<section
-			className="py-16 lg:py-20 border-t"
-			style={{ borderColor: 'var(--line)' }}
-		>
+		<section className="py-0">
 			<Reveal>
 				<Eyebrow className="mb-6">— Send a message</Eyebrow>
 				<form onSubmit={handleSubmit} className="flex flex-col gap-5">
@@ -178,7 +175,7 @@ export default function BoldContactForm() {
 			</Reveal>
 			<Toast
 				visible={toastVisible}
-				message="메시지가 전송됐어요. 곧 회신드릴게요."
+				message={'메시지가 전송됐어요.\n곧 회신드릴게요.'}
 				onClose={() => setToastVisible(false)}
 			/>
 		</section>

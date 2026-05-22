@@ -66,6 +66,7 @@ describe('ProjectsService', () => {
         url: 'a',
         category: 'Web Application',
         img: '/img.jpg',
+        headerPublishDate: 'Jan 1, 2026',
       },
       {
         id: 2,
@@ -73,6 +74,7 @@ describe('ProjectsService', () => {
         url: 'b',
         category: 'Web Application',
         img: '/img.jpg',
+        headerPublishDate: 'Jan 1, 2026',
       },
     ]);
   });

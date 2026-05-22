@@ -21,7 +21,7 @@ export default function AboutBrands({ stacks = [] }) {
 							lineHeight: 0.88,
 						}}
 					>
-						실제로 다뤄본 도구들
+						문제를 해결하며 사용한 기술들
 						<span style={{ color: 'var(--indigo-soft)' }}>.</span>
 					</h2>
 				</div>

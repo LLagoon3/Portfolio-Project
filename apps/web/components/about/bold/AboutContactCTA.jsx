@@ -29,16 +29,17 @@ export default function AboutContactCTA() {
 								lineHeight: 1,
 							}}
 						>
-							함께할{' '}
-							<span
-								style={{
-									display: 'inline-block',
-									color: 'var(--indigo-soft)',
-									fontStyle: 'italic',
-									paddingRight: '0.1em',
-								}}
-							>
-								기회를
+							<span style={{ color: 'var(--indigo-soft)' }}>
+								함께할{' '}
+								<span
+									style={{
+										display: 'inline-block',
+										fontStyle: 'italic',
+										paddingRight: '0.1em',
+									}}
+								>
+									기회를
+								</span>
 							</span>
 							<br />
 							기다립니다.

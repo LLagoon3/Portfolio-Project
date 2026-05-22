@@ -63,11 +63,14 @@ export default function AboutHero({ name, tagline, profileImage, availability })
 					<WordReveal
 						className="font-general-semibold"
 						style={{
-							// 큰 글씨에서 lineHeight 0.88 은 한국어 자모가 윗줄 / 아랫줄 사이 겹쳐 보임.
-							// 1.0 으로 늘려 여백 확보 (Bold 톤 유지하면서 가독성 우선).
-							fontSize: 'clamp(2.6rem, 10.5vw, 11rem)',
+							// 가장 긴 줄 '집중하는 개발자,' (~8em) 기준 동적 폰트 — 좁은 viewport 에서
+							// '개발자' 가 자모 단위로 깨져 4줄이 되는 것을 막기 위해 BoldContactBigEmail
+							// 의 calc 패턴을 차용. word-break: keep-all 로 CJK 자모 분리 보호. col-span-8
+							// 너비에 맞춰 cap 은 4.5rem (line 8em * 4.5rem = 36em < 좁은 col 너비).
+							fontSize: 'clamp(2rem, calc((100vw - 3rem) / 8), 4.5rem)',
 							letterSpacing: '-0.04em',
 							lineHeight: 1.0,
+							wordBreak: 'keep-all',
 						}}
 						items={[
 							{ text: '문제의 본질에' },

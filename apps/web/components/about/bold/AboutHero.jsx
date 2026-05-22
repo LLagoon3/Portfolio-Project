@@ -58,16 +58,18 @@ export default function AboutHero({ name, tagline, profileImage, availability })
 			</Reveal>
 
 			{/* 거대 이름 + portrait */}
-			<div className="grid grid-cols-12 gap-6 lg:gap-12 items-end">
-				<div className="col-span-12 lg:col-span-8">
+			{/* col-span-9/3 + items-center + portrait max-w 로 heading/portrait 시각 균형을
+			    맞춤 (이전 8/4 + items-end 는 portrait 가 heading 보다 훨씬 길어 위쪽 공백이
+			    크게 남았음). */}
+			<div className="grid grid-cols-12 gap-6 lg:gap-12 items-center">
+				<div className="col-span-12 lg:col-span-9">
 					<WordReveal
 						className="font-general-semibold"
 						style={{
-							// 가장 긴 줄 '집중하는 개발자,' (~8em) 기준 동적 폰트 — 좁은 viewport 에서
-							// '개발자' 가 자모 단위로 깨져 4줄이 되는 것을 막기 위해 BoldContactBigEmail
-							// 의 calc 패턴을 차용. word-break: keep-all 로 CJK 자모 분리 보호. col-span-8
-							// 너비에 맞춰 cap 은 4.5rem (line 8em * 4.5rem = 36em < 좁은 col 너비).
-							fontSize: 'clamp(2rem, calc((100vw - 3rem) / 8), 4.5rem)',
+							// 가장 긴 줄 '집중하는 개발자,' (9 char ~1em) 기준 동적 폰트 + word-break:
+							// keep-all 로 좁은 viewport 자모 분리/줄꺾임을 차단. col-span-9 at 1024+
+							// (~672px) 에 맞춰 cap 5rem 안전 (line ~9em * 5rem * 0.96 = 43em < 671px).
+							fontSize: 'clamp(2.3rem, calc((100vw - 3rem) / 7), 5rem)',
 							letterSpacing: '-0.04em',
 							lineHeight: 1.0,
 							wordBreak: 'keep-all',
@@ -83,9 +85,12 @@ export default function AboutHero({ name, tagline, profileImage, availability })
 						]}
 					/>
 				</div>
-				<Reveal delay={0.16} className="col-span-12 lg:col-span-4">
+				<Reveal
+					delay={0.16}
+					className="col-span-12 lg:col-span-3 flex justify-center lg:justify-end"
+				>
 					<div
-						className="relative rounded-[18px] overflow-hidden"
+						className="relative rounded-[18px] overflow-hidden w-full max-w-[260px] lg:max-w-none"
 						style={{
 							border: '1px solid var(--line-strong)',
 							aspectRatio: '4 / 5',

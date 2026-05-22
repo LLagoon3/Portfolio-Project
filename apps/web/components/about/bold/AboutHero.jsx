@@ -38,7 +38,7 @@ export default function AboutHero({ name, tagline, profileImage, availability })
 						홈
 					</Link>
 					<span className="w-6 h-px" style={{ background: 'var(--line-strong)' }} />
-					<Eyebrow>About — 2026</Eyebrow>
+					<Eyebrow>About</Eyebrow>
 				</div>
 				{statusLabel && (
 					<div className="hidden sm:flex items-center gap-2">
@@ -70,9 +70,10 @@ export default function AboutHero({ name, tagline, profileImage, availability })
 							lineHeight: 1.0,
 						}}
 						items={[
-							{ text: '안녕하세요,' },
+							{ text: '문제의 본질에' },
 							{ br: true },
-							{ text: '개발자' },
+							{ text: '집중하는 개발자,' },
+							{ br: true },
 							// noSep: '이석호' + '입니다.' 사이 공백 없이 자연스러운 한국어 결합.
 							{ text: displayName, accent: true, noSep: true },
 							{ text: '입니다.' },

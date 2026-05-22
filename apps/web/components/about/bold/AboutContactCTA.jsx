@@ -29,9 +29,19 @@ export default function AboutContactCTA() {
 								lineHeight: 1,
 							}}
 						>
-							함께 일해
+							함께할{' '}
+							<span
+								style={{
+									display: 'inline-block',
+									color: 'var(--indigo-soft)',
+									fontStyle: 'italic',
+									paddingRight: '0.1em',
+								}}
+							>
+								기회를
+							</span>
 							<br />
-							<span style={{ color: 'var(--indigo-soft)' }}>볼까요?</span>
+							기다립니다.
 						</span>
 					</PillButton>
 				</Reveal>

@@ -20,10 +20,23 @@ export default function AboutBioSection({ bio = [] }) {
 							style={{
 								fontSize: 'clamp(1.8rem, 3vw, 2.6rem)',
 								letterSpacing: '-0.04em',
-								lineHeight: 1,
+								lineHeight: 1.15,
 							}}
 						>
-							코드를 쓰지만,
+							기능 구현을 넘어
+							<br />
+							서비스의{' '}
+							<span
+								style={{
+									display: 'inline-block',
+									color: 'var(--indigo-soft)',
+									fontStyle: 'italic',
+									paddingRight: '0.1em',
+								}}
+							>
+								안정성
+							</span>
+							과
 							<br />
 							<span
 								style={{
@@ -33,10 +46,11 @@ export default function AboutBioSection({ bio = [] }) {
 									paddingRight: '0.1em',
 								}}
 							>
-								팀의 시간을
+								유지보수성
 							</span>
+							을
 							<br />
-							벌어줍니다.
+							고민합니다.
 						</h2>
 					</div>
 				</Reveal>

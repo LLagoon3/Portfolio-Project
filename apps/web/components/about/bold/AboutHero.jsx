@@ -64,11 +64,14 @@ export default function AboutHero({ name, tagline, profileImage, availability })
 			<div className="grid grid-cols-12 gap-6 lg:gap-12 items-center">
 				<div className="col-span-12 lg:col-span-8 flex flex-col gap-8 lg:gap-10">
 					<WordReveal
-						className="font-general-semibold"
+						// fontSize 를 className 으로 — xl(1280+) 에서 cap 을 5.5rem 로 키워 heading
+						// 이 col-span-8 폭(~768px) 을 더 채우고 portrait 와의 수평 공백을 줄임.
+						// lg(1024-1279) 는 col-span-8 ≈ 597px 이라 cap 4.5rem 유지 (line ~9 *
+						// 4.5rem * 0.9 ≈ 583px < 597 안전).
+						className="font-general-semibold text-[clamp(2rem,calc((100vw-3rem)/8),4.5rem)] xl:text-[clamp(2rem,calc((100vw-3rem)/7),5.5rem)]"
 						style={{
-							fontSize: 'clamp(2rem, calc((100vw - 3rem) / 8), 4.5rem)',
 							letterSpacing: '-0.04em',
-							lineHeight: 1.55,
+							lineHeight: 1.4,
 							wordBreak: 'keep-all',
 						}}
 						items={[

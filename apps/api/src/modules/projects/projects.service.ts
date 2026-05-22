@@ -19,6 +19,7 @@ export class ProjectsService {
       url: project.url,
       category: project.category,
       img: project.thumbnailImg,
+      headerPublishDate: project.headerPublishDate,
     }));
   }
 

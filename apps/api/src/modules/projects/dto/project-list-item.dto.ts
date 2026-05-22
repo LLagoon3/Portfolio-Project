@@ -15,4 +15,7 @@ export class ProjectListItemDto {
 
   @ApiProperty({ example: '/images/web-project-2.jpg' })
   img!: string;
+
+  @ApiProperty({ example: '2026.01 – 2026.03', description: 'Bold 리스트의 연도 stat/그룹/뱃지에 사용. web 에서 첫 4자리를 파싱.' })
+  headerPublishDate!: string;
 }

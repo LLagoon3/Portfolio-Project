@@ -46,7 +46,7 @@ function AdminContactDetail({ initial }) {
 	}
 
 	return (
-		<AdminLayout title={`Contact · ${detail.subject}`}>
+		<AdminLayout title={`Contact · ${detail.topic ?? detail.subject ?? detail.name}`}>
 			<div className="mb-4">
 				<Link
 					href="/admin/contact"
@@ -75,8 +75,22 @@ function AdminContactDetail({ initial }) {
 						</dd>
 					</div>
 					<div>
+						<dt className="text-xs text-ternary-dark dark:text-ternary-light">문의 종류</dt>
+						<dd className="text-primary-dark dark:text-primary-light">
+							{detail.topic ? (
+								<span className="inline-block px-2 py-0.5 rounded-full text-xs bg-indigo-100 dark:bg-indigo-900 dark:bg-opacity-40 text-indigo-700 dark:text-indigo-300">
+									{detail.topic}
+								</span>
+							) : (
+								'—'
+							)}
+						</dd>
+					</div>
+					<div>
 						<dt className="text-xs text-ternary-dark dark:text-ternary-light">주제</dt>
-						<dd className="text-primary-dark dark:text-primary-light">{detail.subject}</dd>
+						<dd className="text-primary-dark dark:text-primary-light">
+							{detail.subject ?? '—'}
+						</dd>
 					</div>
 					<div>
 						<dt className="text-xs text-ternary-dark dark:text-ternary-light">제출 시각</dt>

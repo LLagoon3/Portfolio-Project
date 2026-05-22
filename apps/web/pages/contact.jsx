@@ -1,45 +1,55 @@
-import { motion } from 'framer-motion';
-import ContactDetails from '../components/contact/ContactDetails';
-import ContactForm from '../components/contact/ContactForm';
+import BoldLayout from '../components/layout/bold/BoldLayout';
 import PagesMetaHead from '../components/PagesMetaHead';
+import BoldContactHero from '../components/contact/bold/BoldContactHero';
+import BoldContactBigEmail from '../components/contact/bold/BoldContactBigEmail';
+import BoldContactForm from '../components/contact/bold/BoldContactForm';
+import BoldContactSidebar from '../components/contact/bold/BoldContactSidebar';
 
 const API_BASE_URL =
 	process.env.API_INTERNAL_URL || 'http://localhost:7341';
 
-const EMPTY_CONTACT = { address: null, email: null, phone: null };
+const EMPTY_CONTACT = {
+	address: null,
+	email: null,
+	availability: null,
+};
 
 function Contact({ contact }) {
 	return (
-		<div>
+		<>
 			<PagesMetaHead title="Contact" />
 
-			<motion.div
-				initial={false}
-				animate={{ opacity: 1 }}
-				transition={{
-					ease: 'easeInOut',
-					duration: 0.5,
-					delay: 0.1,
-				}}
-				className="container mx-auto flex flex-col-reverse lg:flex-row py-5 lg:py-10 lg:mt-5"
-			>
-				<ContactForm />
+			<div className="container mx-auto px-6 lg:px-10">
+				<BoldContactHero />
+				<BoldContactBigEmail email={contact.email} />
 
-				<ContactDetails
-					address={contact.address}
-					email={contact.email}
-					phone={contact.phone}
-				/>
-			</motion.div>
-		</div>
+				<section
+					className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 py-16 lg:py-20 border-t"
+					style={{ borderColor: 'var(--line)' }}
+				>
+					<div className="lg:col-span-7">
+						<BoldContactForm />
+					</div>
+					<div className="lg:col-span-5">
+						<BoldContactSidebar
+							email={contact.email}
+							address={contact.address}
+							availability={contact.availability}
+						/>
+					</div>
+				</section>
+			</div>
+		</>
 	);
 }
+
+Contact.getLayout = (page) => <BoldLayout>{page}</BoldLayout>;
 
 export async function getServerSideProps() {
 	try {
 		const res = await fetch(`${API_BASE_URL}/api/about`);
 		if (res.status === 404) {
-			// About 프로필이 세팅 전인 합법적 상태 — 연락처 섹션을 비워서 렌더
+			// About 프로필이 아직 세팅되지 않은 합법적 상태 — 연락처 섹션을 비워서 렌더
 			return { props: { contact: EMPTY_CONTACT } };
 		}
 		if (!res.ok) {
@@ -52,7 +62,7 @@ export async function getServerSideProps() {
 				contact: {
 					address: data?.address ?? null,
 					email: data?.email ?? null,
-					phone: data?.phone ?? null,
+					availability: data?.availability ?? null,
 				},
 			},
 		};

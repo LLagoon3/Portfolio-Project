@@ -22,6 +22,8 @@ describe('ContactRepository', () => {
   const entity: ContactSubmission = {
     id: 0,
     ...dto,
+    subject: dto.subject ?? null,
+    topic: dto.topic ?? null,
     status: ContactStatus.PENDING,
     createdAt: new Date('2026-01-01T00:00:00.000Z'),
   };

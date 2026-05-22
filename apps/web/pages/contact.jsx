@@ -24,7 +24,7 @@ function Contact({ contact }) {
 				<BoldContactBigEmail email={contact.email} />
 
 				<section
-					className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 py-16 lg:py-20 border-t"
+					className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 py-16 lg:py-20 border-t border-b"
 					style={{ borderColor: 'var(--line)' }}
 				>
 					<div className="lg:col-span-7">

@@ -57,47 +57,31 @@ export default function AboutHero({ name, tagline, profileImage, availability })
 				)}
 			</Reveal>
 
-			{/* 거대 이름 — 전체 너비. side-by-side grid 는 portrait(4:5) 가 heading 보다 훨씬
-			    길어 위/아래 공백이 항상 컸음. heading 을 full-width 로 빼면 글자 크기가 6.5rem
-			    까지 자유롭게 커지고 portrait + tagline 은 아래 row 에서 시각 균형을 잡는다. */}
-			<WordReveal
-				className="font-general-semibold"
-				style={{
-					// 가장 긴 줄 '집중하는 개발자,' (9 char ~1em) 기준 동적 폰트 + word-break:
-					// keep-all 로 좁은 viewport 의 자모 분리 / 강제 줄꺾임을 차단. container
-					// 폭이 lg+ 에서 ~944~1200px 이라 cap 6.5rem (~104px) 까지 안전
-					// (line ~9 * 104 * 0.96 = 898px < 944).
-					fontSize: 'clamp(1.8rem, calc((100vw - 3rem) / 10), 6.5rem)',
-					letterSpacing: '-0.04em',
-					lineHeight: 1.3,
-					wordBreak: 'keep-all',
-				}}
-				items={[
-					{ text: '문제의 본질에' },
-					{ br: true },
-					{ text: '집중하는 개발자,' },
-					{ br: true },
-					// noSep: '이석호' + '입니다.' 사이 공백 없이 자연스러운 한국어 결합.
-					{ text: displayName, accent: true, noSep: true },
-					{ text: '입니다.' },
-				]}
-			/>
-
-			{/* portrait + tagline — heading 아래 row 에서 좌우 배치. portrait 는 원래의
-			    col-span-4 비례를 그대로 따라 시각 무게 보존, tagline 은 col-span-8 으로 폭 확보. */}
-			<div className="mt-14 lg:mt-20 grid grid-cols-12 gap-6 lg:gap-12 items-center">
-				<Reveal
-					as="p"
-					delay={0.24}
-					className="col-span-12 lg:col-span-8 font-general-semibold"
-					style={{
-						fontSize: 'clamp(1.4rem, 2.2vw, 2.4rem)',
-						lineHeight: 1.35,
-						letterSpacing: '-0.02em',
-					}}
-				>
-					{heroTagline}
-				</Reveal>
+			{/* 거대 이름 + portrait — side-by-side. portrait(4:5) 가 3-line heading 보다 길어
+			    items-center 시 위/아래 약간의 공백은 남지만, lineHeight 1.55 로 heading 영역을
+			    최대한 채워 gap 을 최소화. col-span-8 폭에서 9-char 라인이 4-line 으로 깨지지
+			    않도록 fontSize cap 은 4.5rem (line ~9em * 4.5rem * 0.9 ≈ 36em < 597px). */}
+			<div className="grid grid-cols-12 gap-6 lg:gap-12 items-center">
+				<div className="col-span-12 lg:col-span-8">
+					<WordReveal
+						className="font-general-semibold"
+						style={{
+							fontSize: 'clamp(2rem, calc((100vw - 3rem) / 8), 4.5rem)',
+							letterSpacing: '-0.04em',
+							lineHeight: 1.55,
+							wordBreak: 'keep-all',
+						}}
+						items={[
+							{ text: '문제의 본질에' },
+							{ br: true },
+							{ text: '집중하는 개발자,' },
+							{ br: true },
+							// noSep: '이석호' + '입니다.' 사이 공백 없이 자연스러운 한국어 결합.
+							{ text: displayName, accent: true, noSep: true },
+							{ text: '입니다.' },
+						]}
+					/>
+				</div>
 				<Reveal
 					delay={0.16}
 					className="col-span-12 lg:col-span-4 flex justify-center lg:justify-end"
@@ -146,6 +130,20 @@ export default function AboutHero({ name, tagline, profileImage, availability })
 					</div>
 				</Reveal>
 			</div>
+
+			{/* tagline — heading + portrait row 아래 (원래 위치) */}
+			<Reveal
+				as="p"
+				delay={0.24}
+				className="mt-12 lg:mt-16 max-w-3xl font-general-semibold"
+				style={{
+					fontSize: 'clamp(1.4rem, 2.2vw, 2.4rem)',
+					lineHeight: 1.35,
+					letterSpacing: '-0.02em',
+				}}
+			>
+				{heroTagline}
+			</Reveal>
 		</section>
 	);
 }

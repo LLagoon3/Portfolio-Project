@@ -57,12 +57,12 @@ export default function AboutHero({ name, tagline, profileImage, availability })
 				)}
 			</Reveal>
 
-			{/* 거대 이름 + portrait — side-by-side. portrait(4:5) 가 3-line heading 보다 길어
-			    items-center 시 위/아래 약간의 공백은 남지만, lineHeight 1.55 로 heading 영역을
-			    최대한 채워 gap 을 최소화. col-span-8 폭에서 9-char 라인이 4-line 으로 깨지지
-			    않도록 fontSize cap 은 4.5rem (line ~9em * 4.5rem * 0.9 ≈ 36em < 597px). */}
+			{/* 거대 이름 + tagline (좌 col-span-8) + portrait (우 col-span-4) — side-by-side.
+			    좌측 컬럼은 heading 과 tagline 을 stack 해서 col 전체 높이가 portrait 높이
+			    (~480px) 와 거의 매칭 → items-center 시 gap 거의 사라짐. heading 3 * 4.5rem
+			    * 1.55 ≈ 336px + tagline ~120px ≈ 456px. */}
 			<div className="grid grid-cols-12 gap-6 lg:gap-12 items-center">
-				<div className="col-span-12 lg:col-span-8">
+				<div className="col-span-12 lg:col-span-8 flex flex-col gap-8 lg:gap-10">
 					<WordReveal
 						className="font-general-semibold"
 						style={{
@@ -81,6 +81,18 @@ export default function AboutHero({ name, tagline, profileImage, availability })
 							{ text: '입니다.' },
 						]}
 					/>
+					<Reveal
+						as="p"
+						delay={0.24}
+						className="max-w-3xl font-general-semibold"
+						style={{
+							fontSize: 'clamp(1.4rem, 2.2vw, 2.4rem)',
+							lineHeight: 1.35,
+							letterSpacing: '-0.02em',
+						}}
+					>
+						{heroTagline}
+					</Reveal>
 				</div>
 				<Reveal
 					delay={0.16}
@@ -130,20 +142,6 @@ export default function AboutHero({ name, tagline, profileImage, availability })
 					</div>
 				</Reveal>
 			</div>
-
-			{/* tagline — heading + portrait row 아래 (원래 위치) */}
-			<Reveal
-				as="p"
-				delay={0.24}
-				className="mt-12 lg:mt-16 max-w-3xl font-general-semibold"
-				style={{
-					fontSize: 'clamp(1.4rem, 2.2vw, 2.4rem)',
-					lineHeight: 1.35,
-					letterSpacing: '-0.02em',
-				}}
-			>
-				{heroTagline}
-			</Reveal>
 		</section>
 	);
 }

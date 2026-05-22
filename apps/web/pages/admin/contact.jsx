@@ -139,7 +139,28 @@ function AdminContactInbox({ initialPage, initialStatus }) {
 							</a>
 						),
 					},
-					{ key: 'subject', label: '주제' },
+					{
+						key: 'topic',
+						label: '문의 종류',
+						render: (row) =>
+							row.topic ? (
+								<span className="inline-block px-2 py-0.5 rounded-full text-xs bg-indigo-100 dark:bg-indigo-900 dark:bg-opacity-40 text-indigo-700 dark:text-indigo-300">
+									{row.topic}
+								</span>
+							) : (
+								<span className="text-xs text-ternary-dark dark:text-ternary-light">—</span>
+							),
+					},
+					{
+						key: 'subject',
+						label: '주제',
+						render: (row) =>
+							row.subject ? (
+								row.subject
+							) : (
+								<span className="text-xs text-ternary-dark dark:text-ternary-light">—</span>
+							),
+					},
 					{
 						key: 'status',
 						label: '상태',

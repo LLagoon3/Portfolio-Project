@@ -56,7 +56,7 @@ export default function AboutStrip({ bioFirst }) {
 						style={{
 							fontSize: 'clamp(2.2rem, 5vw, 4.2rem)',
 							letterSpacing: '-0.04em',
-							lineHeight: 1,
+							lineHeight: 1.15,
 						}}
 					>
 						기능 구현을 넘어

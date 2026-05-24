@@ -38,7 +38,7 @@ export default function AboutHero({ name, tagline, profileImage, availability })
 						홈
 					</Link>
 					<span className="w-6 h-px" style={{ background: 'var(--line-strong)' }} />
-					<Eyebrow>About — 2026</Eyebrow>
+					<Eyebrow>About</Eyebrow>
 				</div>
 				{statusLabel && (
 					<div className="hidden sm:flex items-center gap-2">
@@ -57,31 +57,52 @@ export default function AboutHero({ name, tagline, profileImage, availability })
 				)}
 			</Reveal>
 
-			{/* 거대 이름 + portrait */}
-			<div className="grid grid-cols-12 gap-6 lg:gap-12 items-end">
-				<div className="col-span-12 lg:col-span-8">
+			{/* 거대 이름 + tagline (좌 col-span-8) + portrait (우 col-span-4) — side-by-side.
+			    좌측 컬럼은 heading 과 tagline 을 stack 해서 col 전체 높이가 portrait 높이
+			    (~480px) 와 거의 매칭 → items-center 시 gap 거의 사라짐. heading 3 * 4.5rem
+			    * 1.55 ≈ 336px + tagline ~120px ≈ 456px. */}
+			<div className="grid grid-cols-12 gap-6 lg:gap-12 items-center">
+				<div className="col-span-12 lg:col-span-8 flex flex-col gap-8 lg:gap-10">
 					<WordReveal
-						className="font-general-semibold"
+						// fontSize 를 className 으로 — xl(1280+) 에서 cap 을 5.5rem 로 키워 heading
+						// 이 col-span-8 폭(~768px) 을 더 채우고 portrait 와의 수평 공백을 줄임.
+						// lg(1024-1279) 는 col-span-8 ≈ 597px 이라 cap 4.5rem 유지 (line ~9 *
+						// 4.5rem * 0.9 ≈ 583px < 597 안전).
+						className="font-general-semibold text-[clamp(2rem,calc((100vw-3rem)/8),4.5rem)] xl:text-[clamp(2rem,calc((100vw-3rem)/7),5.5rem)]"
 						style={{
-							// 큰 글씨에서 lineHeight 0.88 은 한국어 자모가 윗줄 / 아랫줄 사이 겹쳐 보임.
-							// 1.0 으로 늘려 여백 확보 (Bold 톤 유지하면서 가독성 우선).
-							fontSize: 'clamp(2.6rem, 10.5vw, 11rem)',
 							letterSpacing: '-0.04em',
-							lineHeight: 1.0,
+							lineHeight: 1.4,
+							wordBreak: 'keep-all',
 						}}
 						items={[
-							{ text: '안녕하세요,' },
+							{ text: '문제의 본질에' },
 							{ br: true },
-							{ text: '개발자' },
+							{ text: '집중하는 개발자,' },
+							{ br: true },
 							// noSep: '이석호' + '입니다.' 사이 공백 없이 자연스러운 한국어 결합.
 							{ text: displayName, accent: true, noSep: true },
 							{ text: '입니다.' },
 						]}
 					/>
+					<Reveal
+						as="p"
+						delay={0.24}
+						className="max-w-3xl font-general-semibold"
+						style={{
+							fontSize: 'clamp(1.4rem, 2.2vw, 2.4rem)',
+							lineHeight: 1.35,
+							letterSpacing: '-0.02em',
+						}}
+					>
+						{heroTagline}
+					</Reveal>
 				</div>
-				<Reveal delay={0.16} className="col-span-12 lg:col-span-4">
+				<Reveal
+					delay={0.16}
+					className="col-span-12 lg:col-span-4 flex justify-center lg:justify-end"
+				>
 					<div
-						className="relative rounded-[18px] overflow-hidden"
+						className="relative rounded-[18px] overflow-hidden w-full max-w-[280px] sm:max-w-[320px] lg:max-w-none"
 						style={{
 							border: '1px solid var(--line-strong)',
 							aspectRatio: '4 / 5',
@@ -124,20 +145,6 @@ export default function AboutHero({ name, tagline, profileImage, availability })
 					</div>
 				</Reveal>
 			</div>
-
-			{/* 큰 tagline */}
-			<Reveal
-				as="p"
-				delay={0.24}
-				className="mt-12 lg:mt-16 max-w-3xl font-general-semibold"
-				style={{
-					fontSize: 'clamp(1.4rem, 2.2vw, 2.4rem)',
-					lineHeight: 1.2,
-					letterSpacing: '-0.02em',
-				}}
-			>
-				{heroTagline}
-			</Reveal>
 		</section>
 	);
 }

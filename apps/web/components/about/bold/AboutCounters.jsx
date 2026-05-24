@@ -23,7 +23,7 @@ export default function AboutCounters({ stats = [] }) {
 							lineHeight: 0.88,
 						}}
 					>
-						측정된 흔적
+						수치로 남긴 결과
 						<span style={{ color: 'var(--indigo-soft)' }}>.</span>
 					</h2>
 				</div>

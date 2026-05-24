@@ -21,7 +21,7 @@ export default function AboutJourney({ journey = [] }) {
 							lineHeight: 0.88,
 						}}
 					>
-						지나온 길
+						문제를 해결해 온 과정
 						<span style={{ color: 'var(--indigo-soft)' }}>.</span>
 					</h2>
 				</div>

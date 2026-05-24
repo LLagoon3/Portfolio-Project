@@ -31,7 +31,7 @@ export default function BoldProjectsHero({ totalCount, categoryCount, yearCount 
 					홈
 				</Link>
 				<span className="w-6 h-px" style={{ background: 'var(--line-strong)' }} />
-				<Eyebrow>All Projects — 2026</Eyebrow>
+				<Eyebrow>All Projects</Eyebrow>
 			</Reveal>
 
 			{/* 거대 타이틀 */}
@@ -42,7 +42,7 @@ export default function BoldProjectsHero({ totalCount, categoryCount, yearCount 
 					letterSpacing: '-0.04em',
 					lineHeight: 1.0,
 				}}
-				items={[{ text: '모든' }, { br: true }, { text: '작업.', accent: true }]}
+				items={[{ text: '모든' }, { br: true }, { text: '프로젝트들.', accent: true }]}
 			/>
 
 			{/* tagline */}
@@ -56,7 +56,7 @@ export default function BoldProjectsHero({ totalCount, categoryCount, yearCount 
 					letterSpacing: '-0.02em',
 				}}
 			>
-				직접 만들거나 함께 만든 것들. 결정의 기록.
+				직접 만들고 함께 완성한 프로젝트들. 문제를 해결해 온 기록입니다.
 			</Reveal>
 
 			{/* stats — Total / Categories / Years */}

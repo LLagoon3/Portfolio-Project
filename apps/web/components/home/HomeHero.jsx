@@ -38,12 +38,15 @@ export default function HomeHero({ tagline }) {
 				style={{
 					fontSize: 'clamp(2.6rem, 12vw, 13.5rem)',
 					letterSpacing: '-0.05em',
-					lineHeight: 0.88,
+					// 0.88 은 italic 한글 글자 박스 (≈0.95em) 보다 작아 마지막 자(예: '오')
+					// 가 overflow-hidden 박스 하단으로 잘림. 1.0 으로 fit.
+					lineHeight: 1.0,
+					wordBreak: 'keep-all',
 				}}
 				items={[
-					{ text: '이석호' },
+					{ text: '이석호의' },
 					{ br: true },
-					{ text: '포트폴리오', accent: true },
+					{ text: '포트폴리오.', accent: true },
 				]}
 			/>
 

@@ -29,12 +29,16 @@ export default function AboutContactCTA() {
 								lineHeight: 1,
 							}}
 						>
-							<span style={{ color: 'var(--indigo-soft)' }}>
+							<span
+								style={{
+									color: 'var(--indigo-soft)',
+									fontStyle: 'italic',
+								}}
+							>
 								함께할{' '}
 								<span
 									style={{
 										display: 'inline-block',
-										fontStyle: 'italic',
 										paddingRight: '0.1em',
 									}}
 								>

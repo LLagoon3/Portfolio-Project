@@ -21,7 +21,17 @@ export default function AboutBrands({ stacks = [] }) {
 							lineHeight: 0.88,
 						}}
 					>
-						문제를 해결하며 사용한 기술들
+						문제를 해결하며 사용한{' '}
+						<span
+							style={{
+								display: 'inline-block',
+								color: 'var(--indigo-soft)',
+								fontStyle: 'italic',
+								paddingRight: '0.1em',
+							}}
+						>
+							기술들
+						</span>
 						<span style={{ color: 'var(--indigo-soft)' }}>.</span>
 					</h2>
 				</div>

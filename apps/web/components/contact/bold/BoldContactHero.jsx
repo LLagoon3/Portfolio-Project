@@ -30,7 +30,7 @@ export default function BoldContactHero() {
 					홈
 				</Link>
 				<span className="w-6 h-px" style={{ background: 'var(--line-strong)' }} />
-				<Eyebrow>Contact — 2026</Eyebrow>
+				<Eyebrow>Contact</Eyebrow>
 			</Reveal>
 
 			{/* 거대 이름 */}
@@ -41,7 +41,12 @@ export default function BoldContactHero() {
 					letterSpacing: '-0.04em',
 					lineHeight: 1.0,
 				}}
-				items={[{ text: '같이' }, { br: true }, { text: '일해요.', accent: true }]}
+				items={[
+					{ text: '함께할', accent: true },
+					{ text: '기회를', accent: true },
+					{ br: true },
+					{ text: '기다립니다.' },
+				]}
 			/>
 
 			{/* tagline */}

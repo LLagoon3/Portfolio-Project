@@ -19,11 +19,12 @@ export default function WordReveal({
 				if (item.br) return <br key={`br-${idx}`} />;
 				// italic accent 단어의 마지막 글자가 inline-block + overflow-hidden 박스 밖으로
 				// 살짝 비져나가 잘리는 현상이 있어 paddingRight 로 박스 너비 보강.
+				// 0.1em 은 큰 fontSize (12rem+) 에서 italic 끝부분이 여전히 잘려 0.2em 로 보강.
 				const innerStyle = item.accent
 					? {
 							color: 'var(--indigo-soft)',
 							fontStyle: 'italic',
-							paddingRight: '0.1em',
+							paddingRight: '0.2em',
 						}
 					: undefined;
 				// 다음 단어와 공백 분리. 단 noSep 가 true 면 공백 없이 직접 붙임

@@ -56,7 +56,9 @@ export default function BoldProjectsHero({ totalCount, categoryCount, yearCount 
 					letterSpacing: '-0.02em',
 				}}
 			>
-				직접 만들고 함께 완성한 프로젝트들. 문제를 해결해 온 기록입니다.
+				직접 만들고 함께 완성한 프로젝트들.
+				<br />
+				문제를 해결해 온 기록입니다.
 			</Reveal>
 
 			{/* stats — Total / Categories / Years */}

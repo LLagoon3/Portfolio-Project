@@ -21,6 +21,7 @@ export default function AboutJourney({ journey = [] }) {
 							lineHeight: 0.88,
 						}}
 					>
+						문제를 해결해 온{' '}
 						<span
 							style={{
 								display: 'inline-block',
@@ -29,9 +30,8 @@ export default function AboutJourney({ journey = [] }) {
 								paddingRight: '0.1em',
 							}}
 						>
-							문제를
-						</span>{' '}
-						해결해 온 과정
+							과정
+						</span>
 						<span style={{ color: 'var(--indigo-soft)' }}>.</span>
 					</h2>
 				</div>

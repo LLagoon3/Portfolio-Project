@@ -23,7 +23,17 @@ export default function AboutCounters({ stats = [] }) {
 							lineHeight: 0.88,
 						}}
 					>
-						수치로 남긴 결과
+						<span
+							style={{
+								display: 'inline-block',
+								color: 'var(--indigo-soft)',
+								fontStyle: 'italic',
+								paddingRight: '0.1em',
+							}}
+						>
+							수치로
+						</span>{' '}
+						남긴 결과
 						<span style={{ color: 'var(--indigo-soft)' }}>.</span>
 					</h2>
 				</div>

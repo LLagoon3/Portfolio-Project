@@ -21,7 +21,17 @@ export default function AboutJourney({ journey = [] }) {
 							lineHeight: 0.88,
 						}}
 					>
-						문제를 해결해 온 과정
+						<span
+							style={{
+								display: 'inline-block',
+								color: 'var(--indigo-soft)',
+								fontStyle: 'italic',
+								paddingRight: '0.1em',
+							}}
+						>
+							문제를
+						</span>{' '}
+						해결해 온 과정
 						<span style={{ color: 'var(--indigo-soft)' }}>.</span>
 					</h2>
 				</div>

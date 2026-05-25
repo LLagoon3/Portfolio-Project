@@ -21,17 +21,7 @@ export default function AboutBrands({ stacks = [] }) {
 							lineHeight: 0.88,
 						}}
 					>
-						<span
-							style={{
-								display: 'inline-block',
-								color: 'var(--indigo-soft)',
-								fontStyle: 'italic',
-								paddingRight: '0.1em',
-							}}
-						>
-							문제를
-						</span>{' '}
-						해결하며 사용한{' '}
+						문제를 해결하며 사용한{' '}
 						<span
 							style={{
 								display: 'inline-block',

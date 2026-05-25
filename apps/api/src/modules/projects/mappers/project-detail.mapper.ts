@@ -9,6 +9,7 @@ export function toProjectDetailDto(project: Project): ProjectDetailDto {
   const companyInfo = [...(project.companyInfo ?? [])].sort(bySortOrder);
   const technologies = [...(project.technologies ?? [])].sort(bySortOrder);
   const details = [...(project.details ?? [])].sort(bySortOrder);
+  const stats = [...(project.stats ?? [])].sort(bySortOrder);
 
   return {
     id: project.id,
@@ -16,6 +17,8 @@ export function toProjectDetailDto(project: Project): ProjectDetailDto {
     url: project.url,
     category: project.category,
     img: project.thumbnailImg,
+    heroSubtitle: project.heroSubtitle ?? null,
+    heroAccentWord: project.heroAccentWord ?? null,
     ProjectHeader: {
       title: project.title,
       publishDate: project.headerPublishDate,
@@ -47,6 +50,15 @@ export function toProjectDetailDto(project: Project): ProjectDetailDto {
         details: detail.details,
       })),
       SocialSharingHeading: project.socialSharingHeading,
+      Impact: stats.map((stat) => ({
+        id: stat.id,
+        label: stat.label,
+        value: stat.value,
+        sub: stat.sub ?? null,
+      })),
+      Quote: project.quote
+        ? { text: project.quote.text, author: project.quote.author ?? null }
+        : null,
     },
   };
 }

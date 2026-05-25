@@ -15,6 +15,8 @@ import { Project } from './entities/project.entity';
 import { ProjectCompanyInfo } from './entities/project-company-info.entity';
 import { ProjectDetail } from './entities/project-detail.entity';
 import { ProjectImage } from './entities/project-image.entity';
+import { ProjectQuote } from './entities/project-quote.entity';
+import { ProjectStat } from './entities/project-stat.entity';
 import { ProjectTechnology } from './entities/project-technology.entity';
 import { ProjectTechnologyItem } from './entities/project-technology-item.entity';
 import { UpsertProjectDto } from './dto/upsert-project.dto';
@@ -83,6 +85,8 @@ export class AdminProjectsService {
       await manager.delete(ProjectImage, { projectId: id });
       await manager.delete(ProjectCompanyInfo, { projectId: id });
       await manager.delete(ProjectDetail, { projectId: id });
+      await manager.delete(ProjectStat, { projectId: id });
+      await manager.delete(ProjectQuote, { projectId: id });
 
       const updated = buildProject(dto);
       updated.id = id;
@@ -155,6 +159,8 @@ export class AdminProjectsService {
         companyInfo: true,
         technologies: { items: true },
         details: true,
+        stats: true,
+        quote: true,
       },
     });
   }
@@ -180,6 +186,11 @@ function buildProject(dto: UpsertProjectDto): Project {
   project.objectivesDetails = dto.objectivesDetails;
   project.projectDetailsHeading = dto.projectDetailsHeading;
   project.socialSharingHeading = dto.socialSharingHeading ?? '';
+  // Phase 2: 빈 문자열은 null 로 정규화 (DB nullable).
+  project.heroSubtitle = dto.heroSubtitle?.trim() ? dto.heroSubtitle : null;
+  project.heroAccentWord = dto.heroAccentWord?.trim()
+    ? dto.heroAccentWord
+    : null;
 
   project.images = dto.images.map((img, idx) => {
     const e = new ProjectImage();
@@ -216,6 +227,26 @@ function buildProject(dto: UpsertProjectDto): Project {
     e.sortOrder = idx;
     return e;
   });
+
+  // Phase 2: stats (OneToMany) — 입력 순서대로 sort_order 부여.
+  project.stats = (dto.stats ?? []).map((stat, idx) => {
+    const e = new ProjectStat();
+    e.label = stat.label;
+    e.value = stat.value;
+    e.sub = stat.sub?.trim() ? stat.sub : null;
+    e.sortOrder = idx;
+    return e;
+  });
+
+  // Phase 2: quote (OneToOne) — text 비면 null.
+  if (dto.quote && dto.quote.text?.trim()) {
+    const q = new ProjectQuote();
+    q.text = dto.quote.text;
+    q.author = dto.quote.author?.trim() ? dto.quote.author : null;
+    project.quote = q;
+  } else {
+    project.quote = null;
+  }
 
   return project;
 }

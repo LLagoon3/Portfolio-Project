@@ -7,6 +7,7 @@ import Eyebrow from '../../../primitives/Eyebrow';
 export default function BoldProjectDetailHero({
 	title,
 	accentWord,
+	subtitle,
 	eyebrow,
 	coverImage,
 	meta = [],
@@ -92,6 +93,24 @@ export default function BoldProjectDetailHero({
 					</div>
 				</Reveal>
 			</div>
+
+			{/* Hero subtitle — admin 명시 입력 시에만 노출. WordReveal 직후, meta strip 위. */}
+			{subtitle && (
+				<Reveal
+					delay={0.2}
+					as="p"
+					className="mt-10 lg:mt-12 max-w-3xl font-general-semibold"
+					style={{
+						fontSize: 'clamp(1.2rem, 1.6vw, 1.6rem)',
+						lineHeight: 1.4,
+						letterSpacing: '-0.02em',
+						color: 'var(--paper-dim)',
+						wordBreak: 'keep-all',
+					}}
+				>
+					{subtitle}
+				</Reveal>
+			)}
 
 			{/* meta strip — 4-col (Client / Role / Timeline / Category). 미존재 행 hide */}
 			{meta.length > 0 && (

@@ -7,6 +7,8 @@ import BoldProjectDetailProcess from '../../components/projects/bold/detail/Bold
 import BoldProjectDetailStack from '../../components/projects/bold/detail/BoldProjectDetailStack';
 import BoldProjectDetailRelated from '../../components/projects/bold/detail/BoldProjectDetailRelated';
 import BoldProjectDetailSideNav from '../../components/projects/bold/detail/BoldProjectDetailSideNav';
+import BoldProjectDetailImpact from '../../components/projects/bold/detail/BoldProjectDetailImpact';
+import BoldProjectDetailQuote from '../../components/projects/bold/detail/BoldProjectDetailQuote';
 
 const API_BASE_URL =
 	process.env.API_INTERNAL_URL || 'http://localhost:7341';
@@ -26,6 +28,11 @@ function ProjectDetail({ project, relatedProjects }) {
 	const gallery = project.ProjectImages?.slice(1) ?? [];
 	const steps = parseProcessSteps(project.ProjectInfo?.ProjectDetails);
 	const stackGroups = project.ProjectInfo?.Technologies ?? [];
+	// Phase 2 — admin 명시 값 우선, 미입력 시 폴백 (title 마지막 토큰).
+	const heroAccentWord = pickHeroAccentWord(project);
+	const heroSubtitle = project.heroSubtitle || null;
+	const impactStats = project.ProjectInfo?.Impact ?? [];
+	const quote = project.ProjectInfo?.Quote ?? null;
 
 	// SideNav 는 실제 렌더되는 섹션만 노출.
 	const sections = [
@@ -33,7 +40,9 @@ function ProjectDetail({ project, relatedProjects }) {
 		overview && { id: 'overview', label: 'Overview' },
 		gallery.length > 0 && { id: 'gallery', label: 'Gallery' },
 		steps.length > 0 && { id: 'process', label: 'Process' },
+		impactStats.length > 0 && { id: 'impact', label: 'Impact' },
 		stackGroups.some((g) => g?.techs?.length) && { id: 'stack', label: 'Stack' },
+		quote && { id: 'quote', label: 'Quote' },
 		relatedProjects.length > 0 && { id: 'related', label: 'Next Up' },
 	].filter(Boolean);
 
@@ -45,6 +54,8 @@ function ProjectDetail({ project, relatedProjects }) {
 			<div className="container mx-auto px-6 lg:px-10">
 				<BoldProjectDetailHero
 					title={project.title}
+					accentWord={heroAccentWord}
+					subtitle={heroSubtitle}
 					eyebrow={heroEyebrow}
 					coverImage={project.ProjectImages?.[0]?.img}
 					meta={heroMeta}
@@ -52,11 +63,22 @@ function ProjectDetail({ project, relatedProjects }) {
 				<BoldProjectDetailOverview body={overview} />
 				<BoldProjectDetailGallery images={gallery} />
 				<BoldProjectDetailProcess steps={steps} />
+				<BoldProjectDetailImpact stats={impactStats} />
 				<BoldProjectDetailStack groups={stackGroups} />
+				<BoldProjectDetailQuote quote={quote} />
 				<BoldProjectDetailRelated projects={relatedProjects} />
 			</div>
 		</>
 	);
+}
+
+// admin 명시 값이 있으면 그대로, 없으면 title 마지막 공백 토큰 폴백.
+function pickHeroAccentWord(project) {
+	if (project.heroAccentWord && project.heroAccentWord.trim()) {
+		return project.heroAccentWord.trim();
+	}
+	const tokens = (project.title ?? '').trim().split(/\s+/);
+	return tokens[tokens.length - 1] || '';
 }
 
 ProjectDetail.getLayout = (page) => <BoldLayout>{page}</BoldLayout>;

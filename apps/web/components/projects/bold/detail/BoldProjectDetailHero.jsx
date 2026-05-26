@@ -144,21 +144,33 @@ export default function BoldProjectDetailHero({
 	);
 }
 
+// title 안에서 accentWord 의 위치를 찾아 head / accent / tail 3-part 로 split.
+// - accentWord 가 title 마지막 토큰: head / accent (2-line)
+// - accentWord 가 title 첫 토큰: accent / tail (2-line)
+// - accentWord 가 title 중간 토큰: head / accent / tail (3-line) — 시안 패턴
+// - accentWord 가 title 에 없거나 미지정: 마지막 토큰을 accent 로 폴백 (안전)
 function buildHeroItems(title, accentWord) {
 	const trimmed = (title ?? '').trim();
 	if (!trimmed) return [{ text: '' }];
 
-	// accentWord 가 지정되면 끝부분과 일치 여부 확인 후 분리. 아니면 마지막 공백 토큰 사용.
 	const tokens = trimmed.split(/\s+/);
-	const accent = accentWord || tokens[tokens.length - 1];
-	const head = tokens.slice(0, -1).join(' ');
-
-	if (!head) {
-		return [{ text: accent, accent: true }];
+	let accentIdx = tokens.length - 1;
+	if (accentWord) {
+		const idx = tokens.indexOf(accentWord);
+		if (idx >= 0) accentIdx = idx;
 	}
-	return [
-		{ text: head },
-		{ br: true },
-		{ text: accent, accent: true },
-	];
+
+	const accent = tokens[accentIdx];
+	const head = tokens.slice(0, accentIdx).join(' ');
+	const tail = tokens.slice(accentIdx + 1).join(' ');
+
+	const items = [];
+	if (head) {
+		items.push({ text: head }, { br: true });
+	}
+	items.push({ text: accent, accent: true });
+	if (tail) {
+		items.push({ br: true }, { text: tail });
+	}
+	return items;
 }

@@ -31,7 +31,9 @@ function ProjectDetail({ project, relatedProjects }) {
 	const stackGroups = project.ProjectInfo?.Technologies ?? [];
 	// Phase 2 — admin 명시 값 우선, 미입력 시 폴백 (title 마지막 토큰).
 	const heroAccentWord = pickHeroAccentWord(project);
-	const heroSubtitle = project.heroSubtitle || null;
+	// heroSubtitle 은 DB / admin / API 에 보존하되 페이지에서는 미렌더 — Overview 섹션과
+	// 의미 중복이라 한 곳만 두기로 결정 (사용자 결정). 후속에 emotional 카피로 차별화 시
+	// 복원 가능.
 	const impactStats = project.ProjectInfo?.Impact ?? [];
 	const quote = project.ProjectInfo?.Quote ?? null;
 
@@ -65,7 +67,6 @@ function ProjectDetail({ project, relatedProjects }) {
 						<BoldProjectDetailHero
 							title={project.title}
 							accentWord={heroAccentWord}
-							subtitle={heroSubtitle}
 							eyebrow={heroEyebrow}
 							coverImage={project.ProjectImages?.[0]?.img}
 							meta={heroMeta}

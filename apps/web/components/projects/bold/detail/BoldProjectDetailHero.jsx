@@ -17,11 +17,11 @@ export default function BoldProjectDetailHero({
 
 	return (
 		<section id="hero" className="pt-28 lg:pt-40 pb-16 lg:pb-20">
-			{/* breadcrumb */}
-			<Reveal className="flex items-center gap-3 mb-10">
+			{/* breadcrumb — 좁은 viewport 에서 단정하게 두 줄로 wrap. spacer 는 sm 이상만 */}
+			<Reveal className="flex flex-wrap items-center gap-x-3 gap-y-2 mb-10">
 				<Link
 					href="/projects"
-					className="bold-interactive flex items-center gap-1.5 transition"
+					className="bold-interactive flex items-center gap-1.5 transition whitespace-nowrap"
 					style={{
 						fontFamily: 'ui-monospace, "SF Mono", Menlo, monospace',
 						fontSize: '0.75rem',
@@ -29,7 +29,7 @@ export default function BoldProjectDetailHero({
 					}}
 				>
 					<svg
-						className="w-3 h-3"
+						className="w-3 h-3 flex-shrink-0"
 						viewBox="0 0 24 24"
 						fill="none"
 						stroke="currentColor"
@@ -38,10 +38,13 @@ export default function BoldProjectDetailHero({
 					>
 						<path d="M19 12H5M12 19l-7-7 7-7" />
 					</svg>
-					모든 프로젝트
+					<span>모든 프로젝트</span>
 				</Link>
-				<span className="w-6 h-px" style={{ background: 'var(--line-strong)' }} />
-				<Eyebrow>{eyebrow}</Eyebrow>
+				<span
+					className="hidden sm:inline-block w-6 h-px"
+					style={{ background: 'var(--line-strong)' }}
+				/>
+				<Eyebrow style={{ wordBreak: 'keep-all' }}>{eyebrow}</Eyebrow>
 			</Reveal>
 
 			{/* 거대 타이틀 + 우측 cover */}

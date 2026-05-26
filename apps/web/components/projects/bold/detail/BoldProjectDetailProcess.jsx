@@ -76,17 +76,19 @@ export default function BoldProjectDetailProcess({ steps = [] }) {
 										</span>
 										<span style={{ color: 'var(--indigo-soft)' }}>{step.kind}</span>
 									</div>
-									<h3
-										className="font-general-semibold mb-4"
-										style={{
-											fontSize: 'clamp(1.4rem, 2.2vw, 2rem)',
-											letterSpacing: '-0.02em',
-											lineHeight: 1.25,
-											wordBreak: 'keep-all',
-										}}
-									>
-										{step.title}
-									</h3>
+									{step.title && (
+										<h3
+											className="font-general-semibold mb-4"
+											style={{
+												fontSize: 'clamp(1.4rem, 2.2vw, 2rem)',
+												letterSpacing: '-0.02em',
+												lineHeight: 1.25,
+												wordBreak: 'keep-all',
+											}}
+										>
+											{step.title}
+										</h3>
+									)}
 									{step.body && (
 										<div className="bold-prose">
 											<ReactMarkdown>{step.body}</ReactMarkdown>

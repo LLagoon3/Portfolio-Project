@@ -68,7 +68,24 @@ export class UpsertTechnologyGroupDto {
 }
 
 export class UpsertProjectDetailDto {
-  @ApiProperty({ description: '마크다운 허용' })
+  // Phase 2 후속 — admin 이 명시하면 1 entry = 1 step. 비우면 web 의 parseProcessSteps
+  // 가 details 의 h2 split + 키워드 매칭 폴백으로 처리.
+  @ApiProperty({ maxLength: 50, required: false, nullable: true, example: 'DECISION' })
+  @Transform(({ value }) => trimToNull(value))
+  @IsOptional()
+  @IsString()
+  @MaxLength(50)
+  kind?: string | null;
+
+  @ApiProperty({ maxLength: 200, required: false, nullable: true })
+  @Transform(({ value }) => trimToNull(value))
+  @IsOptional()
+  @IsString()
+  @MaxLength(200)
+  title?: string | null;
+
+  @ApiProperty({ description: '마크다운 허용. 신규 entry 는 body. 기존 entry 는 h2 split 폴백' })
+  @Transform(({ value }) => trimIfString(value))
   @IsString()
   @IsNotEmpty()
   details!: string;

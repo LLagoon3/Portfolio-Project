@@ -45,6 +45,13 @@ export class ProjectDetailItemDto {
   @ApiProperty()
   id!: number;
 
+  // Phase 2 후속 — admin 명시. 비어있으면 web 의 markdown h2 split 폴백.
+  @ApiProperty({ required: false, nullable: true })
+  kind!: string | null;
+
+  @ApiProperty({ required: false, nullable: true })
+  title!: string | null;
+
   @ApiProperty()
   details!: string;
 }

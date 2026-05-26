@@ -66,6 +66,8 @@ function toFormState(initial) {
 		})),
 		details: (merged.details ?? []).map((d, i) => ({
 			_key: `d-${i}-${Math.random()}`,
+			kind: d.kind ?? '',
+			title: d.title ?? '',
 			details: d.details ?? '',
 		})),
 	};
@@ -109,7 +111,11 @@ function toSubmitPayload(form) {
 				.map((s) => s.trim())
 				.filter(Boolean),
 		})),
-		details: form.details.map((d) => ({ details: d.details })),
+		details: form.details.map((d) => ({
+			kind: d.kind?.trim() || null,
+			title: d.title?.trim() || null,
+			details: d.details,
+		})),
 	};
 }
 
@@ -417,7 +423,10 @@ function ProjectForm({ initialValue, submitLabel = '저장', onSubmit }) {
 				/>
 			</AdminFormSection>
 
-			<AdminFormSection title="Challenge 섹션" description="각 블록은 마크다운을 지원합니다.">
+			<AdminFormSection
+				title="Challenge 섹션"
+				description="Project Detail 의 Process 카드. kind / title 을 직접 입력하면 1 entry = 1 step. 비우면 본문 markdown 의 ## h2 split + 키워드 매칭 폴백."
+			>
 				<FormInput
 					inputLabel="Challenge heading"
 					labelFor="projectDetailsHeading"
@@ -432,18 +441,41 @@ function ProjectForm({ initialValue, submitLabel = '저장', onSubmit }) {
 				<DynamicList
 					items={form.details}
 					onChange={(next) => set('details', next)}
-					emptyItem={() => ({ _key: `d-${Date.now()}`, details: '' })}
+					emptyItem={() => ({
+						_key: `d-${Date.now()}`,
+						kind: '',
+						title: '',
+						details: '',
+					})}
 					addLabel="Challenge 단락 추가"
 					renderItem={(item, _idx, onItemChange) => (
-						<textarea
-							className="w-full px-3 py-2 border border-gray-300 dark:border-primary-dark border-opacity-50 text-primary-dark dark:text-secondary-light bg-ternary-light dark:bg-secondary-dark rounded-md text-sm font-mono"
-							rows={8}
-							placeholder="## 섹션 제목&#10;본문 (마크다운 가능)"
-							aria-label="Challenge markdown block"
-							value={item.details}
-							onChange={(e) => onItemChange({ details: e.target.value })}
-							required
-						/>
+						<div className="flex flex-col gap-2">
+							<div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+								<input
+									className="px-3 py-2 border border-gray-300 dark:border-primary-dark border-opacity-50 text-primary-dark dark:text-secondary-light bg-ternary-light dark:bg-secondary-dark rounded-md text-sm font-general-regular"
+									placeholder="Kind (예: DECISION / OPS / 구조 결정)"
+									aria-label="Process kind"
+									value={item.kind}
+									onChange={(e) => onItemChange({ kind: e.target.value })}
+								/>
+								<input
+									className="px-3 py-2 border border-gray-300 dark:border-primary-dark border-opacity-50 text-primary-dark dark:text-secondary-light bg-ternary-light dark:bg-secondary-dark rounded-md text-sm font-general-regular"
+									placeholder="Title (예: 하나의 이벤트 소스)"
+									aria-label="Process title"
+									value={item.title}
+									onChange={(e) => onItemChange({ title: e.target.value })}
+								/>
+							</div>
+							<textarea
+								className="w-full px-3 py-2 border border-gray-300 dark:border-primary-dark border-opacity-50 text-primary-dark dark:text-secondary-light bg-ternary-light dark:bg-secondary-dark rounded-md text-sm font-mono"
+								rows={8}
+								placeholder="본문 (마크다운 가능). kind/title 비우면 ## h2 split 폴백"
+								aria-label="Challenge markdown block"
+								value={item.details}
+								onChange={(e) => onItemChange({ details: e.target.value })}
+								required
+							/>
+						</div>
 					)}
 				/>
 			</AdminFormSection>

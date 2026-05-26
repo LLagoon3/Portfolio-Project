@@ -47,6 +47,8 @@ export function toProjectDetailDto(project: Project): ProjectDetailDto {
       ProjectDetailsHeading: project.projectDetailsHeading,
       ProjectDetails: details.map((detail) => ({
         id: detail.id,
+        kind: detail.kind ?? null,
+        title: detail.title ?? null,
         details: detail.details,
       })),
       SocialSharingHeading: project.socialSharingHeading,

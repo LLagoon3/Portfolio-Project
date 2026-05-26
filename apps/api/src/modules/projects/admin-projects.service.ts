@@ -223,6 +223,10 @@ function buildProject(dto: UpsertProjectDto): Project {
 
   project.details = dto.details.map((detail, idx) => {
     const e = new ProjectDetail();
+    // Phase 2 후속 — admin 명시 kind/title 은 trim 후 null 정규화. 미입력 entry 는
+    // web 의 parseProcessSteps 가 markdown h2 split 폴백으로 처리.
+    e.kind = detail.kind?.trim() ? detail.kind : null;
+    e.title = detail.title?.trim() ? detail.title : null;
     e.details = detail.details;
     e.sortOrder = idx;
     return e;

@@ -11,6 +11,8 @@ import { AboutProfile } from './entities/about-profile.entity';
 import { AboutStat } from './entities/about-stat.entity';
 import { AboutPrinciple } from './entities/about-principle.entity';
 import { AboutJourney } from './entities/about-journey.entity';
+import { AboutSocial } from './entities/about-social.entity';
+import { AboutFaq } from './entities/about-faq.entity';
 import { UpsertAboutDto } from './dto/upsert-about.dto';
 import { AboutResponseDto } from './dto/about-response.dto';
 import { toAboutResponseDto } from './mappers/about.mapper';
@@ -39,6 +41,8 @@ export class AdminAboutService {
       await manager.delete(AboutStat, { profileId: 1 });
       await manager.delete(AboutPrinciple, { profileId: 1 });
       await manager.delete(AboutJourney, { profileId: 1 });
+      await manager.delete(AboutSocial, { profileId: 1 });
+      await manager.delete(AboutFaq, { profileId: 1 });
 
       const profile = new AboutProfile();
       profile.id = 1;
@@ -81,6 +85,20 @@ export class AdminAboutService {
         journey.sortOrder = idx;
         return journey;
       });
+      profile.socials = (dto.socials ?? []).map((s, idx) => {
+        const social = new AboutSocial();
+        social.label = s.label;
+        social.url = s.url;
+        social.sortOrder = idx;
+        return social;
+      });
+      profile.faqs = (dto.faqs ?? []).map((f, idx) => {
+        const faq = new AboutFaq();
+        faq.question = f.question;
+        faq.answer = f.answer;
+        faq.sortOrder = idx;
+        return faq;
+      });
 
       await manager.save(AboutProfile, profile);
     });
@@ -117,6 +135,8 @@ export class AdminAboutService {
         stats: true,
         principles: true,
         journeys: true,
+        socials: true,
+        faqs: true,
       },
     });
     // upsert 가 방금 끝났으니 null 일 리 없지만, 타입 만족을 위해 fallback

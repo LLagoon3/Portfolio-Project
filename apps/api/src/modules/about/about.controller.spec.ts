@@ -37,6 +37,8 @@ describe('AboutController', () => {
       principles: [],
       journey: [],
       stacks: [],
+      socials: [],
+      faqs: [],
     };
     service.get.mockResolvedValue(data);
 

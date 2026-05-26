@@ -18,6 +18,8 @@ export class AboutRepository {
         stats: true,
         principles: true,
         journeys: true,
+        socials: true,
+        faqs: true,
       },
     });
   }

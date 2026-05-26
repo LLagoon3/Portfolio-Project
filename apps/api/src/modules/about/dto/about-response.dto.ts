@@ -19,6 +19,22 @@ export class AboutPrincipleDto {
   body!: string;
 }
 
+export class AboutSocialDto {
+  @ApiProperty({ example: '@LLagoon3' })
+  label!: string;
+
+  @ApiProperty({ example: 'https://github.com/LLagoon3' })
+  url!: string;
+}
+
+export class AboutFaqDto {
+  @ApiProperty({ example: '주로 어떤 일을 하시나요?' })
+  question!: string;
+
+  @ApiProperty({ example: '백엔드를 중심으로...', description: '마크다운 허용' })
+  answer!: string;
+}
+
 export class AboutJourneyDto {
   @ApiProperty({ example: '2026.01 — Now', description: '자유 표현 가능한 기간 라벨' })
   year!: string;
@@ -78,4 +94,11 @@ export class AboutResponseDto {
 
   @ApiProperty({ type: [String], example: ['NestJS', 'Express', 'TypeScript'] })
   stacks!: string[];
+
+  // Contact PR (#94) 보류분 — Contact Sidebar Direct / FAQ 섹션에 사용.
+  @ApiProperty({ type: [AboutSocialDto], description: 'sort_order 정렬' })
+  socials!: AboutSocialDto[];
+
+  @ApiProperty({ type: [AboutFaqDto], description: 'sort_order 정렬' })
+  faqs!: AboutFaqDto[];
 }

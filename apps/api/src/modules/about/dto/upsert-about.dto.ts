@@ -64,6 +64,37 @@ export class UpsertPrincipleDto {
   body!: string;
 }
 
+export class UpsertSocialDto {
+  @ApiProperty({ maxLength: 100, example: '@LLagoon3' })
+  @Transform(({ value }) => trimIfString(value))
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(100)
+  label!: string;
+
+  @ApiProperty({ maxLength: 500, example: 'https://github.com/LLagoon3' })
+  @Transform(({ value }) => trimIfString(value))
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(500)
+  url!: string;
+}
+
+export class UpsertFaqDto {
+  @ApiProperty({ maxLength: 200 })
+  @Transform(({ value }) => trimIfString(value))
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(200)
+  question!: string;
+
+  @ApiProperty({ description: '마크다운 허용' })
+  @Transform(({ value }) => trimIfString(value))
+  @IsString()
+  @IsNotEmpty()
+  answer!: string;
+}
+
 export class UpsertJourneyDto {
   @ApiProperty({ maxLength: 100, description: '자유 표현 — "2026.01 — Now" 등' })
   @Transform(({ value }) => trimIfString(value))
@@ -184,4 +215,21 @@ export class UpsertAboutDto {
   @ArrayMaxSize(30)
   @IsString({ each: true })
   stacks?: string[];
+
+  // Contact PR (#94) 보류분 — Contact Sidebar Direct 섹션 / FAQ 섹션 데이터.
+  @ApiProperty({ type: [UpsertSocialDto], required: false })
+  @IsOptional()
+  @IsArray()
+  @ArrayMaxSize(20)
+  @ValidateNested({ each: true })
+  @Type(() => UpsertSocialDto)
+  socials?: UpsertSocialDto[];
+
+  @ApiProperty({ type: [UpsertFaqDto], required: false })
+  @IsOptional()
+  @IsArray()
+  @ArrayMaxSize(30)
+  @ValidateNested({ each: true })
+  @Type(() => UpsertFaqDto)
+  faqs?: UpsertFaqDto[];
 }

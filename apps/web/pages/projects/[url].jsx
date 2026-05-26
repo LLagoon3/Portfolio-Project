@@ -9,6 +9,7 @@ import BoldProjectDetailRelated from '../../components/projects/bold/detail/Bold
 import BoldProjectDetailSideNav from '../../components/projects/bold/detail/BoldProjectDetailSideNav';
 import BoldProjectDetailImpact from '../../components/projects/bold/detail/BoldProjectDetailImpact';
 import BoldProjectDetailQuote from '../../components/projects/bold/detail/BoldProjectDetailQuote';
+import { parseYear } from '../../lib/projects';
 
 const API_BASE_URL =
 	process.env.API_INTERNAL_URL || 'http://localhost:7341';
@@ -93,11 +94,6 @@ function pickHeroAccentWord(project) {
 }
 
 ProjectDetail.getLayout = (page) => <BoldLayout>{page}</BoldLayout>;
-
-function parseYear(headerPublishDate) {
-	const head = (headerPublishDate ?? '').slice(0, 4);
-	return /^\d{4}$/.test(head) ? head : '';
-}
 
 // JSX 로 반환 → 두 phrase 사이의 공백 1곳에서만 wrap 가능. 좁은 viewport 에서
 // 'Selected Work / — 2025 · Web Application' 처럼 깔끔하게 두 줄.

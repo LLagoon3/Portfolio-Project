@@ -193,7 +193,7 @@ function ProjectForm({ initialValue, submitLabel = '저장', onSubmit }) {
 					onChange={(e) => set('category', e.target.value)}
 				/>
 				<label className="block text-lg text-primary-dark dark:text-primary-light mb-1 font-general-regular">
-					썸네일 이미지 (16:9 자동 crop)
+					썸네일 이미지 (4:5 자동 crop)
 				</label>
 				<ImageUploader
 					value={form.thumbnailImg}
@@ -528,14 +528,32 @@ function ProjectForm({ initialValue, submitLabel = '저장', onSubmit }) {
 				/>
 			</AdminFormSection>
 
-			<AdminFormSection title="갤러리 이미지" description="프로젝트 상세 상단에 노출되는 이미지 배열. alt 텍스트와 함께 업로드합니다.">
+			<AdminFormSection
+				title="갤러리 이미지"
+				description={
+					<>
+						프로젝트 상세 상단에 노출되는 이미지 배열. alt 텍스트와 함께 업로드합니다.
+						<br />
+						<strong>1번째 이미지 (Hero cover)</strong>: 권장 <code>1200 × 1500 px (4:5)</code> — 세로형 카드 프레임.
+						<br />
+						<strong>2번째 이미지부터 (Gallery)</strong>: 권장 <code>1600 × 1200 px (4:3)</code> — 가로형 모자이크 프레임.
+						<br />
+						gallery 프리셋은 비율 유지 (장축 1600px 다운스케일만) 이므로 권장 비율과 다르면 프레임에서 잘립니다.
+					</>
+				}
+			>
 				<DynamicList
 					items={form.images}
 					onChange={(next) => set('images', next)}
 					emptyItem={() => ({ _key: `img-${Date.now()}`, title: '', img: '' })}
 					addLabel="이미지 추가"
-					renderItem={(item, _idx, onItemChange) => (
+					renderItem={(item, idx, onItemChange) => (
 						<div className="flex flex-col gap-2">
+							<div className="text-xs font-general-regular text-primary-dark dark:text-ternary-light">
+								{idx === 0
+									? '1번째 — Hero cover (권장 1200 × 1500 px, 4:5)'
+									: `${idx + 1}번째 — Gallery tile (권장 1600 × 1200 px, 4:3)`}
+							</div>
 							<input
 								className="px-3 py-2 border border-gray-300 dark:border-primary-dark border-opacity-50 text-primary-dark dark:text-secondary-light bg-ternary-light dark:bg-secondary-dark rounded-md text-sm font-general-regular"
 								placeholder="alt 텍스트"

@@ -180,7 +180,7 @@ function ProjectForm({ initialValue, submitLabel = '저장', onSubmit }) {
 					onChange={(e) => set('category', e.target.value)}
 				/>
 				<label className="block text-lg text-primary-dark dark:text-primary-light mb-1 font-general-regular">
-					썸네일 이미지 (16:9 자동 crop)
+					썸네일 이미지 (4:5 자동 crop)
 				</label>
 				<ImageUploader
 					value={form.thumbnailImg}

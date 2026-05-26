@@ -42,7 +42,9 @@ export default function BoldProjectDetailImpact({ stats = [] }) {
 								style={{
 									fontSize: 'clamp(3rem, 7vw, 5.5rem)',
 									letterSpacing: '-0.05em',
-									lineHeight: 1,
+									// lineHeight 1.0 은 background-clip:text 마스크가 line box 와
+									// 동일해져 '%' 등 글리프 하단 끝이 잘리는 경계. 1.15 로 여유.
+									lineHeight: 1.15,
 									background:
 										'linear-gradient(180deg, var(--paper) 0%, color-mix(in oklab, var(--paper) 55%, transparent) 100%)',
 									WebkitBackgroundClip: 'text',

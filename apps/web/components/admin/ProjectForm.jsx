@@ -22,6 +22,7 @@ const DEFAULT_VALUES = {
 	heroAccentWord: '',
 	quote: { text: '', author: '' },
 	stats: [],
+	links: [],
 	images: [],
 	companyInfo: [],
 	// 공개 상세 페이지가 Technologies[0] 을 직접 참조하므로 최소 1 그룹을 기본으로 유지한다.
@@ -31,10 +32,11 @@ const DEFAULT_VALUES = {
 
 function toFormState(initial) {
 	const merged = { ...DEFAULT_VALUES, ...(initial ?? {}) };
-	// Phase 2 — api 응답의 ProjectInfo.Impact / ProjectInfo.Quote 도 받아와 form state 로 변환.
+	// Phase 2 — api 응답의 ProjectInfo.Impact / ProjectInfo.Quote / ProjectInfo.Links 도 흡수.
 	// upsert 응답은 ProjectDetailDto 형식이므로 ProjectInfo 안에서 꺼낸다.
 	const apiImpact = initial?.ProjectInfo?.Impact ?? initial?.stats ?? [];
 	const apiQuote = initial?.ProjectInfo?.Quote ?? initial?.quote ?? null;
+	const apiLinks = initial?.ProjectInfo?.Links ?? initial?.links ?? [];
 	return {
 		...merged,
 		heroSubtitle: merged.heroSubtitle ?? '',
@@ -48,6 +50,11 @@ function toFormState(initial) {
 			label: s.label ?? '',
 			value: s.value ?? '',
 			sub: s.sub ?? '',
+		})),
+		links: apiLinks.map((l, i) => ({
+			_key: `link-${i}-${Math.random()}`,
+			label: l.label ?? '',
+			url: l.url ?? '',
 		})),
 		images: (merged.images ?? []).map((img, i) => ({
 			_key: `img-${i}-${Math.random()}`,
@@ -99,6 +106,12 @@ function toSubmitPayload(form) {
 				sub: s.sub?.trim() ? s.sub.trim() : null,
 			}))
 			.filter((s) => s.label && s.value),
+		links: form.links
+			.map((l) => ({
+				label: l.label.trim(),
+				url: l.url.trim(),
+			}))
+			.filter((l) => l.label && l.url),
 		images: form.images.map((img) => ({ title: img.title, img: img.img })),
 		companyInfo: form.companyInfo.map((info) => ({
 			title: info.title,
@@ -313,6 +326,41 @@ function ProjectForm({ initialValue, submitLabel = '저장', onSubmit }) {
 								aria-label="Stat sub"
 								value={item.sub}
 								onChange={(e) => onItemChange({ sub: e.target.value })}
+							/>
+						</div>
+					)}
+				/>
+			</AdminFormSection>
+
+			<AdminFormSection
+				title="Links (선택, 최대 10개)"
+				description="GitHub / Notion / Demo / 배포 등 외부 링크. Project Detail Hero meta strip 아래 Direct row 로 노출. label·url 둘 다 있어야 저장."
+			>
+				<DynamicList
+					items={form.links}
+					onChange={(next) => set('links', next)}
+					emptyItem={() => ({
+						_key: `link-${Date.now()}`,
+						label: '',
+						url: '',
+					})}
+					addLabel="Link 추가"
+					maxLength={10}
+					renderItem={(item, _idx, onItemChange) => (
+						<div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+							<input
+								className="px-3 py-2 border border-gray-300 dark:border-primary-dark border-opacity-50 text-primary-dark dark:text-secondary-light bg-ternary-light dark:bg-secondary-dark rounded-md text-sm font-general-regular"
+								placeholder="라벨 (예: @LLagoon3, Demo ↗)"
+								aria-label="Link label"
+								value={item.label}
+								onChange={(e) => onItemChange({ label: e.target.value })}
+							/>
+							<input
+								className="px-3 py-2 border border-gray-300 dark:border-primary-dark border-opacity-50 text-primary-dark dark:text-secondary-light bg-ternary-light dark:bg-secondary-dark rounded-md text-sm font-general-regular sm:col-span-2"
+								placeholder="URL"
+								aria-label="Link url"
+								value={item.url}
+								onChange={(e) => onItemChange({ url: e.target.value })}
 							/>
 						</div>
 					)}

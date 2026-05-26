@@ -57,7 +57,10 @@ function ProjectDetail({ project, relatedProjects }) {
 					<aside className="hidden lg:block lg:w-[160px] lg:flex-shrink-0 lg:pt-32">
 						<BoldProjectDetailSideNav sections={sections} />
 					</aside>
-					<div className="lg:flex-1 lg:min-w-0">
+					<div
+						className="lg:flex-1 lg:min-w-0"
+						style={{ wordBreak: 'keep-all' }}
+					>
 						<BoldProjectDetailHero
 							title={project.title}
 							accentWord={heroAccentWord}
@@ -96,12 +99,29 @@ function parseYear(headerPublishDate) {
 	return /^\d{4}$/.test(head) ? head : '';
 }
 
+// JSX 로 반환 → 두 phrase 사이의 공백 1곳에서만 wrap 가능. 좁은 viewport 에서
+// 'Selected Work / — 2025 · Web Application' 처럼 깔끔하게 두 줄.
 function buildHeroEyebrow(project) {
 	const year = parseYear(project.ProjectHeader?.publishDate);
 	const category = project.category;
-	if (year && category) return `Selected Work — ${year} · ${category}`;
-	if (category) return `Selected Work · ${category}`;
-	return 'Selected Work';
+	const primary = <span className="whitespace-nowrap">Selected Work</span>;
+	if (year && category) {
+		return (
+			<>
+				{primary}{' '}
+				<span className="whitespace-nowrap">— {year} · {category}</span>
+			</>
+		);
+	}
+	if (category) {
+		return (
+			<>
+				{primary}{' '}
+				<span className="whitespace-nowrap">· {category}</span>
+			</>
+		);
+	}
+	return primary;
 }
 
 // CompanyInfo[] 의 title 매칭으로 Client/Role/Team/Status 폴백 + 항상 Timeline / Category 표시.

@@ -7,6 +7,8 @@ import BoldProjectDetailProcess from '../../components/projects/bold/detail/Bold
 import BoldProjectDetailStack from '../../components/projects/bold/detail/BoldProjectDetailStack';
 import BoldProjectDetailRelated from '../../components/projects/bold/detail/BoldProjectDetailRelated';
 import BoldProjectDetailSideNav from '../../components/projects/bold/detail/BoldProjectDetailSideNav';
+import BoldProjectDetailImpact from '../../components/projects/bold/detail/BoldProjectDetailImpact';
+import BoldProjectDetailQuote from '../../components/projects/bold/detail/BoldProjectDetailQuote';
 
 const API_BASE_URL =
 	process.env.API_INTERNAL_URL || 'http://localhost:7341';
@@ -26,6 +28,11 @@ function ProjectDetail({ project, relatedProjects }) {
 	const gallery = project.ProjectImages?.slice(1) ?? [];
 	const steps = parseProcessSteps(project.ProjectInfo?.ProjectDetails);
 	const stackGroups = project.ProjectInfo?.Technologies ?? [];
+	// Phase 2 — admin 명시 값 우선, 미입력 시 폴백 (title 마지막 토큰).
+	const heroAccentWord = pickHeroAccentWord(project);
+	const heroSubtitle = project.heroSubtitle || null;
+	const impactStats = project.ProjectInfo?.Impact ?? [];
+	const quote = project.ProjectInfo?.Quote ?? null;
 
 	// SideNav 는 실제 렌더되는 섹션만 노출.
 	const sections = [
@@ -33,30 +40,56 @@ function ProjectDetail({ project, relatedProjects }) {
 		overview && { id: 'overview', label: 'Overview' },
 		gallery.length > 0 && { id: 'gallery', label: 'Gallery' },
 		steps.length > 0 && { id: 'process', label: 'Process' },
+		impactStats.length > 0 && { id: 'impact', label: 'Impact' },
 		stackGroups.some((g) => g?.techs?.length) && { id: 'stack', label: 'Stack' },
+		quote && { id: 'quote', label: 'Quote' },
 		relatedProjects.length > 0 && { id: 'related', label: 'Next Up' },
 	].filter(Boolean);
 
 	return (
 		<>
 			<PagesMetaHead title={project.title} />
-			<BoldProjectDetailSideNav sections={sections} />
 
 			<div className="container mx-auto px-6 lg:px-10">
-				<BoldProjectDetailHero
-					title={project.title}
-					eyebrow={heroEyebrow}
-					coverImage={project.ProjectImages?.[0]?.img}
-					meta={heroMeta}
-				/>
-				<BoldProjectDetailOverview body={overview} />
-				<BoldProjectDetailGallery images={gallery} />
-				<BoldProjectDetailProcess steps={steps} />
-				<BoldProjectDetailStack groups={stackGroups} />
-				<BoldProjectDetailRelated projects={relatedProjects} />
+				{/* lg+ 에서 SideNav 를 별도 컬럼으로 분리 → fixed 시 main content 침범 문제 해소.
+				    SideNav 자체는 sticky top-32. 모바일에선 SideNav 영역 자체 미렌더. */}
+				<div className="lg:flex lg:gap-10 xl:gap-14">
+					<aside className="hidden lg:block lg:w-[160px] lg:flex-shrink-0 lg:pt-32">
+						<BoldProjectDetailSideNav sections={sections} />
+					</aside>
+					<div
+						className="lg:flex-1 lg:min-w-0"
+						style={{ wordBreak: 'keep-all' }}
+					>
+						<BoldProjectDetailHero
+							title={project.title}
+							accentWord={heroAccentWord}
+							subtitle={heroSubtitle}
+							eyebrow={heroEyebrow}
+							coverImage={project.ProjectImages?.[0]?.img}
+							meta={heroMeta}
+						/>
+						<BoldProjectDetailOverview body={overview} />
+						<BoldProjectDetailGallery images={gallery} />
+						<BoldProjectDetailProcess steps={steps} />
+						<BoldProjectDetailImpact stats={impactStats} />
+						<BoldProjectDetailStack groups={stackGroups} />
+						<BoldProjectDetailQuote quote={quote} />
+						<BoldProjectDetailRelated projects={relatedProjects} />
+					</div>
+				</div>
 			</div>
 		</>
 	);
+}
+
+// admin 명시 값이 있으면 그대로, 없으면 title 마지막 공백 토큰 폴백.
+function pickHeroAccentWord(project) {
+	if (project.heroAccentWord && project.heroAccentWord.trim()) {
+		return project.heroAccentWord.trim();
+	}
+	const tokens = (project.title ?? '').trim().split(/\s+/);
+	return tokens[tokens.length - 1] || '';
 }
 
 ProjectDetail.getLayout = (page) => <BoldLayout>{page}</BoldLayout>;
@@ -66,12 +99,29 @@ function parseYear(headerPublishDate) {
 	return /^\d{4}$/.test(head) ? head : '';
 }
 
+// JSX 로 반환 → 두 phrase 사이의 공백 1곳에서만 wrap 가능. 좁은 viewport 에서
+// 'Selected Work / — 2025 · Web Application' 처럼 깔끔하게 두 줄.
 function buildHeroEyebrow(project) {
 	const year = parseYear(project.ProjectHeader?.publishDate);
 	const category = project.category;
-	if (year && category) return `Selected Work — ${year} · ${category}`;
-	if (category) return `Selected Work · ${category}`;
-	return 'Selected Work';
+	const primary = <span className="whitespace-nowrap">Selected Work</span>;
+	if (year && category) {
+		return (
+			<>
+				{primary}{' '}
+				<span className="whitespace-nowrap">— {year} · {category}</span>
+			</>
+		);
+	}
+	if (category) {
+		return (
+			<>
+				{primary}{' '}
+				<span className="whitespace-nowrap">· {category}</span>
+			</>
+		);
+	}
+	return primary;
 }
 
 // CompanyInfo[] 의 title 매칭으로 Client/Role/Team/Status 폴백 + 항상 Timeline / Category 표시.

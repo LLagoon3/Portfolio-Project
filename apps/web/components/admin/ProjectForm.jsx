@@ -17,6 +17,11 @@ const DEFAULT_VALUES = {
 	objectivesDetails: '',
 	projectDetailsHeading: 'Challenge',
 	socialSharingHeading: '',
+	// Phase 2 (선택) — Bold Hero / Impact / Quote 섹션.
+	heroSubtitle: '',
+	heroAccentWord: '',
+	quote: { text: '', author: '' },
+	stats: [],
 	images: [],
 	companyInfo: [],
 	// 공개 상세 페이지가 Technologies[0] 을 직접 참조하므로 최소 1 그룹을 기본으로 유지한다.
@@ -26,8 +31,24 @@ const DEFAULT_VALUES = {
 
 function toFormState(initial) {
 	const merged = { ...DEFAULT_VALUES, ...(initial ?? {}) };
+	// Phase 2 — api 응답의 ProjectInfo.Impact / ProjectInfo.Quote 도 받아와 form state 로 변환.
+	// upsert 응답은 ProjectDetailDto 형식이므로 ProjectInfo 안에서 꺼낸다.
+	const apiImpact = initial?.ProjectInfo?.Impact ?? initial?.stats ?? [];
+	const apiQuote = initial?.ProjectInfo?.Quote ?? initial?.quote ?? null;
 	return {
 		...merged,
+		heroSubtitle: merged.heroSubtitle ?? '',
+		heroAccentWord: merged.heroAccentWord ?? '',
+		quote: {
+			text: apiQuote?.text ?? '',
+			author: apiQuote?.author ?? '',
+		},
+		stats: apiImpact.map((s, i) => ({
+			_key: `stat-${i}-${Math.random()}`,
+			label: s.label ?? '',
+			value: s.value ?? '',
+			sub: s.sub ?? '',
+		})),
 		images: (merged.images ?? []).map((img, i) => ({
 			_key: `img-${i}-${Math.random()}`,
 			title: img.title ?? '',
@@ -51,6 +72,8 @@ function toFormState(initial) {
 }
 
 function toSubmitPayload(form) {
+	const quoteText = form.quote?.text?.trim() ?? '';
+	const quoteAuthor = form.quote?.author?.trim() ?? '';
 	return {
 		title: form.title.trim(),
 		url: form.url.trim(),
@@ -63,6 +86,17 @@ function toSubmitPayload(form) {
 		objectivesDetails: form.objectivesDetails.trim(),
 		projectDetailsHeading: form.projectDetailsHeading.trim(),
 		socialSharingHeading: form.socialSharingHeading.trim() || undefined,
+		heroSubtitle: form.heroSubtitle.trim() || null,
+		heroAccentWord: form.heroAccentWord.trim() || null,
+		// Phase 2: text 비면 quote 자체 미전송 (api 가 null 로 cascade delete).
+		quote: quoteText ? { text: quoteText, author: quoteAuthor || null } : null,
+		stats: form.stats
+			.map((s) => ({
+				label: s.label.trim(),
+				value: s.value.trim(),
+				sub: s.sub?.trim() ? s.sub.trim() : null,
+			}))
+			.filter((s) => s.label && s.value),
 		images: form.images.map((img) => ({ title: img.title, img: img.img })),
 		companyInfo: form.companyInfo.map((info) => ({
 			title: info.title,
@@ -170,6 +204,112 @@ function ProjectForm({ initialValue, submitLabel = '저장', onSubmit }) {
 					placeholderText="Backend / Realtime"
 					value={form.headerTags}
 					onChange={(e) => set('headerTags', e.target.value)}
+				/>
+			</AdminFormSection>
+
+			<AdminFormSection
+				title="Bold Hero (선택)"
+				description="Bold Project Detail 의 거대 타이틀 보강. 미입력 시 web 이 폴백(마지막 단어 accent + Overview 첫 단락)."
+			>
+				<FormInput
+					inputLabel="Hero Subtitle"
+					labelFor="heroSubtitle"
+					inputType="text"
+					inputId="heroSubtitle"
+					inputName="heroSubtitle"
+					ariaLabelName="Hero subtitle"
+					placeholderText="여러 서비스 로그를 한 곳에 모으는 인프라."
+					value={form.heroSubtitle}
+					onChange={(e) => set('heroSubtitle', e.target.value)}
+				/>
+				<FormInput
+					inputLabel="Hero Accent Word (강조할 단어, 미입력 시 타이틀 마지막 단어)"
+					labelFor="heroAccentWord"
+					inputType="text"
+					inputId="heroAccentWord"
+					inputName="heroAccentWord"
+					ariaLabelName="Hero accent word"
+					placeholderText="시스템"
+					value={form.heroAccentWord}
+					onChange={(e) => set('heroAccentWord', e.target.value)}
+				/>
+			</AdminFormSection>
+
+			<AdminFormSection
+				title="Quote (선택)"
+				description="Bold Project Detail 의 pull quote 섹션. text 가 비면 섹션 자체가 미노출."
+			>
+				<label
+					className="block text-lg text-primary-dark dark:text-primary-light mb-1 font-general-regular"
+					htmlFor="quoteText"
+				>
+					Quote text
+				</label>
+				<textarea
+					id="quoteText"
+					name="quoteText"
+					rows={3}
+					placeholder="6주 안에 결제 로직을 안정화하면서, 운영팀의 새벽 호출이 90% 줄었다."
+					aria-label="Quote text"
+					className="w-full px-5 py-2 mb-4 border border-gray-300 dark:border-primary-dark border-opacity-50 text-primary-dark dark:text-secondary-light bg-ternary-light dark:bg-ternary-dark rounded-md shadow-sm text-md font-general-regular"
+					value={form.quote.text}
+					onChange={(e) => set('quote', { ...form.quote, text: e.target.value })}
+				/>
+				<FormInput
+					inputLabel="Author (선택)"
+					labelFor="quoteAuthor"
+					inputType="text"
+					inputId="quoteAuthor"
+					inputName="quoteAuthor"
+					ariaLabelName="Quote author"
+					placeholderText="프로젝트 회고"
+					value={form.quote.author}
+					onChange={(e) => set('quote', { ...form.quote, author: e.target.value })}
+				/>
+			</AdminFormSection>
+
+			<AdminFormSection
+				title="Impact stats (선택, 최대 3개)"
+				description="Bold Project Detail 의 Impact 섹션 카운터. value 가 숫자면 자동 카운트업, 단위 섞이면 plain. 빈 배열이면 섹션 미노출."
+			>
+				<DynamicList
+					items={form.stats}
+					onChange={(next) => set('stats', next)}
+					emptyItem={() => ({
+						_key: `stat-${Date.now()}`,
+						label: '',
+						value: '',
+						sub: '',
+					})}
+					addLabel="Stat 추가"
+					maxLength={3}
+					renderItem={(item, _idx, onItemChange) => (
+						<div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+							<input
+								className="px-3 py-2 border border-gray-300 dark:border-primary-dark border-opacity-50 text-primary-dark dark:text-secondary-light bg-ternary-light dark:bg-secondary-dark rounded-md text-sm font-general-regular"
+								placeholder="Label (예: Latency)"
+								aria-label="Stat label"
+								value={item.label}
+								onChange={(e) => onItemChange({ label: e.target.value })}
+								required
+							/>
+							<input
+								className="px-3 py-2 border border-gray-300 dark:border-primary-dark border-opacity-50 text-primary-dark dark:text-secondary-light bg-ternary-light dark:bg-secondary-dark rounded-md text-sm font-general-regular"
+								placeholder="Value (예: -72%)"
+								aria-label="Stat value"
+								value={item.value}
+								onChange={(e) => onItemChange({ value: e.target.value })}
+								required
+							/>
+							<input
+								className="px-3 py-2 border border-gray-300 dark:border-primary-dark border-opacity-50 text-primary-dark dark:text-secondary-light bg-ternary-light dark:bg-secondary-dark rounded-md text-sm font-general-regular"
+								placeholder="Sub (선택, 예: 검색 평균 응답)"
+								aria-label="Stat sub"
+								value={item.sub}
+								onChange={(e) => onItemChange({ sub: e.target.value })}
+							/>
+						</div>
+					)}
 				/>
 			</AdminFormSection>
 

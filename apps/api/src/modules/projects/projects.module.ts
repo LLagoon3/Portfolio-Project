@@ -11,6 +11,8 @@ import { ProjectCompanyInfo } from './entities/project-company-info.entity';
 import { ProjectTechnology } from './entities/project-technology.entity';
 import { ProjectTechnologyItem } from './entities/project-technology-item.entity';
 import { ProjectDetail } from './entities/project-detail.entity';
+import { ProjectStat } from './entities/project-stat.entity';
+import { ProjectQuote } from './entities/project-quote.entity';
 import { UploadsModule } from '../uploads/uploads.module';
 
 @Module({
@@ -22,6 +24,8 @@ import { UploadsModule } from '../uploads/uploads.module';
       ProjectTechnology,
       ProjectTechnologyItem,
       ProjectDetail,
+      ProjectStat,
+      ProjectQuote,
     ]),
     UploadsModule,
   ],

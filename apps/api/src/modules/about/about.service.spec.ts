@@ -78,6 +78,8 @@ describe('AboutService', () => {
       principles: [],
       journey: [],
       stacks: [],
+      socials: [],
+      faqs: [],
     });
   });
 

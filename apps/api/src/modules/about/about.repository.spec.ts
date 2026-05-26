@@ -37,6 +37,8 @@ describe('AboutRepository', () => {
         stats: true,
         principles: true,
         journeys: true,
+        socials: true,
+        faqs: true,
       },
     });
   });

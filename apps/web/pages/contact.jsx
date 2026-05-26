@@ -4,6 +4,7 @@ import BoldContactHero from '../components/contact/bold/BoldContactHero';
 import BoldContactBigEmail from '../components/contact/bold/BoldContactBigEmail';
 import BoldContactForm from '../components/contact/bold/BoldContactForm';
 import BoldContactSidebar from '../components/contact/bold/BoldContactSidebar';
+import BoldContactFaq from '../components/contact/bold/BoldContactFaq';
 
 const API_BASE_URL =
 	process.env.API_INTERNAL_URL || 'http://localhost:7341';
@@ -12,6 +13,8 @@ const EMPTY_CONTACT = {
 	address: null,
 	email: null,
 	availability: null,
+	socials: [],
+	faqs: [],
 };
 
 function Contact({ contact }) {
@@ -35,9 +38,12 @@ function Contact({ contact }) {
 							email={contact.email}
 							address={contact.address}
 							availability={contact.availability}
+							socials={contact.socials}
 						/>
 					</div>
 				</section>
+
+				<BoldContactFaq faqs={contact.faqs} />
 			</div>
 		</>
 	);
@@ -63,6 +69,8 @@ export async function getServerSideProps() {
 					address: data?.address ?? null,
 					email: data?.email ?? null,
 					availability: data?.availability ?? null,
+					socials: data?.socials ?? [],
+					faqs: data?.faqs ?? [],
 				},
 			},
 		};

@@ -14,6 +14,12 @@ export function toAboutResponseDto(profile: AboutProfile): AboutResponseDto {
   const sortedJourneys = [...(profile.journeys ?? [])].sort(
     (a, b) => a.sortOrder - b.sortOrder,
   );
+  const sortedSocials = [...(profile.socials ?? [])].sort(
+    (a, b) => a.sortOrder - b.sortOrder,
+  );
+  const sortedFaqs = [...(profile.faqs ?? [])].sort(
+    (a, b) => a.sortOrder - b.sortOrder,
+  );
 
   return {
     name: profile.name,
@@ -40,5 +46,7 @@ export function toAboutResponseDto(profile: AboutProfile): AboutResponseDto {
       body: j.body,
     })),
     stacks: profile.stacks ?? [],
+    socials: sortedSocials.map((s) => ({ label: s.label, url: s.url })),
+    faqs: sortedFaqs.map((f) => ({ question: f.question, answer: f.answer })),
   };
 }

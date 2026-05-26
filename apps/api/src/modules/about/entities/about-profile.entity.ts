@@ -10,6 +10,8 @@ import { AboutBio } from './about-bio.entity';
 import { AboutStat } from './about-stat.entity';
 import { AboutPrinciple } from './about-principle.entity';
 import { AboutJourney } from './about-journey.entity';
+import { AboutSocial } from './about-social.entity';
+import { AboutFaq } from './about-faq.entity';
 
 // singleton: ABOUT_PROFILE 은 항상 id = 1 인 단일 row 만 허용한다.
 // 앱 레벨 컨벤션만으로는 실수 방지가 부족하므로 CHECK 제약으로 못박는다.
@@ -59,4 +61,11 @@ export class AboutProfile {
 
   @OneToMany(() => AboutJourney, (j) => j.profile, { cascade: true })
   journeys!: AboutJourney[];
+
+  // 보류였던 후속 필드 — Contact PR (#94) 의 contactEmail/socials/faqs 중 socials/faqs 만 도입.
+  @OneToMany(() => AboutSocial, (s) => s.profile, { cascade: true })
+  socials!: AboutSocial[];
+
+  @OneToMany(() => AboutFaq, (f) => f.profile, { cascade: true })
+  faqs!: AboutFaq[];
 }

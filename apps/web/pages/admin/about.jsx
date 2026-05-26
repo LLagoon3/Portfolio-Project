@@ -49,6 +49,16 @@ function toFormState(about) {
 			_key: nextKey('stack'),
 			value: stack,
 		})),
+		socials: (about?.socials ?? []).map((s) => ({
+			_key: nextKey('social'),
+			label: s.label ?? '',
+			url: s.url ?? '',
+		})),
+		faqs: (about?.faqs ?? []).map((f) => ({
+			_key: nextKey('faq'),
+			question: f.question ?? '',
+			answer: f.answer ?? '',
+		})),
 	};
 }
 
@@ -102,6 +112,15 @@ function AdminAboutEditor({ initialAbout }) {
 				stacks: form.stacks
 					.map((s) => s.value.trim())
 					.filter((v) => v.length > 0),
+				socials: form.socials
+					.filter((s) => s.label.trim() && s.url.trim())
+					.map((s) => ({ label: s.label.trim(), url: s.url.trim() })),
+				faqs: form.faqs
+					.filter((f) => f.question.trim() && f.answer.trim())
+					.map((f) => ({
+						question: f.question.trim(),
+						answer: f.answer.trim(),
+					})),
 			};
 			const saved = await fetchAdmin('/api/admin/about', {
 				method: 'PUT',
@@ -385,6 +404,77 @@ function AdminAboutEditor({ initialAbout }) {
 									aria-label="Journey body"
 									value={item.body}
 									onChange={(e) => onItemChange({ body: e.target.value })}
+								/>
+							</div>
+						)}
+					/>
+				</AdminFormSection>
+
+				<AdminFormSection
+					title="Socials"
+					description="Contact Sidebar Direct 섹션에 노출. label (예: @LLagoon3, 이력서 ↗) + url. 둘 다 있어야 저장."
+				>
+					<DynamicList
+						items={form.socials}
+						onChange={(next) => set('socials', next)}
+						emptyItem={() => ({
+							_key: nextKey('social'),
+							label: '',
+							url: '',
+						})}
+						addLabel="Social 추가"
+						maxLength={20}
+						renderItem={(item, _idx, onItemChange) => (
+							<div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+								<input
+									className={inputClass}
+									placeholder="라벨 (예: @LLagoon3)"
+									aria-label="Social label"
+									value={item.label}
+									onChange={(e) => onItemChange({ label: e.target.value })}
+								/>
+								<input
+									className={`${inputClass} sm:col-span-2`}
+									placeholder="URL (예: https://github.com/LLagoon3)"
+									aria-label="Social url"
+									value={item.url}
+									onChange={(e) => onItemChange({ url: e.target.value })}
+								/>
+							</div>
+						)}
+					/>
+				</AdminFormSection>
+
+				<AdminFormSection
+					title="FAQ"
+					description="Contact 페이지에 FAQ 섹션이 노출됩니다 (faqs 비면 섹션 자체 미렌더). answer 는 마크다운 지원."
+				>
+					<DynamicList
+						items={form.faqs}
+						onChange={(next) => set('faqs', next)}
+						emptyItem={() => ({
+							_key: nextKey('faq'),
+							question: '',
+							answer: '',
+						})}
+						addLabel="FAQ 추가"
+						maxLength={30}
+						renderItem={(item, _idx, onItemChange) => (
+							<div className="flex flex-col gap-2">
+								<input
+									className={inputClass}
+									placeholder="질문"
+									aria-label="FAQ question"
+									value={item.question}
+									onChange={(e) => onItemChange({ question: e.target.value })}
+								/>
+								<textarea
+									className={inputClass}
+									rows={4}
+									placeholder="답변 (마크다운 가능)"
+									aria-label="FAQ answer"
+									value={item.answer}
+									onChange={(e) => onItemChange({ answer: e.target.value })}
 								/>
 							</div>
 						)}

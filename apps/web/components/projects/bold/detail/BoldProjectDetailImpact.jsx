@@ -1,9 +1,9 @@
 import Reveal from '../../../primitives/Reveal';
 import Eyebrow from '../../../primitives/Eyebrow';
-import StatCounter from '../../../primitives/StatCounter';
+import StatCounterOrText from '../../../primitives/StatCounterOrText';
 
 // stats 빈 배열이면 섹션 자체 미렌더 (Phase 1 동일 동작 호환).
-// AboutCounters 패턴 동일 — value 가 순수 숫자면 카운트업, 단위 섞이면 plain.
+// StatCounterOrText primitive 공용 (AboutCounters 동일 사용).
 export default function BoldProjectDetailImpact({ stats = [] }) {
 	if (!stats.length) return null;
 
@@ -67,15 +67,4 @@ export default function BoldProjectDetailImpact({ stats = [] }) {
 			</div>
 		</section>
 	);
-}
-
-// AboutCounters 의 StatCounterOrText 와 동일 — 순수 숫자면 카운트업, 단위 섞이면 plain.
-function StatCounterOrText({ value }) {
-	const str = String(value ?? '');
-	if (/^-?\d+(?:\.\d+)?$/.test(str)) {
-		const numeric = parseFloat(str);
-		const decimals = str.includes('.') ? str.split('.')[1].length : 0;
-		return <StatCounter end={numeric} decimals={decimals} />;
-	}
-	return <span>{str}</span>;
 }

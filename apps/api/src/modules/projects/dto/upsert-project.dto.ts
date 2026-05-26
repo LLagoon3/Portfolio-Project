@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import {
   ArrayMaxSize,
   ArrayMinSize,
@@ -10,6 +10,18 @@ import {
   MaxLength,
   ValidateNested,
 } from 'class-validator';
+
+// About 의 trim helper 와 동일 패턴 (apps/api/src/modules/about/dto/upsert-about.dto.ts:14-25).
+// 후속에 apps/api/src/common/dto/transforms.ts 같은 공용 위치로 lift 검토.
+const trimIfString = (value: unknown): unknown =>
+  typeof value === 'string' ? value.trim() : value;
+
+// 빈 문자열·공백-only 는 null 로 정규화 (선택 필드 공통 규칙).
+const trimToNull = (value: unknown): unknown => {
+  if (typeof value !== 'string') return value;
+  const trimmed = value.trim();
+  return trimmed.length === 0 ? null : trimmed;
+};
 
 export class UpsertImageDto {
   @ApiProperty({ maxLength: 200 })
@@ -64,18 +76,21 @@ export class UpsertProjectDetailDto {
 
 export class UpsertProjectStatDto {
   @ApiProperty({ maxLength: 100, example: 'Latency' })
+  @Transform(({ value }) => trimIfString(value))
   @IsString()
   @IsNotEmpty()
   @MaxLength(100)
   label!: string;
 
   @ApiProperty({ maxLength: 100, example: '-72%' })
+  @Transform(({ value }) => trimIfString(value))
   @IsString()
   @IsNotEmpty()
   @MaxLength(100)
   value!: string;
 
   @ApiProperty({ maxLength: 255, required: false, nullable: true })
+  @Transform(({ value }) => trimToNull(value))
   @IsOptional()
   @IsString()
   @MaxLength(255)
@@ -84,11 +99,13 @@ export class UpsertProjectStatDto {
 
 export class UpsertProjectQuoteDto {
   @ApiProperty({ description: '인용문 본문' })
+  @Transform(({ value }) => trimIfString(value))
   @IsString()
   @IsNotEmpty()
   text!: string;
 
   @ApiProperty({ maxLength: 200, required: false, nullable: true })
+  @Transform(({ value }) => trimToNull(value))
   @IsOptional()
   @IsString()
   @MaxLength(200)
@@ -163,12 +180,14 @@ export class UpsertProjectDto {
 
   // Phase 2 — 모두 optional. 미입력 시 UI 폴백/미노출.
   @ApiProperty({ maxLength: 255, required: false, nullable: true })
+  @Transform(({ value }) => trimToNull(value))
   @IsOptional()
   @IsString()
   @MaxLength(255)
   heroSubtitle?: string | null;
 
   @ApiProperty({ maxLength: 100, required: false, nullable: true })
+  @Transform(({ value }) => trimToNull(value))
   @IsOptional()
   @IsString()
   @MaxLength(100)

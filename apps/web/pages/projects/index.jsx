@@ -7,15 +7,9 @@ import BoldProjectsControls from '../../components/projects/bold/BoldProjectsCon
 import BoldProjectsGrid from '../../components/projects/bold/BoldProjectsGrid';
 import BoldProjectsList from '../../components/projects/bold/BoldProjectsList';
 import BoldProjectsCTA from '../../components/projects/bold/BoldProjectsCTA';
+import { parseYear } from '../../lib/projects';
 
 const API_BASE_URL = process.env.API_INTERNAL_URL || 'http://localhost:7341';
-
-// admin 의 headerPublishDate 가 'YYYY.MM – YYYY.MM' 형식이라 첫 4자리만 잘라 연도로 사용한다.
-// 형식이 깨진 row 는 빈 문자열이 되고, Years stat / 그룹 헤더에서만 제외된다.
-function parseYear(headerPublishDate) {
-	const head = (headerPublishDate ?? '').slice(0, 4);
-	return /^\d{4}$/.test(head) ? head : '';
-}
 
 function ProjectsIndex({ projects }) {
 	const decorated = useMemo(

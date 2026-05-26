@@ -28,6 +28,8 @@ export class ProjectsRepository {
         // Phase 2 — 공개 detail 페이지의 Impact / Quote 섹션이 보이도록 함께 로드.
         stats: true,
         quote: true,
+        // Project Links — Hero meta strip 아래 Direct row 용.
+        links: true,
       },
     });
   }

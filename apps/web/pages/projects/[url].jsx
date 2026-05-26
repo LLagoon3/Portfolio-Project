@@ -36,6 +36,7 @@ function ProjectDetail({ project, relatedProjects }) {
 	// 복원 가능.
 	const impactStats = project.ProjectInfo?.Impact ?? [];
 	const quote = project.ProjectInfo?.Quote ?? null;
+	const links = project.ProjectInfo?.Links ?? [];
 
 	// SideNav 는 실제 렌더되는 섹션만 노출.
 	const sections = [
@@ -70,6 +71,7 @@ function ProjectDetail({ project, relatedProjects }) {
 							eyebrow={heroEyebrow}
 							coverImage={project.ProjectImages?.[0]?.img}
 							meta={heroMeta}
+							links={links}
 						/>
 						<BoldProjectDetailOverview body={overview} />
 						<BoldProjectDetailGallery images={gallery} />

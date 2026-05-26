@@ -59,6 +59,7 @@ describe('ProjectsRepository', () => {
         details: true,
         stats: true,
         quote: true,
+        links: true,
       },
     });
   });

@@ -8,6 +8,7 @@ import { FiArrowDown, FiArrowUp, FiPlus, FiTrash2 } from 'react-icons/fi';
 //   emptyItem: () => newItem  (추가 버튼 눌렀을 때 생성)
 //   addLabel: 버튼 라벨 (기본 '추가')
 //   minLength: 최소 개수 (기본 0)
+//   maxLength: 최대 개수 (기본 무한). 도달 시 add 버튼 비활성 + 안내 문구
 function DynamicList({
 	items,
 	onChange,
@@ -15,7 +16,10 @@ function DynamicList({
 	emptyItem,
 	addLabel = '추가',
 	minLength = 0,
+	maxLength,
 }) {
+	const canAdd = maxLength == null || items.length < maxLength;
+
 	function update(index, partial) {
 		const next = items.map((it, i) =>
 			i === index ? { ...it, ...partial } : it,
@@ -24,6 +28,7 @@ function DynamicList({
 	}
 
 	function add() {
+		if (!canAdd) return;
 		onChange([...items, emptyItem()]);
 	}
 
@@ -87,10 +92,15 @@ function DynamicList({
 			<button
 				type="button"
 				onClick={add}
-				className="flex items-center justify-center gap-1.5 font-general-medium text-sm text-indigo-600 dark:text-indigo-400 border border-dashed border-indigo-300 dark:border-indigo-700 rounded-lg py-2.5 hover:bg-indigo-50 dark:hover:bg-secondary-dark duration-300"
+				disabled={!canAdd}
+				aria-disabled={!canAdd}
+				title={!canAdd ? `최대 ${maxLength}개까지 추가 가능합니다` : undefined}
+				className="flex items-center justify-center gap-1.5 font-general-medium text-sm text-indigo-600 dark:text-indigo-400 border border-dashed border-indigo-300 dark:border-indigo-700 rounded-lg py-2.5 hover:bg-indigo-50 dark:hover:bg-secondary-dark duration-300 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-transparent"
 			>
 				<FiPlus className="w-4 h-4" />
-				{addLabel}
+				{canAdd
+					? addLabel
+					: `${addLabel} (최대 ${maxLength}개)`}
 			</button>
 		</div>
 	);

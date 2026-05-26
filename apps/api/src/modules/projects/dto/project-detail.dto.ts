@@ -78,6 +78,17 @@ export class ProjectQuoteItemDto {
   author!: string | null;
 }
 
+export class ProjectLinkItemDto {
+  @ApiProperty()
+  id!: number;
+
+  @ApiProperty()
+  label!: string;
+
+  @ApiProperty()
+  url!: string;
+}
+
 export class ProjectInfoDto {
   @ApiProperty()
   ClientHeading!: string;
@@ -109,6 +120,10 @@ export class ProjectInfoDto {
 
   @ApiProperty({ type: ProjectQuoteItemDto, required: false, nullable: true })
   Quote!: ProjectQuoteItemDto | null;
+
+  // Project Links — Hero meta strip 아래 Direct row 노출용. 빈 배열이면 영역 미렌더.
+  @ApiProperty({ type: [ProjectLinkItemDto] })
+  Links!: ProjectLinkItemDto[];
 }
 
 export class ProjectDetailDto {

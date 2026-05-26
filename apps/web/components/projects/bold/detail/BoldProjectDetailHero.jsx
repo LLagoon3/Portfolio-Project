@@ -11,6 +11,7 @@ export default function BoldProjectDetailHero({
 	eyebrow,
 	coverImage,
 	meta = [],
+	links = [],
 }) {
 	// 마지막 단어를 accent 로 분리 (이미 accentWord 가 prop 으로 주어지면 그걸 사용).
 	const items = buildHeroItems(title, accentWord);
@@ -55,7 +56,9 @@ export default function BoldProjectDetailHero({
 						style={{
 							fontSize: 'clamp(2rem, calc((100vw - 3rem) / 8), 5rem)',
 							letterSpacing: '-0.04em',
-							lineHeight: 1.1,
+							// 1.1 은 italic 한글 descender 가 overflow-hidden 박스 하단으로 잘리는 경계.
+							// 1.2 로 살짝 키워 batchim (ㅋ / ㄱ 등) 안전 fit.
+							lineHeight: 1.2,
 							wordBreak: 'keep-all',
 						}}
 						items={items}
@@ -115,6 +118,29 @@ export default function BoldProjectDetailHero({
 				</Reveal>
 			)}
 
+			{/* Links — admin 입력 외부 링크 (GitHub / Notion / Demo 등). 빈 배열이면 미렌더.
+			    Contact Sidebar 의 DirectRow 패턴 복사 (후속에 primitive lift 검토). */}
+			{links.length > 0 && (
+				<Reveal
+					delay={0.28}
+					className="mt-10 lg:mt-12 flex flex-col gap-2 text-xs max-w-md"
+					style={{
+						fontFamily: 'ui-monospace, "SF Mono", Menlo, monospace',
+						color: 'var(--paper-faint)',
+					}}
+				>
+					{links.map((link) => (
+						<DirectRow
+							key={link.id ?? link.url}
+							label={deriveLinkLabel(link.url)}
+							href={link.url}
+						>
+							{link.label}
+						</DirectRow>
+					))}
+				</Reveal>
+			)}
+
 			{/* meta strip — 4-col (Client / Role / Timeline / Category). 미존재 행 hide */}
 			{meta.length > 0 && (
 				<Reveal
@@ -149,6 +175,36 @@ export default function BoldProjectDetailHero({
 // - accentWord 가 title 첫 토큰: accent / tail (2-line)
 // - accentWord 가 title 중간 토큰: head / accent / tail (3-line) — 시안 패턴
 // - accentWord 가 title 에 없거나 미지정: 마지막 토큰을 accent 로 폴백 (안전)
+// Contact Sidebar 의 DirectRow / deriveDirectLabel 패턴 그대로 복사 — 좌측 host
+// 라벨 자동 추출. 후속에 primitives/DirectLinkRow.jsx 로 lift 검토.
+function DirectRow({ label, href, children }) {
+	return (
+		<div className="flex items-center justify-between gap-3">
+			<span>{label}</span>
+			<a
+				href={href}
+				target="_blank"
+				rel="noopener noreferrer"
+				className="bold-interactive transition-colors hover:text-[color:var(--paper)] truncate"
+				style={{ color: 'var(--paper-dim)' }}
+			>
+				{children}
+			</a>
+		</div>
+	);
+}
+
+function deriveLinkLabel(url) {
+	try {
+		const host = new URL(url).host.toLowerCase();
+		const parts = host.split('.');
+		const root = parts.length >= 2 ? parts[parts.length - 2] : host;
+		return root.toUpperCase().slice(0, 10);
+	} catch {
+		return 'LINK';
+	}
+}
+
 function buildHeroItems(title, accentWord) {
 	const trimmed = (title ?? '').trim();
 	if (!trimmed) return [{ text: '' }];

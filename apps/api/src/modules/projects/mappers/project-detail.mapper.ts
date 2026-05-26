@@ -10,6 +10,7 @@ export function toProjectDetailDto(project: Project): ProjectDetailDto {
   const technologies = [...(project.technologies ?? [])].sort(bySortOrder);
   const details = [...(project.details ?? [])].sort(bySortOrder);
   const stats = [...(project.stats ?? [])].sort(bySortOrder);
+  const links = [...(project.links ?? [])].sort(bySortOrder);
 
   return {
     id: project.id,
@@ -61,6 +62,11 @@ export function toProjectDetailDto(project: Project): ProjectDetailDto {
       Quote: project.quote
         ? { text: project.quote.text, author: project.quote.author ?? null }
         : null,
+      Links: links.map((link) => ({
+        id: link.id,
+        label: link.label,
+        url: link.url,
+      })),
     },
   };
 }

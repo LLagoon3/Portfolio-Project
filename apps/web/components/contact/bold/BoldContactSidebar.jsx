@@ -1,11 +1,13 @@
 import Reveal from '../../primitives/Reveal';
 import Eyebrow from '../../primitives/Eyebrow';
 
-const GITHUB_URL = 'https://github.com/LLagoon3';
-const NOTION_URL =
-	'https://dear-sawfish-e55.notion.site/15fd6568ef4b80509953d6e7648258dd?source=copy_link';
-
-export default function BoldContactSidebar({ email, address, availability }) {
+// socials 는 admin About 입력으로 동적. EMAIL 행은 about.email 우선. 빈 배열이면 EMAIL 만 노출.
+export default function BoldContactSidebar({
+	email,
+	address,
+	availability,
+	socials = [],
+}) {
 	const statusLabel = availability;
 
 	return (
@@ -62,16 +64,16 @@ export default function BoldContactSidebar({ email, address, availability }) {
 							{email}
 						</DirectRow>
 					)}
-					<DirectRow
-						label="GITHUB"
-						href={GITHUB_URL}
-						external
-					>
-						@LLagoon3
-					</DirectRow>
-					<DirectRow label="NOTION" href={NOTION_URL} external>
-						이력서 ↗
-					</DirectRow>
+					{socials.map((s) => (
+						<DirectRow
+							key={`${s.label}-${s.url}`}
+							label={deriveDirectLabel(s)}
+							href={s.url}
+							external
+						>
+							{s.label}
+						</DirectRow>
+					))}
 				</div>
 			</Reveal>
 
@@ -87,6 +89,18 @@ export default function BoldContactSidebar({ email, address, availability }) {
 			</Reveal>
 		</aside>
 	);
+}
+
+// 좌측 라벨은 url 의 host 에서 추출. 예: github.com/... → GITHUB. 알 수 없으면 'LINK'.
+function deriveDirectLabel(social) {
+	try {
+		const host = new URL(social.url).host.toLowerCase();
+		const dotParts = host.split('.');
+		const root = dotParts.length >= 2 ? dotParts[dotParts.length - 2] : host;
+		return root.toUpperCase().slice(0, 10);
+	} catch {
+		return 'LINK';
+	}
 }
 
 function DirectRow({ label, href, external, children }) {

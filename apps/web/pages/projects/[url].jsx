@@ -49,24 +49,32 @@ function ProjectDetail({ project, relatedProjects }) {
 	return (
 		<>
 			<PagesMetaHead title={project.title} />
-			<BoldProjectDetailSideNav sections={sections} />
 
 			<div className="container mx-auto px-6 lg:px-10">
-				<BoldProjectDetailHero
-					title={project.title}
-					accentWord={heroAccentWord}
-					subtitle={heroSubtitle}
-					eyebrow={heroEyebrow}
-					coverImage={project.ProjectImages?.[0]?.img}
-					meta={heroMeta}
-				/>
-				<BoldProjectDetailOverview body={overview} />
-				<BoldProjectDetailGallery images={gallery} />
-				<BoldProjectDetailProcess steps={steps} />
-				<BoldProjectDetailImpact stats={impactStats} />
-				<BoldProjectDetailStack groups={stackGroups} />
-				<BoldProjectDetailQuote quote={quote} />
-				<BoldProjectDetailRelated projects={relatedProjects} />
+				{/* lg+ 에서 SideNav 를 별도 컬럼으로 분리 → fixed 시 main content 침범 문제 해소.
+				    SideNav 자체는 sticky top-32. 모바일에선 SideNav 영역 자체 미렌더. */}
+				<div className="lg:flex lg:gap-10 xl:gap-14">
+					<aside className="hidden lg:block lg:w-[160px] lg:flex-shrink-0 lg:pt-32">
+						<BoldProjectDetailSideNav sections={sections} />
+					</aside>
+					<div className="lg:flex-1 lg:min-w-0">
+						<BoldProjectDetailHero
+							title={project.title}
+							accentWord={heroAccentWord}
+							subtitle={heroSubtitle}
+							eyebrow={heroEyebrow}
+							coverImage={project.ProjectImages?.[0]?.img}
+							meta={heroMeta}
+						/>
+						<BoldProjectDetailOverview body={overview} />
+						<BoldProjectDetailGallery images={gallery} />
+						<BoldProjectDetailProcess steps={steps} />
+						<BoldProjectDetailImpact stats={impactStats} />
+						<BoldProjectDetailStack groups={stackGroups} />
+						<BoldProjectDetailQuote quote={quote} />
+						<BoldProjectDetailRelated projects={relatedProjects} />
+					</div>
+				</div>
 			</div>
 		</>
 	);

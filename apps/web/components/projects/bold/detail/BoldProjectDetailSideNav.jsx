@@ -1,33 +1,53 @@
 import { useEffect, useState } from 'react';
 
-// lg+ 좌측 sticky 섹션 네비. IntersectionObserver 로 active 추적, 모바일은 hide.
+// lg+ 좌측 컬럼 sticky 섹션 네비. main content 와 별도 column 이라 침범 없음.
+// active 추적은 scroll 위치 기반 — viewport 상단 30% 라인 기준 가장 최근에 통과한 섹션을
+// active 로. IntersectionObserver 의 intersectionRatio 방식은 섹션 높이가 들쭉날쭉하면
+// 짧은 섹션 (예: Gallery 3-image) 을 skip 하는 문제가 있어 교체.
 export default function BoldProjectDetailSideNav({ sections = [] }) {
 	const [activeId, setActiveId] = useState(sections[0]?.id ?? '');
 
 	useEffect(() => {
 		const ids = sections.map((s) => s.id).filter(Boolean);
-		const els = ids
-			.map((id) => document.getElementById(id))
-			.filter(Boolean);
-		if (els.length === 0) return undefined;
+		if (ids.length === 0) return undefined;
 
-		const observer = new IntersectionObserver(
-			(entries) => {
-				// 화면 중앙 근처에 가장 가까운 entry 를 active 로 잡음.
-				const visible = entries
-					.filter((e) => e.isIntersecting)
-					.sort((a, b) => b.intersectionRatio - a.intersectionRatio);
-				if (visible[0]) {
-					setActiveId(visible[0].target.id);
+		const handleScroll = () => {
+			if (typeof window === 'undefined') return;
+			const refLine = window.innerHeight * 0.3;
+			let currentId = ids[0];
+			for (const id of ids) {
+				const el = document.getElementById(id);
+				if (!el) continue;
+				const top = el.getBoundingClientRect().top;
+				// 섹션의 top 이 refLine 보다 위 (top < refLine) 면 그 섹션이 진입 또는 통과 중.
+				// ids 순서를 따라가면서 가장 최근에 통과한 섹션을 active 로 잡음.
+				if (top < refLine) {
+					currentId = id;
+				} else {
+					break;
 				}
-			},
-			{
-				rootMargin: '-30% 0px -50% 0px',
-				threshold: [0, 0.25, 0.5, 0.75, 1],
-			},
-		);
-		els.forEach((el) => observer.observe(el));
-		return () => observer.disconnect();
+			}
+			setActiveId(currentId);
+		};
+
+		// rAF 로 throttle — scroll 이벤트 빈도 ↓
+		let raf = 0;
+		const onScroll = () => {
+			if (raf) return;
+			raf = window.requestAnimationFrame(() => {
+				raf = 0;
+				handleScroll();
+			});
+		};
+
+		window.addEventListener('scroll', onScroll, { passive: true });
+		window.addEventListener('resize', onScroll, { passive: true });
+		handleScroll();
+		return () => {
+			window.removeEventListener('scroll', onScroll);
+			window.removeEventListener('resize', onScroll);
+			if (raf) window.cancelAnimationFrame(raf);
+		};
 	}, [sections]);
 
 	const handleClick = (e, id) => {
@@ -40,7 +60,7 @@ export default function BoldProjectDetailSideNav({ sections = [] }) {
 
 	return (
 		<aside
-			className="hidden lg:block fixed left-6 top-1/2 -translate-y-1/2 z-30"
+			className="sticky top-32"
 			aria-label="섹션 네비"
 		>
 			<nav className="flex flex-col gap-3">

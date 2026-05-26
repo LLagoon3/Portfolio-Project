@@ -13,6 +13,7 @@ import { ProjectTechnology } from './project-technology.entity';
 import { ProjectDetail } from './project-detail.entity';
 import { ProjectStat } from './project-stat.entity';
 import { ProjectQuote } from './project-quote.entity';
+import { ProjectLink } from './project-link.entity';
 
 @Entity('PROJECT')
 export class Project {
@@ -95,4 +96,10 @@ export class Project {
     cascade: true,
   })
   quote!: ProjectQuote | null;
+
+  // Project Links (GitHub / Notion / Demo 등) — Hero meta strip 아래 Direct row 노출.
+  @OneToMany(() => ProjectLink, (link) => link.project, {
+    cascade: true,
+  })
+  links!: ProjectLink[];
 }

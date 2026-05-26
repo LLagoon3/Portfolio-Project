@@ -15,6 +15,7 @@ import { Project } from './entities/project.entity';
 import { ProjectCompanyInfo } from './entities/project-company-info.entity';
 import { ProjectDetail } from './entities/project-detail.entity';
 import { ProjectImage } from './entities/project-image.entity';
+import { ProjectLink } from './entities/project-link.entity';
 import { ProjectQuote } from './entities/project-quote.entity';
 import { ProjectStat } from './entities/project-stat.entity';
 import { ProjectTechnology } from './entities/project-technology.entity';
@@ -87,6 +88,7 @@ export class AdminProjectsService {
       await manager.delete(ProjectDetail, { projectId: id });
       await manager.delete(ProjectStat, { projectId: id });
       await manager.delete(ProjectQuote, { projectId: id });
+      await manager.delete(ProjectLink, { projectId: id });
 
       const updated = buildProject(dto);
       updated.id = id;
@@ -161,6 +163,7 @@ export class AdminProjectsService {
         details: true,
         stats: true,
         quote: true,
+        links: true,
       },
     });
   }
@@ -251,6 +254,17 @@ function buildProject(dto: UpsertProjectDto): Project {
   } else {
     project.quote = null;
   }
+
+  // Links (OneToMany) — label/url 둘 다 있어야 살림. 입력 순서대로 sortOrder.
+  project.links = (dto.links ?? [])
+    .filter((l) => l.label?.trim() && l.url?.trim())
+    .map((link, idx) => {
+      const e = new ProjectLink();
+      e.label = link.label.trim();
+      e.url = link.url.trim();
+      e.sortOrder = idx;
+      return e;
+    });
 
   return project;
 }

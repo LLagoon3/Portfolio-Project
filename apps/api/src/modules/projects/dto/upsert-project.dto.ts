@@ -129,6 +129,22 @@ export class UpsertProjectQuoteDto {
   author?: string | null;
 }
 
+export class UpsertProjectLinkDto {
+  @ApiProperty({ maxLength: 100, example: '@LLagoon3' })
+  @Transform(({ value }) => trimIfString(value))
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(100)
+  label!: string;
+
+  @ApiProperty({ maxLength: 500, example: 'https://github.com/LLagoon3' })
+  @Transform(({ value }) => trimIfString(value))
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(500)
+  url!: string;
+}
+
 export class UpsertProjectDto {
   @ApiProperty({ maxLength: 200 })
   @IsString()
@@ -223,6 +239,15 @@ export class UpsertProjectDto {
   @ValidateNested({ each: true })
   @Type(() => UpsertProjectStatDto)
   stats?: UpsertProjectStatDto[];
+
+  // Project Links — GitHub / Notion / Demo / 배포 등 외부 링크.
+  @ApiProperty({ type: [UpsertProjectLinkDto], required: false, maxItems: 10 })
+  @IsOptional()
+  @IsArray()
+  @ArrayMaxSize(10)
+  @ValidateNested({ each: true })
+  @Type(() => UpsertProjectLinkDto)
+  links?: UpsertProjectLinkDto[];
 
   @ApiProperty({ type: [UpsertImageDto] })
   @IsArray()

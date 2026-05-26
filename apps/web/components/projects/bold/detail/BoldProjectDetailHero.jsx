@@ -56,7 +56,9 @@ export default function BoldProjectDetailHero({
 						style={{
 							fontSize: 'clamp(2rem, calc((100vw - 3rem) / 8), 5rem)',
 							letterSpacing: '-0.04em',
-							lineHeight: 1.1,
+							// 1.1 은 italic 한글 descender 가 overflow-hidden 박스 하단으로 잘리는 경계.
+							// 1.2 로 살짝 키워 batchim (ㅋ / ㄱ 등) 안전 fit.
+							lineHeight: 1.2,
 							wordBreak: 'keep-all',
 						}}
 						items={items}

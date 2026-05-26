@@ -15,16 +15,14 @@ export default function BoldProjectDetailSideNav({ sections = [] }) {
 			if (typeof window === 'undefined') return;
 			const refLine = window.innerHeight * 0.3;
 			let currentId = ids[0];
+			// 모든 섹션을 순회해서 top < refLine 인 마지막 섹션 = 현재 통과 중인 섹션.
+			// 이전엔 break 로 조기 종료했지만 smooth scroll 중 stack 의 top 이 refLine 보다
+			// 잠시 아래 있을 때 process 에 멈추는 race 가 있어 break 제거.
 			for (const id of ids) {
 				const el = document.getElementById(id);
 				if (!el) continue;
-				const top = el.getBoundingClientRect().top;
-				// 섹션의 top 이 refLine 보다 위 (top < refLine) 면 그 섹션이 진입 또는 통과 중.
-				// ids 순서를 따라가면서 가장 최근에 통과한 섹션을 active 로 잡음.
-				if (top < refLine) {
+				if (el.getBoundingClientRect().top < refLine) {
 					currentId = id;
-				} else {
-					break;
 				}
 			}
 			setActiveId(currentId);
@@ -52,6 +50,9 @@ export default function BoldProjectDetailSideNav({ sections = [] }) {
 
 	const handleClick = (e, id) => {
 		e.preventDefault();
+		// 즉시 active 설정 → smooth scroll 중 race 로 잠시 다른 섹션이 active 가 되는 깜빡임 회피.
+		// scroll 종료 후 handleScroll 가 다시 정확한 active 로 재확인.
+		setActiveId(id);
 		const target = document.getElementById(id);
 		if (target) {
 			target.scrollIntoView({ behavior: 'smooth', block: 'start' });

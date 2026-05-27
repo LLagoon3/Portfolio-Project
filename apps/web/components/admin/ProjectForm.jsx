@@ -247,6 +247,7 @@ function ProjectForm({ initialValue, submitLabel = '저장', onSubmit }) {
 					placeholderText="여러 서비스 로그를 한 곳에 모으는 인프라."
 					value={form.heroSubtitle}
 					onChange={(e) => set('heroSubtitle', e.target.value)}
+					required={false}
 				/>
 				<FormInput
 					inputLabel="Hero Accent Word (강조할 단어, 미입력 시 타이틀 마지막 단어)"
@@ -258,6 +259,7 @@ function ProjectForm({ initialValue, submitLabel = '저장', onSubmit }) {
 					placeholderText="시스템"
 					value={form.heroAccentWord}
 					onChange={(e) => set('heroAccentWord', e.target.value)}
+					required={false}
 				/>
 				<FormInput
 					inputLabel="Hero Role (Hero meta strip 의 Role 칸, 비우면 미노출)"
@@ -269,6 +271,7 @@ function ProjectForm({ initialValue, submitLabel = '저장', onSubmit }) {
 					placeholderText="백엔드 · 1인"
 					value={form.heroRole}
 					onChange={(e) => set('heroRole', e.target.value)}
+					required={false}
 				/>
 				<FormInput
 					inputLabel="Hero Client (Hero meta strip 의 Client 칸, 비우면 미노출)"
@@ -280,6 +283,7 @@ function ProjectForm({ initialValue, submitLabel = '저장', onSubmit }) {
 					placeholderText="에버디그엠"
 					value={form.heroClient}
 					onChange={(e) => set('heroClient', e.target.value)}
+					required={false}
 				/>
 			</AdminFormSection>
 

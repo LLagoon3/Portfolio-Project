@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import useReducedMotion from '../../hooks/useReducedMotion';
 
@@ -12,6 +13,23 @@ export default function WordReveal({
 	delayBase = 0,
 }) {
 	const reduced = useReducedMotion();
+
+	// 모든 아이템 reveal 애니메이션 종료 후 overflow-hidden 을 풀어 italic glyph 의
+	// 우측 slant + 받침 descender 가 박스 밖으로 잘리지 않게 한다. overflow-hidden 은
+	// 본래 y:105% → 0 slide-up 동안 글리프 밖이 안 보이게 가리는 용도라 종료 후엔 불필요.
+	// SPA 라우터 전환 시 (refresh 가 아닌 클라이언트 mount) italic 폰트 metric 정착
+	// 직전 박스 크기 측정으로 jitter 가 발생하는 cutoff 도 함께 해소.
+	const [revealed, setRevealed] = useState(false);
+	useEffect(() => {
+		if (reduced) {
+			setRevealed(true);
+			return undefined;
+		}
+		const lastIdx = Math.max(0, items.length - 1);
+		const total = delayBase + lastIdx * 0.07 + 0.9 + 0.05; // duration + buffer
+		const t = setTimeout(() => setRevealed(true), total * 1000);
+		return () => clearTimeout(t);
+	}, [items.length, delayBase, reduced]);
 
 	return (
 		<div className={`bold-word-reveal ${className}`} style={style}>
@@ -53,7 +71,7 @@ export default function WordReveal({
 				return (
 					<span
 						key={idx}
-						className="inline-block overflow-hidden align-bottom pb-[0.04em]"
+						className={`inline-block align-bottom pb-[0.04em] ${revealed ? '' : 'overflow-hidden'}`}
 						style={innerStyle}
 					>
 						{/* hero 영역 전용이라 viewport 감지(whileInView) 대신 mount 즉시 animate.

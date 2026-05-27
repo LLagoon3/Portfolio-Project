@@ -145,6 +145,81 @@ describe('AdminProjectsService', () => {
       expect(dto.url).toBe('new-slug');
       expect(dto.id).toBe(10);
     });
+
+    it('buildProject: nullable 필드 (heroXxx / detail.kind|title / stat.sub / quote.author / quote 자체) 가 미입력이면 entity 에 null 저장', async () => {
+      projectRepo.findOne
+        .mockResolvedValueOnce(null)
+        .mockResolvedValueOnce(baseProject({ id: 11, url: 'new-slug' }));
+
+      let captured: Project | undefined;
+      txManager.save.mockImplementation(async (_entity, project: Project) => {
+        captured = project;
+        return { ...project, id: 11 };
+      });
+
+      // ValidationPipe 의 @Transform(trimToNull) 가 이미 null 로 정규화한 상태를
+      // 모사 — 각 nullable 필드를 명시적 null 로 전달.
+      await service.create(
+        baseDto({
+          heroSubtitle: null,
+          heroAccentWord: null,
+          heroRole: null,
+          heroClient: null,
+          quote: null,
+          stats: [{ label: 'L', value: '1', sub: null }],
+          details: [{ kind: null, title: null, details: '본문' }],
+        }),
+      );
+
+      expect(captured).toBeDefined();
+      expect(captured!.heroSubtitle).toBeNull();
+      expect(captured!.heroAccentWord).toBeNull();
+      expect(captured!.heroRole).toBeNull();
+      expect(captured!.heroClient).toBeNull();
+      expect(captured!.quote).toBeNull();
+      expect(captured!.stats[0].sub).toBeNull();
+      expect(captured!.details[0].kind).toBeNull();
+      expect(captured!.details[0].title).toBeNull();
+    });
+
+    it('buildProject: 값이 있으면 그대로 entity 에 매핑 (DTO trim 신뢰)', async () => {
+      projectRepo.findOne
+        .mockResolvedValueOnce(null)
+        .mockResolvedValueOnce(baseProject({ id: 12, url: 'new-slug' }));
+
+      let captured: Project | undefined;
+      txManager.save.mockImplementation(async (_entity, project: Project) => {
+        captured = project;
+        return { ...project, id: 12 };
+      });
+
+      await service.create(
+        baseDto({
+          heroSubtitle: '서브타이틀',
+          heroAccentWord: '시스템',
+          heroRole: '백엔드',
+          heroClient: 'ACME',
+          quote: { text: '인용', author: '저자' },
+          stats: [{ label: 'Latency', value: '170ms', sub: '단축' }],
+          details: [
+            { kind: 'DECISION', title: '결정사항', details: '본문' },
+          ],
+          links: [{ label: '@me', url: 'https://github.com/me' }],
+        }),
+      );
+
+      expect(captured!.heroSubtitle).toBe('서브타이틀');
+      expect(captured!.heroAccentWord).toBe('시스템');
+      expect(captured!.heroRole).toBe('백엔드');
+      expect(captured!.heroClient).toBe('ACME');
+      expect(captured!.quote?.text).toBe('인용');
+      expect(captured!.quote?.author).toBe('저자');
+      expect(captured!.stats[0].sub).toBe('단축');
+      expect(captured!.details[0].kind).toBe('DECISION');
+      expect(captured!.details[0].title).toBe('결정사항');
+      expect(captured!.links[0].label).toBe('@me');
+      expect(captured!.links[0].url).toBe('https://github.com/me');
+    });
   });
 
   describe('update', () => {

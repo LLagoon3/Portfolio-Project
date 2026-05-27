@@ -26,20 +26,6 @@ export class UpsertImageDto {
   img!: string;
 }
 
-export class UpsertCompanyInfoDto {
-  @ApiProperty({ maxLength: 100 })
-  @IsString()
-  @IsNotEmpty()
-  @MaxLength(100)
-  title!: string;
-
-  @ApiProperty({ maxLength: 500 })
-  @IsString()
-  @IsNotEmpty()
-  @MaxLength(500)
-  details!: string;
-}
-
 export class UpsertTechnologyGroupDto {
   @ApiProperty({ maxLength: 200 })
   @IsString()
@@ -165,49 +151,12 @@ export class UpsertProjectDto {
   @MaxLength(100)
   headerPublishDate!: string;
 
-  @ApiProperty({ maxLength: 200 })
-  @IsString()
-  @IsNotEmpty()
-  @MaxLength(200)
-  headerTags!: string;
-
-  @ApiProperty({ maxLength: 200 })
-  @IsString()
-  @IsNotEmpty()
-  @MaxLength(200)
-  clientHeading!: string;
-
-  @ApiProperty({ maxLength: 200 })
-  @IsString()
-  @IsNotEmpty()
-  @MaxLength(200)
-  objectivesHeading!: string;
-
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
   objectivesDetails!: string;
 
-  @ApiProperty({ maxLength: 200 })
-  @IsString()
-  @IsNotEmpty()
-  @MaxLength(200)
-  projectDetailsHeading!: string;
-
-  @ApiProperty({ maxLength: 200, required: false })
-  @IsOptional()
-  @IsString()
-  @MaxLength(200)
-  socialSharingHeading?: string;
-
-  // Phase 2 — 모두 optional. 미입력 시 UI 폴백/미노출.
-  @ApiProperty({ maxLength: 255, required: false, nullable: true })
-  @Transform(({ value }) => trimToNull(value))
-  @IsOptional()
-  @IsString()
-  @MaxLength(255)
-  heroSubtitle?: string | null;
-
+  // Phase 2 — Hero 보조 필드. 미입력 시 UI 폴백/미노출.
   @ApiProperty({ maxLength: 100, required: false, nullable: true })
   @Transform(({ value }) => trimToNull(value))
   @IsOptional()
@@ -258,12 +207,6 @@ export class UpsertProjectDto {
   @ValidateNested({ each: true })
   @Type(() => UpsertImageDto)
   images!: UpsertImageDto[];
-
-  @ApiProperty({ type: [UpsertCompanyInfoDto] })
-  @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => UpsertCompanyInfoDto)
-  companyInfo!: UpsertCompanyInfoDto[];
 
   @ApiProperty({ type: [UpsertTechnologyGroupDto], minItems: 1 })
   @IsArray()

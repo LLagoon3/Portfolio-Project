@@ -10,13 +10,8 @@ const baseDto = (): UpsertProjectDto =>
     category: 'Web Application',
     thumbnailImg: '/img.jpg',
     headerPublishDate: '2026',
-    headerTags: 'UI',
-    clientHeading: 'Client',
-    objectivesHeading: 'Goal',
     objectivesDetails: 'details',
-    projectDetailsHeading: 'Challenge',
     images: [],
-    companyInfo: [],
     technologies: [],
     details: [],
   }) as UpsertProjectDto;

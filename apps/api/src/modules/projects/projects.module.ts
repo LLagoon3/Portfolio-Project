@@ -7,7 +7,6 @@ import { AdminProjectsController } from './admin-projects.controller';
 import { AdminProjectsService } from './admin-projects.service';
 import { Project } from './entities/project.entity';
 import { ProjectImage } from './entities/project-image.entity';
-import { ProjectCompanyInfo } from './entities/project-company-info.entity';
 import { ProjectTechnology } from './entities/project-technology.entity';
 import { ProjectTechnologyItem } from './entities/project-technology-item.entity';
 import { ProjectDetail } from './entities/project-detail.entity';
@@ -21,7 +20,6 @@ import { UploadsModule } from '../uploads/uploads.module';
     TypeOrmModule.forFeature([
       Project,
       ProjectImage,
-      ProjectCompanyInfo,
       ProjectTechnology,
       ProjectTechnologyItem,
       ProjectDetail,

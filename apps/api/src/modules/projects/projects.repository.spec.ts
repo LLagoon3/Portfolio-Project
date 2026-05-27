@@ -54,7 +54,6 @@ describe('ProjectsRepository', () => {
       where: { url: 'demo' },
       relations: {
         images: true,
-        companyInfo: true,
         technologies: { items: true },
         details: true,
         stats: true,

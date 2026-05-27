@@ -36,12 +36,14 @@ export default function WordReveal({
 				// italic accent: Safari 는 inline-block 너비를 italic glyph 의 우측 overhang
 				// 제외하고 측정 (Chrome 과 다름). outer + inner 양쪽에 padding-right 를
 				// 두어 어느 레벨의 inline-block 측정에서도 italic 우측이 안전하게 fit.
+				// paddingBottom 은 비-accent 와 inline-block 높이가 달라져 같은 줄에서
+				// baseline 어긋남 → 제거 (애니메이션 종료 후 overflow 가 풀려 descender
+				// 잘림 우려 없음).
 				const accentInnerStyle = item.accent
 					? {
 							color: 'var(--indigo-soft)',
 							fontStyle: 'italic',
 							paddingRight: '0.5em',
-							paddingBottom: '0.18em',
 							textRendering: 'optimizeLegibility',
 						}
 					: undefined;
@@ -79,12 +81,7 @@ export default function WordReveal({
 						<motion.span
 							className="inline-block"
 							style={
-								item.accent
-									? {
-											paddingRight: '0.5em',
-											paddingBottom: '0.18em',
-										}
-									: undefined
+								item.accent ? { paddingRight: '0.5em' } : undefined
 							}
 							initial={{ y: '105%' }}
 							animate={{ y: 0 }}

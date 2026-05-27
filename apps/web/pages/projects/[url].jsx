@@ -9,7 +9,12 @@ import BoldProjectDetailRelated from '../../components/projects/bold/detail/Bold
 import BoldProjectDetailSideNav from '../../components/projects/bold/detail/BoldProjectDetailSideNav';
 import BoldProjectDetailImpact from '../../components/projects/bold/detail/BoldProjectDetailImpact';
 import BoldProjectDetailQuote from '../../components/projects/bold/detail/BoldProjectDetailQuote';
-import { parseYear } from '../../lib/projects';
+import {
+	buildHeroMeta,
+	parseYear,
+	pickHeroAccentWord,
+	pickOverview,
+} from '../../lib/projects';
 
 const API_BASE_URL =
 	process.env.API_INTERNAL_URL || 'http://localhost:7341';
@@ -79,15 +84,6 @@ function ProjectDetail({ project, relatedProjects }) {
 	);
 }
 
-// admin 명시 값이 있으면 그대로, 없으면 title 마지막 공백 토큰 폴백.
-function pickHeroAccentWord(project) {
-	if (project.heroAccentWord && project.heroAccentWord.trim()) {
-		return project.heroAccentWord.trim();
-	}
-	const tokens = (project.title ?? '').trim().split(/\s+/);
-	return tokens[tokens.length - 1] || '';
-}
-
 ProjectDetail.getLayout = (page) => <BoldLayout>{page}</BoldLayout>;
 
 // JSX 로 반환 → 두 phrase 사이의 공백 1곳에서만 wrap 가능. 좁은 viewport 에서
@@ -113,38 +109,6 @@ function buildHeroEyebrow(project) {
 		);
 	}
 	return primary;
-}
-
-// Hero meta strip: Client / Role 은 admin 의 전용 필드 (#125) 사용.
-// 이전엔 companyInfo 의 title 키워드 (role/역할/담당, client/...) 매칭 폴백이
-// 있었으나 명명 의존 + 직관성 부족으로 제거. 빈 값이면 해당 칸 미노출.
-function buildHeroMeta(project) {
-	const meta = [];
-
-	if (project.heroClient) {
-		meta.push({ label: 'Client', value: project.heroClient });
-	}
-
-	if (project.heroRole) {
-		meta.push({ label: 'Role', value: project.heroRole });
-	}
-
-	if (project.ProjectHeader?.publishDate) {
-		meta.push({ label: 'Timeline', value: project.ProjectHeader.publishDate });
-	}
-
-	if (project.category) {
-		meta.push({ label: 'Category', value: project.category });
-	}
-
-	return meta;
-}
-
-// 첫 단락 (빈 줄 split 의 첫 청크) 만 노출 — Overview 는 한 호흡 요약.
-function pickOverview(objectivesDetails) {
-	if (!objectivesDetails) return '';
-	const first = objectivesDetails.split(/\n\s*\n/)[0]?.trim();
-	return first || '';
 }
 
 // 1 entry = 1 step. admin 폼이 kind/title 입력을 항상 받으므로 (Phase 2 완료) 별도

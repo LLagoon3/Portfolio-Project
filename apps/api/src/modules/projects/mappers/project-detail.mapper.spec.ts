@@ -1,6 +1,5 @@
 import { Project } from '../entities/project.entity';
 import { ProjectImage } from '../entities/project-image.entity';
-import { ProjectCompanyInfo } from '../entities/project-company-info.entity';
 import { ProjectTechnology } from '../entities/project-technology.entity';
 import { ProjectTechnologyItem } from '../entities/project-technology-item.entity';
 import { ProjectDetail } from '../entities/project-detail.entity';
@@ -24,20 +23,12 @@ describe('toProjectDetailDto', () => {
     category: 'Web Application',
     thumbnailImg: '/thumb.jpg',
     headerPublishDate: 'Jul 26, 2026',
-    headerTags: 'UI / Frontend',
-    clientHeading: 'About Client',
-    objectivesHeading: 'Objective',
     objectivesDetails: 'do things',
-    projectDetailsHeading: 'Challenge',
-    socialSharingHeading: 'Share This',
     createdAt: new Date(),
     images: [
       makeImage(1, 2, '/c.jpg'),
       makeImage(2, 0, '/a.jpg'),
       makeImage(3, 1, '/b.jpg'),
-    ],
-    companyInfo: [
-      { id: 10, title: 'Name', details: 'Co', sortOrder: 0 } as ProjectCompanyInfo,
     ],
     technologies: [
       {
@@ -71,7 +62,6 @@ describe('toProjectDetailDto', () => {
     expect(dto.ProjectHeader).toEqual({
       title: 'Demo Project',
       publishDate: 'Jul 26, 2026',
-      tags: 'UI / Frontend',
     });
   });
 
@@ -105,12 +95,10 @@ describe('toProjectDetailDto', () => {
     const dto = toProjectDetailDto({
       ...project,
       images: undefined as unknown as ProjectImage[],
-      companyInfo: undefined as unknown as ProjectCompanyInfo[],
       technologies: undefined as unknown as ProjectTechnology[],
       details: undefined as unknown as ProjectDetail[],
     });
     expect(dto.ProjectImages).toEqual([]);
-    expect(dto.ProjectInfo.CompanyInfo).toEqual([]);
     expect(dto.ProjectInfo.Technologies).toEqual([]);
     expect(dto.ProjectInfo.ProjectDetails).toEqual([]);
   });

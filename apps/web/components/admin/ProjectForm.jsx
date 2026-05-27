@@ -11,23 +11,16 @@ const DEFAULT_VALUES = {
 	category: '',
 	thumbnailImg: '',
 	headerPublishDate: '',
-	headerTags: '',
-	clientHeading: 'About Project',
-	objectivesHeading: 'Objective',
 	objectivesDetails: '',
-	projectDetailsHeading: 'Challenge',
-	socialSharingHeading: '',
-	// Phase 2 (선택) — Bold Hero / Impact / Quote 섹션.
-	heroSubtitle: '',
+	// Phase 2 (선택) — Bold Hero 보강 + Impact / Quote 섹션.
 	heroAccentWord: '',
-	// Hero meta strip 의 Role / Client 전용 필드 (#125). companyInfo 키워드 매칭 대체.
+	// Hero meta strip 의 Role / Client 전용 필드 (#125).
 	heroRole: '',
 	heroClient: '',
 	quote: { text: '', author: '' },
 	stats: [],
 	links: [],
 	images: [],
-	companyInfo: [],
 	// 공개 상세 페이지가 Technologies[0] 을 직접 참조하므로 최소 1 그룹을 기본으로 유지한다.
 	technologies: [{ title: 'Tools & Technologies', techs: [] }],
 	details: [],
@@ -42,7 +35,6 @@ function toFormState(initial) {
 	const apiLinks = initial?.ProjectInfo?.Links ?? initial?.links ?? [];
 	return {
 		...merged,
-		heroSubtitle: merged.heroSubtitle ?? '',
 		heroAccentWord: merged.heroAccentWord ?? '',
 		heroRole: merged.heroRole ?? '',
 		heroClient: merged.heroClient ?? '',
@@ -65,11 +57,6 @@ function toFormState(initial) {
 			_key: `img-${i}-${Math.random()}`,
 			title: img.title ?? '',
 			img: img.img ?? '',
-		})),
-		companyInfo: (merged.companyInfo ?? []).map((info, i) => ({
-			_key: `ci-${i}-${Math.random()}`,
-			title: info.title ?? '',
-			details: info.details ?? '',
 		})),
 		technologies: (merged.technologies ?? []).map((tech, i) => ({
 			_key: `tech-${i}-${Math.random()}`,
@@ -94,13 +81,7 @@ function toSubmitPayload(form) {
 		category: form.category.trim(),
 		thumbnailImg: form.thumbnailImg.trim(),
 		headerPublishDate: form.headerPublishDate.trim(),
-		headerTags: form.headerTags.trim(),
-		clientHeading: form.clientHeading.trim(),
-		objectivesHeading: form.objectivesHeading.trim(),
 		objectivesDetails: form.objectivesDetails.trim(),
-		projectDetailsHeading: form.projectDetailsHeading.trim(),
-		socialSharingHeading: form.socialSharingHeading.trim() || undefined,
-		heroSubtitle: form.heroSubtitle.trim() || null,
 		heroAccentWord: form.heroAccentWord.trim() || null,
 		heroRole: form.heroRole.trim() || null,
 		heroClient: form.heroClient.trim() || null,
@@ -120,10 +101,6 @@ function toSubmitPayload(form) {
 			}))
 			.filter((l) => l.label && l.url),
 		images: form.images.map((img) => ({ title: img.title, img: img.img })),
-		companyInfo: form.companyInfo.map((info) => ({
-			title: info.title,
-			details: info.details,
-		})),
 		technologies: form.technologies.map((tech) => ({
 			title: tech.title,
 			techs: tech.techs
@@ -220,35 +197,12 @@ function ProjectForm({ initialValue, submitLabel = '저장', onSubmit }) {
 					value={form.headerPublishDate}
 					onChange={(e) => set('headerPublishDate', e.target.value)}
 				/>
-				<FormInput
-					inputLabel="헤더 태그"
-					labelFor="headerTags"
-					inputType="text"
-					inputId="headerTags"
-					inputName="headerTags"
-					ariaLabelName="Header tags"
-					placeholderText="Backend / Realtime"
-					value={form.headerTags}
-					onChange={(e) => set('headerTags', e.target.value)}
-				/>
 			</AdminFormSection>
 
 			<AdminFormSection
 				title="Bold Hero (선택)"
-				description="Bold Project Detail 의 거대 타이틀 보강. 미입력 시 web 이 폴백(마지막 단어 accent + Overview 첫 단락)."
+				description="Bold Project Detail 의 거대 타이틀 보강. 미입력 시 web 이 폴백(마지막 단어 accent)."
 			>
-				<FormInput
-					inputLabel="Hero Subtitle"
-					labelFor="heroSubtitle"
-					inputType="text"
-					inputId="heroSubtitle"
-					inputName="heroSubtitle"
-					ariaLabelName="Hero subtitle"
-					placeholderText="여러 서비스 로그를 한 곳에 모으는 인프라."
-					value={form.heroSubtitle}
-					onChange={(e) => set('heroSubtitle', e.target.value)}
-					required={false}
-				/>
 				<FormInput
 					inputLabel="Hero Accent Word (강조할 단어, 미입력 시 타이틀 마지막 단어)"
 					labelFor="heroAccentWord"
@@ -400,23 +354,12 @@ function ProjectForm({ initialValue, submitLabel = '저장', onSubmit }) {
 				/>
 			</AdminFormSection>
 
-			<AdminFormSection title="Objective" description="프로젝트 상세의 목표 영역 문구.">
-				<FormInput
-					inputLabel="Objective heading"
-					labelFor="objectivesHeading"
-					inputType="text"
-					inputId="objectivesHeading"
-					inputName="objectivesHeading"
-					ariaLabelName="Objectives heading"
-					placeholderText="Objective"
-					value={form.objectivesHeading}
-					onChange={(e) => set('objectivesHeading', e.target.value)}
-				/>
+			<AdminFormSection title="Overview" description="프로젝트 상세 Overview 섹션 본문 (마크다운 첫 단락만 노출).">
 				<label
 					className="block text-lg text-primary-dark dark:text-primary-light mb-1 font-general-regular"
 					htmlFor="objectivesDetails"
 				>
-					Objective details
+					본문
 				</label>
 				<textarea
 					id="objectivesDetails"
@@ -428,46 +371,6 @@ function ProjectForm({ initialValue, submitLabel = '저장', onSubmit }) {
 					value={form.objectivesDetails}
 					onChange={(e) => set('objectivesDetails', e.target.value)}
 					required
-				/>
-			</AdminFormSection>
-
-			<AdminFormSection title="About Project 영역" description="Projects 상세의 좌측 메타 블록.">
-				<FormInput
-					inputLabel="About heading"
-					labelFor="clientHeading"
-					inputType="text"
-					inputId="clientHeading"
-					inputName="clientHeading"
-					ariaLabelName="Client heading"
-					placeholderText="About Project"
-					value={form.clientHeading}
-					onChange={(e) => set('clientHeading', e.target.value)}
-				/>
-				<DynamicList
-					items={form.companyInfo}
-					onChange={(next) => set('companyInfo', next)}
-					emptyItem={() => ({ _key: `ci-${Date.now()}`, title: '', details: '' })}
-					addLabel="About 항목 추가"
-					renderItem={(item, _idx, onItemChange) => (
-						<div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-							<input
-								className="px-3 py-2 border border-gray-300 dark:border-primary-dark border-opacity-50 text-primary-dark dark:text-secondary-light bg-ternary-light dark:bg-secondary-dark rounded-md text-sm font-general-regular sm:col-span-1"
-								placeholder="항목 이름 (예: Services)"
-								aria-label="Company info title"
-								value={item.title}
-								onChange={(e) => onItemChange({ title: e.target.value })}
-								required
-							/>
-							<input
-								className="px-3 py-2 border border-gray-300 dark:border-primary-dark border-opacity-50 text-primary-dark dark:text-secondary-light bg-ternary-light dark:bg-secondary-dark rounded-md text-sm font-general-regular sm:col-span-2"
-								placeholder="값 (URL 은 자동으로 링크 렌더링)"
-								aria-label="Company info details"
-								value={item.details}
-								onChange={(e) => onItemChange({ details: e.target.value })}
-								required
-							/>
-						</div>
-					)}
 				/>
 			</AdminFormSection>
 
@@ -505,20 +408,9 @@ function ProjectForm({ initialValue, submitLabel = '저장', onSubmit }) {
 			</AdminFormSection>
 
 			<AdminFormSection
-				title="Challenge 섹션"
-				description="Project Detail 의 Process 카드. kind / title 을 직접 입력하면 1 entry = 1 step. 비우면 본문 markdown 의 ## h2 split + 키워드 매칭 폴백."
+				title="Process (Challenge) 단락"
+				description="Project Detail 의 Process 카드. kind / title 명시 권장. 본문은 마크다운 허용."
 			>
-				<FormInput
-					inputLabel="Challenge heading"
-					labelFor="projectDetailsHeading"
-					inputType="text"
-					inputId="projectDetailsHeading"
-					inputName="projectDetailsHeading"
-					ariaLabelName="Project details heading"
-					placeholderText="Challenge"
-					value={form.projectDetailsHeading}
-					onChange={(e) => set('projectDetailsHeading', e.target.value)}
-				/>
 				<DynamicList
 					items={form.details}
 					onChange={(next) => set('details', next)}

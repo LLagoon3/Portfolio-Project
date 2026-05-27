@@ -6,9 +6,6 @@ export class ProjectHeaderDto {
 
   @ApiProperty()
   publishDate!: string;
-
-  @ApiProperty()
-  tags!: string;
 }
 
 export class ProjectImageDto {
@@ -20,17 +17,6 @@ export class ProjectImageDto {
 
   @ApiProperty()
   img!: string;
-}
-
-export class CompanyInfoItemDto {
-  @ApiProperty()
-  id!: number;
-
-  @ApiProperty()
-  title!: string;
-
-  @ApiProperty()
-  details!: string;
 }
 
 export class TechnologyGroupDto {
@@ -45,7 +31,7 @@ export class ProjectDetailItemDto {
   @ApiProperty()
   id!: number;
 
-  // Phase 2 후속 — admin 명시. 비어있으면 web 의 markdown h2 split 폴백.
+  // Phase 2 후속 — admin 명시.
   @ApiProperty({ required: false, nullable: true })
   kind!: string | null;
 
@@ -91,28 +77,13 @@ export class ProjectLinkItemDto {
 
 export class ProjectInfoDto {
   @ApiProperty()
-  ClientHeading!: string;
-
-  @ApiProperty({ type: [CompanyInfoItemDto] })
-  CompanyInfo!: CompanyInfoItemDto[];
-
-  @ApiProperty()
-  ObjectivesHeading!: string;
-
-  @ApiProperty()
   ObjectivesDetails!: string;
 
   @ApiProperty({ type: [TechnologyGroupDto] })
   Technologies!: TechnologyGroupDto[];
 
-  @ApiProperty()
-  ProjectDetailsHeading!: string;
-
   @ApiProperty({ type: [ProjectDetailItemDto] })
   ProjectDetails!: ProjectDetailItemDto[];
-
-  @ApiProperty()
-  SocialSharingHeading!: string;
 
   // Phase 2 — 빈 배열 / null 이면 web 에서 섹션 미렌더.
   @ApiProperty({ type: [ProjectStatItemDto] })
@@ -141,10 +112,6 @@ export class ProjectDetailDto {
 
   @ApiProperty()
   img!: string;
-
-  // Phase 2 — Hero subtitle / accent 명시 필드. 미입력이면 null.
-  @ApiProperty({ required: false, nullable: true })
-  heroSubtitle!: string | null;
 
   @ApiProperty({ required: false, nullable: true })
   heroAccentWord!: string | null;

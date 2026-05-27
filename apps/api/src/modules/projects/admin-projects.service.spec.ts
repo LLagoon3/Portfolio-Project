@@ -20,13 +20,8 @@ const baseDto = (overrides: Partial<UpsertProjectDto> = {}): UpsertProjectDto =>
     category: 'Web Application',
     thumbnailImg: '/img.jpg',
     headerPublishDate: '2026',
-    headerTags: 'UI',
-    clientHeading: 'Client',
-    objectivesHeading: 'Goal',
     objectivesDetails: 'details',
-    projectDetailsHeading: 'Challenge',
     images: [{ title: 'A', img: '/a.jpg' }],
-    companyInfo: [{ title: 'Name', details: 'ACME' }],
     technologies: [{ title: 'Stack', techs: ['Node'] }],
     details: [{ details: '## 본문' }],
     ...overrides,
@@ -40,15 +35,9 @@ const baseProject = (overrides: Partial<Project> = {}): Project =>
     category: 'Web Application',
     thumbnailImg: '/x.jpg',
     headerPublishDate: '2026',
-    headerTags: 'UI',
-    clientHeading: 'Client',
-    objectivesHeading: 'Goal',
     objectivesDetails: 'd',
-    projectDetailsHeading: 'Challenge',
-    socialSharingHeading: 'Share',
     createdAt: new Date('2026-01-01T00:00:00.000Z'),
     images: [],
-    companyInfo: [],
     technologies: [],
     details: [],
     ...overrides,
@@ -161,7 +150,6 @@ describe('AdminProjectsService', () => {
       // 모사 — 각 nullable 필드를 명시적 null 로 전달.
       await service.create(
         baseDto({
-          heroSubtitle: null,
           heroAccentWord: null,
           heroRole: null,
           heroClient: null,
@@ -172,7 +160,6 @@ describe('AdminProjectsService', () => {
       );
 
       expect(captured).toBeDefined();
-      expect(captured!.heroSubtitle).toBeNull();
       expect(captured!.heroAccentWord).toBeNull();
       expect(captured!.heroRole).toBeNull();
       expect(captured!.heroClient).toBeNull();
@@ -195,7 +182,6 @@ describe('AdminProjectsService', () => {
 
       await service.create(
         baseDto({
-          heroSubtitle: '서브타이틀',
           heroAccentWord: '시스템',
           heroRole: '백엔드',
           heroClient: 'ACME',
@@ -208,7 +194,6 @@ describe('AdminProjectsService', () => {
         }),
       );
 
-      expect(captured!.heroSubtitle).toBe('서브타이틀');
       expect(captured!.heroAccentWord).toBe('시스템');
       expect(captured!.heroRole).toBe('백엔드');
       expect(captured!.heroClient).toBe('ACME');
@@ -255,8 +240,8 @@ describe('AdminProjectsService', () => {
       expect(deleteCalls).toContain('ProjectTechnologyItem');
       expect(deleteCalls).toContain('ProjectTechnology');
       expect(deleteCalls).toContain('ProjectImage');
-      expect(deleteCalls).toContain('ProjectCompanyInfo');
       expect(deleteCalls).toContain('ProjectDetail');
+      expect(deleteCalls).not.toContain('ProjectCompanyInfo');
       // 최종 save 호출
       expect(txManager.save).toHaveBeenCalledTimes(1);
     });

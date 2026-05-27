@@ -12,15 +12,9 @@ const baseProject = (overrides: Partial<Project> = {}): Project =>
     category: 'Web Application',
     thumbnailImg: '/img.jpg',
     headerPublishDate: 'Jan 1, 2026',
-    headerTags: 'UI',
-    clientHeading: 'About',
-    objectivesHeading: 'Goal',
     objectivesDetails: 'details',
-    projectDetailsHeading: 'Challenge',
-    socialSharingHeading: 'Share',
     createdAt: new Date('2026-01-01T00:00:00.000Z'),
     images: [],
-    companyInfo: [],
     technologies: [],
     details: [],
     ...overrides,
@@ -97,6 +91,6 @@ describe('ProjectsService', () => {
     const result = await service.getByUrl('demo');
     expect(result.url).toBe('demo');
     expect(result.ProjectHeader.title).toBe('Demo');
-    expect(result.ProjectInfo.ClientHeading).toBe('About');
+    expect(result.ProjectInfo.ObjectivesDetails).toBe('details');
   });
 });

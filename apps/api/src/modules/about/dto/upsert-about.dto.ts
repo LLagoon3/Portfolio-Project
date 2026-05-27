@@ -95,6 +95,23 @@ export class UpsertFaqDto {
   answer!: string;
 }
 
+export class UpsertAboutStackGroupDto {
+  @ApiProperty({ maxLength: 100, example: 'Backend' })
+  @Transform(({ value }) => trimIfString(value))
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(100)
+  title!: string;
+
+  @ApiProperty({ type: [String], example: ['NestJS', 'Express', 'TypeScript'] })
+  @Transform(({ value }) => trimArray(value))
+  @IsArray()
+  @ArrayMaxSize(30)
+  @IsString({ each: true })
+  @IsNotEmpty({ each: true })
+  techs!: string[];
+}
+
 export class UpsertJourneyDto {
   @ApiProperty({ maxLength: 100, description: '자유 표현 — "2026.01 — Now" 등' })
   @Transform(({ value }) => trimIfString(value))
@@ -208,13 +225,13 @@ export class UpsertAboutDto {
   @Type(() => UpsertJourneyDto)
   journey?: UpsertJourneyDto[];
 
-  @ApiProperty({ type: [String], required: false })
-  @Transform(({ value }) => trimArray(value))
+  @ApiProperty({ type: [UpsertAboutStackGroupDto], required: false })
   @IsOptional()
   @IsArray()
-  @ArrayMaxSize(30)
-  @IsString({ each: true })
-  stacks?: string[];
+  @ArrayMaxSize(20)
+  @ValidateNested({ each: true })
+  @Type(() => UpsertAboutStackGroupDto)
+  stacks?: UpsertAboutStackGroupDto[];
 
   // Contact PR (#94) 보류분 — Contact Sidebar Direct 섹션 / FAQ 섹션 데이터.
   @ApiProperty({ type: [UpsertSocialDto], required: false })

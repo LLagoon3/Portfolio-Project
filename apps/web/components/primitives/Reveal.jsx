@@ -30,7 +30,7 @@ export default function Reveal({
 			initial={{ opacity: 0, y: 24 }}
 			whileInView={{ opacity: 1, y: 0 }}
 			viewport={{ once: true, amount }}
-			transition={{ duration: 0.9, ease: [0.2, 0.7, 0.2, 1], delay }}
+			transition={{ duration: 1.2, ease: [0.2, 0.7, 0.2, 1], delay }}
 			className={className}
 			{...rest}
 		>

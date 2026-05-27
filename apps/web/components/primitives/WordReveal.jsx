@@ -82,9 +82,6 @@ export default function WordReveal({
 						    도 적용 (outer 와 중첩되어도 텍스트 위치는 그대로). */}
 						<motion.span
 							className="inline-block"
-							style={
-								item.accent ? { paddingRight: '0.5em' } : undefined
-							}
 							initial={{ y: '105%' }}
 							animate={{ y: 0 }}
 							transition={{

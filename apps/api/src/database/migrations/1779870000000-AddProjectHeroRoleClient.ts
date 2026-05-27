@@ -16,10 +16,15 @@ export class AddProjectHeroRoleClient1779870000000
 
     // 기존 데이터 backfill — companyInfo 의 첫 매칭 row 의 details 를 사용 (web 의
     // buildHeroMeta 폴백 로직과 동일 키워드). sort_order asc 의 첫 매칭만.
+    //
+    // source (PROJECT_COMPANY_INFO.details) 는 varchar(500) 인데 신규 컬럼은
+    // varchar(100) (Hero meta strip 의 간결성 의도). 길이 초과 row 가 있으면 strict
+    // mode 에서 마이그가 실패하므로 LEFT(..., 100) 으로 의도적 truncate. truncate
+    // 발생 시 admin 에서 다듬으면 됨.
     await queryRunner.query(`
       UPDATE \`PROJECT\` p
       SET \`hero_role\` = (
-        SELECT ci.details FROM \`PROJECT_COMPANY_INFO\` ci
+        SELECT LEFT(ci.details, 100) FROM \`PROJECT_COMPANY_INFO\` ci
         WHERE ci.project_id = p.id
           AND (
             LOWER(ci.title) LIKE '%role%'
@@ -34,7 +39,7 @@ export class AddProjectHeroRoleClient1779870000000
     await queryRunner.query(`
       UPDATE \`PROJECT\` p
       SET \`hero_client\` = (
-        SELECT ci.details FROM \`PROJECT_COMPANY_INFO\` ci
+        SELECT LEFT(ci.details, 100) FROM \`PROJECT_COMPANY_INFO\` ci
         WHERE ci.project_id = p.id
           AND (
             LOWER(ci.title) LIKE '%client%'

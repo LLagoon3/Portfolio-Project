@@ -1,25 +1,16 @@
 import { AboutProfile } from '../entities/about-profile.entity';
 import { AboutResponseDto } from '../dto/about-response.dto';
 
+const bySortOrder = <T extends { sortOrder: number }>(a: T, b: T): number =>
+  a.sortOrder - b.sortOrder;
+
 export function toAboutResponseDto(profile: AboutProfile): AboutResponseDto {
-  const sortedBios = [...(profile.bios ?? [])].sort(
-    (a, b) => a.sortOrder - b.sortOrder,
-  );
-  const sortedStats = [...(profile.stats ?? [])].sort(
-    (a, b) => a.sortOrder - b.sortOrder,
-  );
-  const sortedPrinciples = [...(profile.principles ?? [])].sort(
-    (a, b) => a.sortOrder - b.sortOrder,
-  );
-  const sortedJourneys = [...(profile.journeys ?? [])].sort(
-    (a, b) => a.sortOrder - b.sortOrder,
-  );
-  const sortedSocials = [...(profile.socials ?? [])].sort(
-    (a, b) => a.sortOrder - b.sortOrder,
-  );
-  const sortedFaqs = [...(profile.faqs ?? [])].sort(
-    (a, b) => a.sortOrder - b.sortOrder,
-  );
+  const sortedBios = [...(profile.bios ?? [])].sort(bySortOrder);
+  const sortedStats = [...(profile.stats ?? [])].sort(bySortOrder);
+  const sortedPrinciples = [...(profile.principles ?? [])].sort(bySortOrder);
+  const sortedJourneys = [...(profile.journeys ?? [])].sort(bySortOrder);
+  const sortedSocials = [...(profile.socials ?? [])].sort(bySortOrder);
+  const sortedFaqs = [...(profile.faqs ?? [])].sort(bySortOrder);
 
   return {
     name: profile.name,

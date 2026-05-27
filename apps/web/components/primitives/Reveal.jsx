@@ -5,13 +5,14 @@ import useReducedMotion from '../../hooks/useReducedMotion';
 // framer-motion 의 whileInView 는 JS 모션이라 globals.css 의
 // @media (prefers-reduced-motion: reduce) 영향을 받지 않으므로
 // 여기서 직접 분기하여 plain 태그로 즉시 렌더한다.
-// amount: viewport 진입 trigger 비율 (0~1). 기본 0.6 — 섹션이 거의 다 보일 때
-// trigger 되어 사용자가 시각적으로 인지하는 시점에 애니메이션 시작.
-// 페이지 끝의 영역이라 0.6 이 채워지기 어렵다면 호출 측에서 낮춰 즉시 trigger.
+// amount: viewport 진입 trigger 비율 (0~1). 기본 0.3 — 일반 섹션은 30% 진입
+// 시점에 시작 (사용자가 인지하는 시점), 긴 sticky 컨테이너 (BoldProjectDetailProcess
+// / Stack 등 lg:sticky 자식 wrapping) 도 트리거 가능. 너무 짧은 섹션이 한참 보인
+// 후에야 시작하지 않게 균형.
 export default function Reveal({
 	as: Tag = 'div',
 	delay = 0,
-	amount = 0.6,
+	amount = 0.3,
 	className = '',
 	children,
 	...rest

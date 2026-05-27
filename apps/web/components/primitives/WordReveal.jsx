@@ -33,13 +33,15 @@ export default function WordReveal({
 		<div className={`bold-word-reveal ${className}`} style={style}>
 			{items.map((item, idx) => {
 				if (item.br) return <br key={`br-${idx}`} />;
-				// italic accent 글자: 옆 단어와 시각 간격 보강 (우상단 slant 가 옆으로 침범 방지).
+				// italic accent: Safari 는 inline-block 너비를 italic glyph 의 우측 overhang
+				// 제외하고 측정해 (Chrome 과 다름) padding-right 가 클수록 안전. 0.5em 으로
+				// 우상단 slant + 받침 ㄹ 우측까지 커버.
 				const innerStyle = item.accent
 					? {
 							color: 'var(--indigo-soft)',
 							fontStyle: 'italic',
-							paddingRight: '0.3em',
-							paddingBottom: '0.15em',
+							paddingRight: '0.5em',
+							paddingBottom: '0.18em',
 						}
 					: undefined;
 				// 다음 단어와 공백 분리. 단 noSep 가 true 면 공백 없이 직접 붙임

@@ -226,6 +226,21 @@ export class UpsertProjectDto {
   @MaxLength(100)
   heroAccentWord?: string | null;
 
+  // Hero meta strip 의 Role / Client 전용 필드 (#125).
+  @ApiProperty({ maxLength: 100, required: false, nullable: true, example: '백엔드 · 1인' })
+  @Transform(({ value }) => trimToNull(value))
+  @IsOptional()
+  @IsString()
+  @MaxLength(100)
+  heroRole?: string | null;
+
+  @ApiProperty({ maxLength: 100, required: false, nullable: true, example: '에버디그엠' })
+  @Transform(({ value }) => trimToNull(value))
+  @IsOptional()
+  @IsString()
+  @MaxLength(100)
+  heroClient?: string | null;
+
   @ApiProperty({ type: UpsertProjectQuoteDto, required: false, nullable: true })
   @IsOptional()
   @ValidateNested()

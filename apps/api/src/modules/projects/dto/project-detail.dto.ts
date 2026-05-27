@@ -149,6 +149,13 @@ export class ProjectDetailDto {
   @ApiProperty({ required: false, nullable: true })
   heroAccentWord!: string | null;
 
+  // Hero meta strip 의 Role / Client. companyInfo 키워드 매칭 대체 (#125).
+  @ApiProperty({ required: false, nullable: true })
+  heroRole!: string | null;
+
+  @ApiProperty({ required: false, nullable: true })
+  heroClient!: string | null;
+
   @ApiProperty({ type: ProjectHeaderDto })
   ProjectHeader!: ProjectHeaderDto;
 

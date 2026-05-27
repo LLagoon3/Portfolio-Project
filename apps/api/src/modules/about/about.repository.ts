@@ -13,7 +13,14 @@ export class AboutRepository {
   async findProfile(): Promise<AboutProfile | null> {
     return this.repo.findOne({
       where: { id: 1 },
-      relations: { bios: true },
+      relations: {
+        bios: true,
+        stats: true,
+        principles: true,
+        journeys: true,
+        socials: true,
+        faqs: true,
+      },
     });
   }
 }

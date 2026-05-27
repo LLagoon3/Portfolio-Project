@@ -26,7 +26,14 @@ describe('ProjectsController', () => {
 
   it('list: service.list 결과를 그대로 반환한다', async () => {
     const data = [
-      { id: 1, title: 'A', url: 'a', category: 'Web Application', img: '/a' },
+      {
+        id: 1,
+        title: 'A',
+        url: 'a',
+        category: 'Web Application',
+        img: '/a',
+        headerPublishDate: '2026.01',
+      },
     ];
     service.list.mockResolvedValue(data);
 

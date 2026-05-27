@@ -1,5 +1,7 @@
 // 업로드 슬롯별 resize/crop 프리셋.
-// - thumbnail: 프로젝트 카드 썸네일. 16:9 로 중앙 crop + 1600×900 까지 다운스케일
+// - thumbnail: 프로젝트 카드 썸네일. 4:5 로 중앙 crop + 1200×1500 까지 다운스케일
+//   (Bold 카드 / Hero 프레임이 4:5 aspectRatio + objectFit:cover 라 동일 비율로
+//   pre-crop. 과거 16:9 프리셋이 카드 프레임에서 이중 크롭되며 확대돼 보이던 문제 해소)
 // - gallery: 프로젝트 상세 갤러리. 비율 유지하되 장축 1600px 이하로만 다운스케일
 // - profile: About 프로필. 1:1 중앙 crop + 512×512 까지 다운스케일
 
@@ -16,7 +18,7 @@ export interface PresetSpec {
 }
 
 const SPEC: Record<UploadPreset, PresetSpec> = {
-  [UploadPreset.THUMBNAIL]: { width: 1600, height: 900, fit: 'cover' },
+  [UploadPreset.THUMBNAIL]: { width: 1200, height: 1500, fit: 'cover' },
   [UploadPreset.GALLERY]: { width: 1600, height: 1600, fit: 'inside' },
   [UploadPreset.PROFILE]: { width: 512, height: 512, fit: 'cover' },
 };

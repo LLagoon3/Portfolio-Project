@@ -11,8 +11,14 @@ export class ContactListItemDto {
   @ApiProperty()
   email!: string;
 
-  @ApiProperty()
-  subject!: string;
+  @ApiProperty({ nullable: true })
+  subject!: string | null;
+
+  @ApiProperty({
+    nullable: true,
+    description: 'Bold 폼의 topic chip 선택값',
+  })
+  topic!: string | null;
 
   @ApiProperty({ enum: ContactStatus })
   status!: ContactStatus;
@@ -45,8 +51,14 @@ export class ContactDetailDto {
   @ApiProperty()
   email!: string;
 
-  @ApiProperty()
-  subject!: string;
+  @ApiProperty({ nullable: true })
+  subject!: string | null;
+
+  @ApiProperty({
+    nullable: true,
+    description: 'Bold 폼의 topic chip 선택값',
+  })
+  topic!: string | null;
 
   @ApiProperty()
   message!: string;

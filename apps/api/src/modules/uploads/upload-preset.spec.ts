@@ -20,10 +20,10 @@ describe('upload-preset', () => {
   });
 
   describe('getPresetSpec', () => {
-    it('thumbnail 은 16:9 (1600×900) cover', () => {
+    it('thumbnail 은 4:5 (1200×1500) cover', () => {
       expect(getPresetSpec(UploadPreset.THUMBNAIL)).toEqual({
-        width: 1600,
-        height: 900,
+        width: 1200,
+        height: 1500,
         fit: 'cover',
       });
     });

@@ -15,6 +15,9 @@ import { Project } from './entities/project.entity';
 import { ProjectCompanyInfo } from './entities/project-company-info.entity';
 import { ProjectDetail } from './entities/project-detail.entity';
 import { ProjectImage } from './entities/project-image.entity';
+import { ProjectLink } from './entities/project-link.entity';
+import { ProjectQuote } from './entities/project-quote.entity';
+import { ProjectStat } from './entities/project-stat.entity';
 import { ProjectTechnology } from './entities/project-technology.entity';
 import { ProjectTechnologyItem } from './entities/project-technology-item.entity';
 import { UpsertProjectDto } from './dto/upsert-project.dto';
@@ -83,6 +86,9 @@ export class AdminProjectsService {
       await manager.delete(ProjectImage, { projectId: id });
       await manager.delete(ProjectCompanyInfo, { projectId: id });
       await manager.delete(ProjectDetail, { projectId: id });
+      await manager.delete(ProjectStat, { projectId: id });
+      await manager.delete(ProjectQuote, { projectId: id });
+      await manager.delete(ProjectLink, { projectId: id });
 
       const updated = buildProject(dto);
       updated.id = id;
@@ -155,6 +161,9 @@ export class AdminProjectsService {
         companyInfo: true,
         technologies: { items: true },
         details: true,
+        stats: true,
+        quote: true,
+        links: true,
       },
     });
   }
@@ -167,6 +176,9 @@ export class AdminProjectsService {
   }
 }
 
+// DTO 의 @Transform(trimIfString / trimToNull) + class-validator 가 ValidationPipe
+// 단계에서 이미 trim + 빈 문자열 → null + IsNotEmpty 검증을 수행한다. buildProject
+// 는 이를 신뢰하고 단순 매핑만 — 중복 trim/truthy 체크 제거.
 function buildProject(dto: UpsertProjectDto): Project {
   const project = new Project();
   project.url = dto.url;
@@ -180,6 +192,10 @@ function buildProject(dto: UpsertProjectDto): Project {
   project.objectivesDetails = dto.objectivesDetails;
   project.projectDetailsHeading = dto.projectDetailsHeading;
   project.socialSharingHeading = dto.socialSharingHeading ?? '';
+  project.heroSubtitle = dto.heroSubtitle ?? null;
+  project.heroAccentWord = dto.heroAccentWord ?? null;
+  project.heroRole = dto.heroRole ?? null;
+  project.heroClient = dto.heroClient ?? null;
 
   project.images = dto.images.map((img, idx) => {
     const e = new ProjectImage();
@@ -212,7 +228,35 @@ function buildProject(dto: UpsertProjectDto): Project {
 
   project.details = dto.details.map((detail, idx) => {
     const e = new ProjectDetail();
+    e.kind = detail.kind ?? null;
+    e.title = detail.title ?? null;
     e.details = detail.details;
+    e.sortOrder = idx;
+    return e;
+  });
+
+  project.stats = (dto.stats ?? []).map((stat, idx) => {
+    const e = new ProjectStat();
+    e.label = stat.label;
+    e.value = stat.value;
+    e.sub = stat.sub ?? null;
+    e.sortOrder = idx;
+    return e;
+  });
+
+  if (dto.quote) {
+    const q = new ProjectQuote();
+    q.text = dto.quote.text;
+    q.author = dto.quote.author ?? null;
+    project.quote = q;
+  } else {
+    project.quote = null;
+  }
+
+  project.links = (dto.links ?? []).map((link, idx) => {
+    const e = new ProjectLink();
+    e.label = link.label;
+    e.url = link.url;
     e.sortOrder = idx;
     return e;
   });

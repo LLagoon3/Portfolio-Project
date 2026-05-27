@@ -2,7 +2,13 @@
 set -euo pipefail
 
 ENV_NAME="${1:-prod}"
-PROJECT_DIR="/home/lagoon3/.openclaw/workspace/Portfolio-Project"
+# 호스트 운영자 디렉토리 — .env / .env.dev 등 비공개 환경 파일이 위치.
+# self-hosted runner 가 호스트의 다른 작업 (브랜치 작업, cherry-pick, rebase 등)
+# 을 reset 으로 망가뜨리지 않도록 deploy 작업은 별도 디렉토리에서 수행한다.
+ORIG_PROJECT_DIR="/home/lagoon3/.openclaw/workspace/Portfolio-Project"
+# deploy 전용 작업 디렉토리 — 첫 실행 시 clone, 이후 매번 origin/main 으로 reset.
+DEPLOY_DIR="${HOME}/.cache/portfolio-deploy"
+DEPLOY_REPO_URL="https://github.com/LLagoon3/Portfolio-Project.git"
 DEPLOY_SHA="${DEPLOY_SHA:-}"
 
 case "$ENV_NAME" in
@@ -26,12 +32,20 @@ case "$ENV_NAME" in
     ;;
 esac
 
-cd "$PROJECT_DIR"
+# deploy 디렉토리 부트스트랩 — 호스트 운영자 setup 불필요, 첫 실행이 자동 셋업.
+if [ ! -d "$DEPLOY_DIR/.git" ]; then
+  echo "=== First-time setup: cloning into $DEPLOY_DIR ==="
+  mkdir -p "$(dirname "$DEPLOY_DIR")"
+  git clone --branch main --depth 1 "$DEPLOY_REPO_URL" "$DEPLOY_DIR"
+fi
+
+cd "$DEPLOY_DIR"
 
 # compose 정의는 항상 main 기준으로 동기화 (인프라 단일 출처).
-# dev 환경의 코드는 GHCR 이미지(dev-<sha>) 안에 들어있으므로 호스트 git 상태와 무관.
+# 이 reset 은 DEPLOY_DIR 안에서만 일어나므로 호스트 ORIG_PROJECT_DIR 의
+# 진행 중인 git 작업은 영향을 받지 않는다.
 echo "=== Syncing compose files from main (env=$ENV_NAME) ==="
-git fetch origin main
+git fetch --depth 1 origin main
 git reset --hard origin/main
 
 # stale SHA 가드는 prod 에만 적용.
@@ -51,7 +65,23 @@ TAG="${IMAGE_TAG:-${TAG_PREFIX}-latest}"
 export WEB_IMAGE_TAG="$TAG"
 export API_IMAGE_TAG="$TAG"
 
-COMPOSE=(docker compose -p "$COMPOSE_PROJECT" "${COMPOSE_FILES[@]}" "${COMPOSE_PROFILES[@]}" --env-file "$ENV_FILE")
+# .env / .env.dev 는 git tracked 가 아니므로 DEPLOY_DIR 에는 없다.
+# 호스트 ORIG_PROJECT_DIR 의 파일을 절대경로로 직접 참조.
+ENV_FILE_ABS="${ORIG_PROJECT_DIR}/${ENV_FILE}"
+if [ ! -f "$ENV_FILE_ABS" ]; then
+  echo "=== Missing env file: $ENV_FILE_ABS ===" >&2
+  exit 1
+fi
+
+# docker-compose.yml / docker-compose.dev.yml 의 service-level `env_file:` 디렉티브는
+# compose CLI 의 `--env-file` 과 다른 메커니즘이고, **compose 파일 디렉토리**(=DEPLOY_DIR)
+# 기준으로 path 를 해석한다. 따라서 `--env-file` 만 절대경로로 줘도 service env_file 은
+# DEPLOY_DIR 내부의 `.env` / `.env.dev` 를 찾고 실패한다.
+# 호스트 ORIG_PROJECT_DIR 의 실파일을 DEPLOY_DIR 에 symlink 해서 두 메커니즘 모두 만족시킨다.
+# idempotent — 매번 실행해도 동일 결과.
+ln -sf "$ENV_FILE_ABS" "$DEPLOY_DIR/$ENV_FILE"
+
+COMPOSE=(docker compose -p "$COMPOSE_PROJECT" "${COMPOSE_FILES[@]}" "${COMPOSE_PROFILES[@]}" --env-file "$ENV_FILE_ABS")
 
 echo "=== Pulling images (env=$ENV_NAME tag=$TAG) ==="
 # mysql 은 mutable 태그(mysql:8.0) 라 매 pull 마다 digest 가 바뀔 수 있고,

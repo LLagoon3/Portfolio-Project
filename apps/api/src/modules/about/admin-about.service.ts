@@ -8,6 +8,11 @@ import {
 } from '../uploads/uploads-storage.service';
 import { AboutBio } from './entities/about-bio.entity';
 import { AboutProfile } from './entities/about-profile.entity';
+import { AboutStat } from './entities/about-stat.entity';
+import { AboutPrinciple } from './entities/about-principle.entity';
+import { AboutJourney } from './entities/about-journey.entity';
+import { AboutSocial } from './entities/about-social.entity';
+import { AboutFaq } from './entities/about-faq.entity';
 import { UpsertAboutDto } from './dto/upsert-about.dto';
 import { AboutResponseDto } from './dto/about-response.dto';
 import { toAboutResponseDto } from './mappers/about.mapper';
@@ -30,19 +35,69 @@ export class AdminAboutService {
     const previousImageUrl = previousProfile?.profileImage ?? null;
 
     await this.dataSource.transaction(async (manager) => {
-      // bio 는 전량 교체 (id=1 고정 singleton 에 묶인 자식)
+      // bio / stat / principle / journey 모두 id=1 singleton 에 묶인 자식이라
+      // 입력값으로 전량 교체. sortOrder 는 입력 순서 그대로 부여.
       await manager.delete(AboutBio, { profileId: 1 });
+      await manager.delete(AboutStat, { profileId: 1 });
+      await manager.delete(AboutPrinciple, { profileId: 1 });
+      await manager.delete(AboutJourney, { profileId: 1 });
+      await manager.delete(AboutSocial, { profileId: 1 });
+      await manager.delete(AboutFaq, { profileId: 1 });
 
       const profile = new AboutProfile();
       profile.id = 1;
       profile.name = dto.name;
       profile.tagline = dto.tagline ?? null;
       profile.profileImage = dto.profileImage;
+      profile.address = dto.address ?? null;
+      profile.email = dto.email ?? null;
+      profile.phone = dto.phone ?? null;
+      profile.availability = dto.availability ?? null;
+      profile.stacks = dto.stacks ?? [];
+
       profile.bios = dto.bio.map((paragraph, idx) => {
         const bio = new AboutBio();
         bio.paragraph = paragraph;
         bio.sortOrder = idx;
         return bio;
+      });
+      profile.stats = (dto.stats ?? []).map((s, idx) => {
+        const stat = new AboutStat();
+        stat.label = s.label;
+        stat.value = s.value;
+        stat.sub = s.sub ?? null;
+        stat.sortOrder = idx;
+        return stat;
+      });
+      profile.principles = (dto.principles ?? []).map((p, idx) => {
+        const principle = new AboutPrinciple();
+        principle.title = p.title;
+        principle.body = p.body;
+        principle.sortOrder = idx;
+        return principle;
+      });
+      profile.journeys = (dto.journey ?? []).map((j, idx) => {
+        const journey = new AboutJourney();
+        journey.year = j.year;
+        journey.title = j.title;
+        journey.role = j.role ?? null;
+        journey.body = j.body;
+        journey.sortOrder = idx;
+        return journey;
+      });
+      profile.socials = (dto.socials ?? []).map((s, idx) => {
+        const social = new AboutSocial();
+        social.label = s.label;
+        social.url = s.url;
+        social.sortOrder = idx;
+        return social;
+      });
+      profile.faqs = (dto.faqs ?? []).map((f, idx) => {
+        const faq = new AboutFaq();
+        faq.question = f.question;
+        faq.answer = f.answer;
+        faq.sortOrder = idx;
+        return faq;
       });
 
       await manager.save(AboutProfile, profile);
@@ -75,7 +130,14 @@ export class AdminAboutService {
 
     const loaded = await this.profileRepo.findOne({
       where: { id: 1 },
-      relations: { bios: true },
+      relations: {
+        bios: true,
+        stats: true,
+        principles: true,
+        journeys: true,
+        socials: true,
+        faqs: true,
+      },
     });
     // upsert 가 방금 끝났으니 null 일 리 없지만, 타입 만족을 위해 fallback
     if (!loaded) {

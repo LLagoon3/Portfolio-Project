@@ -1,58 +1,48 @@
-import { motion } from 'framer-motion';
-import AboutClients from '../components/about/AboutClients';
-import AboutCounter from '../components/about/AboutCounter';
-import AboutMeBio from '../components/about/AboutMeBio';
+import BoldLayout from '../components/layout/bold/BoldLayout';
 import PagesMetaHead from '../components/PagesMetaHead';
+import AboutHero from '../components/about/bold/AboutHero';
+import AboutBioSection from '../components/about/bold/AboutBioSection';
+import AboutCounters from '../components/about/bold/AboutCounters';
+import AboutPrinciples from '../components/about/bold/AboutPrinciples';
+import AboutJourney from '../components/about/bold/AboutJourney';
+import AboutBrands from '../components/about/bold/AboutBrands';
+import AboutContactCTA from '../components/about/bold/AboutContactCTA';
 
-const API_BASE_URL =
-	process.env.API_INTERNAL_URL || 'http://localhost:7341';
+const API_BASE_URL = process.env.API_INTERNAL_URL || 'http://localhost:7341';
 
 const EMPTY_ABOUT = {
 	name: '',
 	tagline: null,
 	profileImage: '/images/profile.jpeg',
 	bio: [],
+	availability: null,
+	stats: [],
+	principles: [],
+	journey: [],
+	stacks: [],
 };
 
 function About({ about }) {
 	return (
-		<div>
+		<>
 			<PagesMetaHead title="About Me" />
-
-			<motion.div
-				initial={false}
-				animate={{ opacity: 1, delay: 1 }}
-				exit={{ opacity: 0 }}
-				className="container mx-auto"
-			>
-				<AboutMeBio
-					name={about.name}
-					tagline={about.tagline}
-					profileImage={about.profileImage}
-					bio={about.bio}
-				/>
-			</motion.div>
-
-			{/** Counter without paddings */}
-			<motion.div
-				initial={false}
-				animate={{ opacity: 1, delay: 1 }}
-				exit={{ opacity: 0 }}
-			>
-				<AboutCounter />
-			</motion.div>
-
-			<motion.div
-				initial={false}
-				animate={{ opacity: 1, delay: 1 }}
-				exit={{ opacity: 0 }}
-				className="container mx-auto"
-			>
-				<AboutClients />
-			</motion.div>
-		</div>
+			<AboutHero
+				name={about.name}
+				tagline={about.tagline}
+				profileImage={about.profileImage}
+				availability={about.availability}
+			/>
+			<AboutBioSection bio={about.bio} />
+			<AboutCounters stats={about.stats} />
+			<AboutPrinciples principles={about.principles} />
+			<AboutJourney journey={about.journey} />
+			<AboutBrands groups={about.stacks} />
+			<AboutContactCTA />
+		</>
 	);
 }
+
+About.getLayout = (page) => <BoldLayout>{page}</BoldLayout>;
 
 export async function getServerSideProps() {
 	try {

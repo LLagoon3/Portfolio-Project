@@ -1,140 +1,131 @@
-import Image from 'next/image';
-import { FiClock, FiTag } from 'react-icons/fi';
-import ReactMarkdown from 'react-markdown';
+import BoldLayout from '../../components/layout/bold/BoldLayout';
 import PagesMetaHead from '../../components/PagesMetaHead';
-import RelatedProjects from '../../components/projects/RelatedProjects';
+import BoldProjectDetailHero from '../../components/projects/bold/detail/BoldProjectDetailHero';
+import BoldProjectDetailOverview from '../../components/projects/bold/detail/BoldProjectDetailOverview';
+import BoldProjectDetailGallery from '../../components/projects/bold/detail/BoldProjectDetailGallery';
+import BoldProjectDetailProcess from '../../components/projects/bold/detail/BoldProjectDetailProcess';
+import BoldProjectDetailStack from '../../components/projects/bold/detail/BoldProjectDetailStack';
+import BoldProjectDetailRelated from '../../components/projects/bold/detail/BoldProjectDetailRelated';
+import BoldProjectDetailSideNav from '../../components/projects/bold/detail/BoldProjectDetailSideNav';
+import BoldProjectDetailImpact from '../../components/projects/bold/detail/BoldProjectDetailImpact';
+import BoldProjectDetailQuote from '../../components/projects/bold/detail/BoldProjectDetailQuote';
+import {
+	buildHeroMeta,
+	parseYear,
+	pickHeroAccentWord,
+	pickOverview,
+} from '../../lib/projects';
 
 const API_BASE_URL =
 	process.env.API_INTERNAL_URL || 'http://localhost:7341';
 
-function ProjectSingle(props) {
+function ProjectDetail({ project, relatedProjects }) {
+	const heroEyebrow = buildHeroEyebrow(project);
+	const heroMeta = buildHeroMeta(project);
+	const overview = pickOverview(project.ProjectInfo?.ObjectivesDetails);
+	const gallery = project.ProjectImages?.slice(1) ?? [];
+	const steps = parseProcessSteps(project.ProjectInfo?.ProjectDetails);
+	const stackGroups = project.ProjectInfo?.Technologies ?? [];
+	// Phase 2 — admin 명시 값 우선, 미입력 시 폴백 (title 마지막 토큰).
+	const heroAccentWord = pickHeroAccentWord(project);
+	// heroSubtitle 은 DB / admin / API 에 보존하되 페이지에서는 미렌더 — Overview 섹션과
+	// 의미 중복이라 한 곳만 두기로 결정 (사용자 결정). 후속에 emotional 카피로 차별화 시
+	// 복원 가능.
+	const impactStats = project.ProjectInfo?.Impact ?? [];
+	const quote = project.ProjectInfo?.Quote ?? null;
+	const links = project.ProjectInfo?.Links ?? [];
+
+	// SideNav 는 실제 렌더되는 섹션만 노출.
+	const sections = [
+		{ id: 'hero', label: 'Intro' },
+		overview && { id: 'overview', label: 'Overview' },
+		gallery.length > 0 && { id: 'gallery', label: 'Gallery' },
+		steps.length > 0 && { id: 'process', label: 'Process' },
+		impactStats.length > 0 && { id: 'impact', label: 'Impact' },
+		stackGroups.some((g) => g?.techs?.length) && { id: 'stack', label: 'Stack' },
+		quote && { id: 'quote', label: 'Quote' },
+		relatedProjects.length > 0 && { id: 'related', label: 'Next Up' },
+	].filter(Boolean);
+
 	return (
-		<div className="container mx-auto">
-			<PagesMetaHead title={props.project.title} />
+		<>
+			<PagesMetaHead title={project.title} />
 
-			{/* Header */}
-			<div>
-				<p className="font-general-medium text-left text-3xl sm:text-4xl font-bold text-primary-dark dark:text-primary-light mt-14 sm:mt-20 mb-7">
-					{props.project.ProjectHeader.title}
-				</p>
-				<div className="flex">
-					<div className="flex items-center mr-10">
-						<FiClock className="text-xl text-ternary-dark dark:text-ternary-light" />
-						<span className="font-general-regular ml-2 leading-none text-primary-dark dark:text-primary-light">
-							{props.project.ProjectHeader.publishDate}
-						</span>
-					</div>
-					<div className="flex items-center">
-						<FiTag className="w-4 h-4 text-ternary-dark dark:text-ternary-light" />
-						<span className="font-general-regular ml-2 leading-none text-primary-dark dark:text-primary-light">
-							{props.project.ProjectHeader.tags}
-						</span>
+			<div className="container mx-auto px-6 lg:px-10">
+				{/* lg+ 에서 SideNav 를 별도 컬럼으로 분리 → fixed 시 main content 침범 문제 해소.
+				    SideNav 자체는 sticky top-32. 모바일에선 SideNav 영역 자체 미렌더. */}
+				<div className="lg:flex lg:gap-10 xl:gap-14">
+					<aside className="hidden lg:block lg:w-[160px] lg:flex-shrink-0 lg:pt-32">
+						<BoldProjectDetailSideNav sections={sections} />
+					</aside>
+					<div
+						className="lg:flex-1 lg:min-w-0"
+						style={{ wordBreak: 'keep-all' }}
+					>
+						<BoldProjectDetailHero
+							title={project.title}
+							accentWord={heroAccentWord}
+							eyebrow={heroEyebrow}
+							coverImage={project.ProjectImages?.[0]?.img}
+							meta={heroMeta}
+							links={links}
+						/>
+						<BoldProjectDetailOverview body={overview} />
+						<BoldProjectDetailGallery images={gallery} />
+						<BoldProjectDetailProcess steps={steps} />
+						<BoldProjectDetailImpact stats={impactStats} />
+						<BoldProjectDetailStack groups={stackGroups} />
+						<BoldProjectDetailQuote quote={quote} />
+						<BoldProjectDetailRelated projects={relatedProjects} />
 					</div>
 				</div>
 			</div>
-
-			{/* Gallery */}
-			<div className="grid grid-cols-1 sm:grid-cols-3 sm:gap-10 mt-12">
-				{props.project.ProjectImages.map((project) => {
-					return (
-						<div className="mb-10 sm:mb-0" key={project.id}>
-							<Image
-								src={project.img}
-								className="rounded-xl cursor-pointer shadow-lg sm:shadow-none"
-								alt={project.title}
-								sizes="100vw"
-								style={{ width: '100%', height: 'auto' }}
-								width={100}
-								height={90}
-							/>
-						</div>
-					);
-				})}
-			</div>
-
-			{/* Info */}
-			<div className="block sm:flex gap-0 sm:gap-10 mt-14">
-				<div className="w-full sm:w-1/3 text-left">
-					{/* Single project client details */}
-					<div className="mb-7">
-						<p className="font-general-regular text-2xl font-semibold text-secondary-dark dark:text-secondary-light mb-2">
-							{props.project.ProjectInfo.ClientHeading}
-						</p>
-						<ul className="leading-loose">
-							{props.project.ProjectInfo.CompanyInfo.map(
-								(info) => {
-									const isUrl = /^https?:\/\//i.test(info.details);
-									return (
-										<li
-											className="font-general-regular text-ternary-dark dark:text-ternary-light"
-											key={info.id}
-										>
-											<span>{info.title}: </span>
-											{isUrl ? (
-												<a
-													href={info.details}
-													target="_blank"
-													rel="noopener noreferrer"
-													className="hover:underline hover:text-indigo-500 dark:hover:text-indigo-400 cursor-pointer duration-300 break-all"
-													aria-label={`${info.title}: ${info.details}`}
-												>
-													{info.details}
-												</a>
-											) : (
-												<span>{info.details}</span>
-											)}
-										</li>
-									);
-								}
-							)}
-						</ul>
-					</div>
-
-					{/* Single project objectives */}
-					<div className="mb-7">
-						<p className="font-general-regular text-2xl font-semibold text-ternary-dark dark:text-ternary-light mb-2">
-							{props.project.ProjectInfo.ObjectivesHeading}
-						</p>
-						<p className="font-general-regular text-primary-dark dark:text-ternary-light">
-							{props.project.ProjectInfo.ObjectivesDetails}
-						</p>
-					</div>
-
-					{/* Single project technologies */}
-					<div className="mb-7">
-						<p className="font-general-regular text-2xl font-semibold text-ternary-dark dark:text-ternary-light mb-2">
-							{props.project.ProjectInfo.Technologies[0].title}
-						</p>
-						<p className="font-general-regular text-primary-dark dark:text-ternary-light">
-							{props.project.ProjectInfo.Technologies[0].techs.join(
-								', '
-							)}
-						</p>
-					</div>
-
-				</div>
-
-				{/*  Single project right section details */}
-				<div className="w-full sm:w-2/3 text-left mt-10 sm:mt-0">
-					<p className="text-primary-dark dark:text-primary-light text-2xl font-bold mb-7">
-						{props.project.ProjectInfo.ProjectDetailsHeading}
-					</p>
-					{props.project.ProjectInfo.ProjectDetails.map((details) => {
-						return (
-							<div
-								key={details.id}
-								className="prose dark:prose-invert max-w-none mb-5 font-general-regular text-ternary-dark dark:text-ternary-light prose-headings:text-primary-dark dark:prose-headings:text-primary-light prose-strong:text-primary-dark dark:prose-strong:text-primary-light prose-h2:text-xl prose-h2:font-semibold prose-h2:mb-2 prose-h2:mt-4 prose-h3:text-base prose-h3:font-semibold prose-h3:mb-1 prose-h3:mt-3"
-							>
-								<ReactMarkdown>{details.details}</ReactMarkdown>
-							</div>
-						);
-					})}
-				</div>
-			</div>
-
-			<RelatedProjects projects={props.relatedProjects} />
-		</div>
+		</>
 	);
+}
+
+ProjectDetail.getLayout = (page) => <BoldLayout>{page}</BoldLayout>;
+
+// JSX 로 반환 → 두 phrase 사이의 공백 1곳에서만 wrap 가능. 좁은 viewport 에서
+// 'Selected Work / — 2025 · Web Application' 처럼 깔끔하게 두 줄.
+function buildHeroEyebrow(project) {
+	const year = parseYear(project.ProjectHeader?.publishDate);
+	const category = project.category;
+	const primary = <span className="whitespace-nowrap">Selected Work</span>;
+	if (year && category) {
+		return (
+			<>
+				{primary}{' '}
+				<span className="whitespace-nowrap">— {year} · {category}</span>
+			</>
+		);
+	}
+	if (category) {
+		return (
+			<>
+				{primary}{' '}
+				<span className="whitespace-nowrap">· {category}</span>
+			</>
+		);
+	}
+	return primary;
+}
+
+// 1 entry = 1 step. admin 폼이 kind/title 입력을 항상 받으므로 (Phase 2 완료) 별도
+// 폴백 (markdown h2 split, 키워드 추출, kind rotation) 없음. body 만 있고 kind/title 가
+// 빈 row 는 단순 '메모' 로 표시.
+function parseProcessSteps(projectDetails = []) {
+	return projectDetails
+		.map((entry) => {
+			const body = (entry.details ?? '').trim();
+			if (!body) return null;
+			return {
+				kind: entry.kind?.trim() || null,
+				title: entry.title?.trim() || '메모',
+				body,
+			};
+		})
+		.filter(Boolean);
 }
 
 export async function getServerSideProps({ query }) {
@@ -160,7 +151,7 @@ export async function getServerSideProps({ query }) {
 		try {
 			const category = encodeURIComponent(project.category);
 			const relRes = await fetch(
-				`${API_BASE_URL}/api/projects?category=${category}`
+				`${API_BASE_URL}/api/projects?category=${category}`,
 			);
 			if (relRes.ok) {
 				const relBody = await relRes.json();
@@ -179,4 +170,4 @@ export async function getServerSideProps({ query }) {
 	}
 }
 
-export default ProjectSingle;
+export default ProjectDetail;

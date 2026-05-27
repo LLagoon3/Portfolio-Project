@@ -245,3 +245,190 @@ a {
 		opacity: 0.5;
 	}
 }
+
+/* ============================================================================
+ * Bold redesign (5-page redesign series, issue #70)
+ * 페이지 단위로 점진 적용. BoldLayout 자손에서만 토큰을 사용하므로 기존
+ * DefaultLayout 페이지에는 영향이 없다. reduced-motion 글로벌 룰만 모든
+ * 페이지에 적용되며, 기존 모션 컴포넌트도 함께 혜택을 받는다.
+ * ========================================================================= */
+
+:root {
+	--ink: #070e17;
+	--paper: #fbfaf7;
+	--paper-dim: color-mix(in oklab, var(--paper) 60%, transparent);
+	--paper-faint: color-mix(in oklab, var(--paper) 35%, transparent);
+	--indigo: #6366f1;
+	--indigo-soft: #818cf8;
+	--indigo-glow: rgba(99, 102, 241, 0.35);
+	--line: rgba(255, 255, 255, 0.08);
+	--line-strong: rgba(255, 255, 255, 0.16);
+}
+
+/* PillButton 의 자식 svg 가 hover 시 살짝 오른쪽으로 미세 이동.
+ * 화살표 / 외부 링크 아이콘 등 모든 CTA arrow 에 일관된 micro feedback.
+ * cubic-bezier 는 다른 Bold 모션 (Reveal/WordReveal/Marquee) 과 통일. */
+.bold-pill svg {
+	transition: transform 0.3s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.bold-pill:hover svg {
+	transform: translateX(3px);
+}
+
+/* 앵커 클릭(#work 등) 시 즉시 점프가 아닌 부드러운 스크롤.
+ * Bold 페이지의 '작업 보기' 같은 CTA 가 자연스럽게 동작한다.
+ * reduced-motion 글로벌 룰이 scroll-behavior: auto 로 자동 override. */
+html {
+	scroll-behavior: smooth;
+}
+
+/* Bold 페이지 wrapper 의 DARK/LIGHT 전환 시 색상을 부드럽게 보간.
+ * CSS 변수 자체는 보간되지 않지만, background-color/color 의 변경은
+ * transition 대상이 되어 즉시 점프가 아닌 fade 가 일어난다. */
+.bold-root {
+	transition:
+		background-color 0.4s cubic-bezier(0.2, 0.7, 0.2, 1),
+		color 0.4s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+/* About Bio 섹션의 마크다운 prose 스타일.
+ * ReactMarkdown 이 렌더하는 p / strong / h3 / ul / li 에 적용. */
+.bold-prose {
+	color: color-mix(in oklab, var(--paper) 78%, transparent);
+	line-height: 1.7;
+	font-size: clamp(1rem, 1.05vw, 1.1rem);
+}
+.bold-prose p {
+	margin: 0 0 1.1rem;
+}
+.bold-prose p:last-child {
+	margin-bottom: 0;
+}
+.bold-prose strong {
+	color: var(--paper);
+	font-weight: 600;
+}
+.bold-prose h1,
+.bold-prose h2,
+.bold-prose h3,
+.bold-prose h4 {
+	font-family: 'GeneralSans-Semibold', sans-serif;
+	color: var(--paper);
+	margin: 1.5rem 0 0.5rem;
+}
+.bold-prose h3 {
+	font-size: 1.25rem;
+}
+.bold-prose ul,
+.bold-prose ol {
+	padding-left: 0;
+	list-style: none;
+	margin: 0.4rem 0 1.1rem;
+}
+.bold-prose li {
+	position: relative;
+	padding-left: 1.5rem;
+	margin: 0.4rem 0;
+}
+.bold-prose li::before {
+	content: '';
+	position: absolute;
+	left: 0;
+	top: 0.7em;
+	width: 16px;
+	height: 1px;
+	background: var(--indigo-soft);
+}
+.bold-prose a {
+	color: var(--indigo-soft);
+	text-decoration: underline;
+}
+
+/* About Journey 타임라인 row — 좌 130px year / 우 내용. 모바일 stack. */
+.bold-tl-row {
+	display: grid;
+	grid-template-columns: 130px 1fr;
+	gap: 28px;
+}
+@media (max-width: 768px) {
+	.bold-tl-row {
+		grid-template-columns: 1fr;
+		gap: 8px;
+	}
+}
+
+/* Bold 페이지의 한국어 본문은 단어 중간이 아닌 단어 경계에서 줄바꿈되도록 한다.
+ * CJK 의 default 는 글자 단위 줄바꿈 → 'word-break: keep-all' 로 단어 단위 유지.
+ * 너무 긴 영문 단어 (예: URL) 가 컨테이너 폭을 넘으면 break-word 로 풀어준다. */
+.bold-root p {
+	word-break: keep-all;
+	overflow-wrap: break-word;
+}
+
+/* BoldLayout wrapper 에 .bold-light 가 토글되어 변수 swap (DARK/LIGHT).
+ * 라이트모드는 어두운 글자 + 밝은 배경이라 다크모드 톤 (60% paper-dim) 으로는 대비 부족.
+ * paper-dim 80%, paper-faint 50% 로 진하게 조정해 nav 링크 / 보조 메타 가독성 보강. */
+.bold-light {
+	--ink: #fbfaf7;
+	--paper: #0a0f17;
+	--paper-dim: color-mix(in oklab, var(--paper) 80%, transparent);
+	--paper-faint: color-mix(in oklab, var(--paper) 50%, transparent);
+	--line: rgba(13, 36, 56, 0.08);
+	--line-strong: rgba(13, 36, 56, 0.18);
+}
+
+/* grain 텍스처 — BoldLayout 의 wrapper 에 .bold-grain 적용 */
+.bold-grain::before {
+	content: '';
+	position: fixed;
+	inset: 0;
+	pointer-events: none;
+	z-index: 1;
+	opacity: 0.06;
+	mix-blend-mode: overlay;
+	background-image: radial-gradient(
+			circle at 25% 30%,
+			rgba(255, 255, 255, 0.6) 0,
+			transparent 0.2px
+		),
+		radial-gradient(
+			circle at 75% 70%,
+			rgba(255, 255, 255, 0.6) 0,
+			transparent 0.2px
+		);
+	background-size:
+		3px 3px,
+		5px 5px;
+}
+
+/* marquee 무한 슬라이드 — 트랙을 2배 복제하고 0 → -50% 평행이동 */
+@keyframes bold-marquee {
+	from {
+		transform: translateX(0);
+	}
+	to {
+		transform: translateX(-50%);
+	}
+}
+
+/* word-rise — framer-motion 대신 CSS 폴백이 필요할 때 사용 */
+@keyframes bold-word-rise {
+	from {
+		transform: translateY(105%);
+	}
+	to {
+		transform: translateY(0);
+	}
+}
+
+/* 글로벌 prefers-reduced-motion — 기존 페이지의 모션도 자동 비활성 */
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.001ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.001ms !important;
+		scroll-behavior: auto !important;
+	}
+}

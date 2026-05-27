@@ -18,6 +18,27 @@ function toFormInitial(project) {
 		objectivesDetails: info.ObjectivesDetails ?? '',
 		projectDetailsHeading: info.ProjectDetailsHeading ?? 'Challenge',
 		socialSharingHeading: info.SocialSharingHeading ?? '',
+		// Phase 2 — 누락 시 form 의 빈 값이 payload null/[] 로 변환돼 cascade DELETE 발생.
+		// 기존 값을 반드시 form 에 적재해서 다른 필드만 편집해도 Phase 2 데이터가 보존되도록 한다.
+		heroSubtitle: project.heroSubtitle ?? '',
+		heroAccentWord: project.heroAccentWord ?? '',
+		// Hero Role / Client 전용 필드 (#125). 빠뜨리면 admin 빈 인풋 → 저장 시 null
+		// 로 덮어써져 백필 값 손실.
+		heroRole: project.heroRole ?? '',
+		heroClient: project.heroClient ?? '',
+		stats: (info.Impact ?? []).map((s) => ({
+			label: s.label,
+			value: s.value,
+			sub: s.sub ?? '',
+		})),
+		quote: info.Quote
+			? { text: info.Quote.text, author: info.Quote.author ?? '' }
+			: { text: '', author: '' },
+		// Project Links — 빠뜨리면 admin 빈 리스트 → 저장 시 cascade DELETE 로 손실.
+		links: (info.Links ?? []).map((l) => ({
+			label: l.label,
+			url: l.url,
+		})),
 		images: (project.ProjectImages ?? []).map((img) => ({
 			title: img.title,
 			img: img.img,
@@ -30,7 +51,13 @@ function toFormInitial(project) {
 			title: t.title,
 			techs: t.techs ?? [],
 		})),
-		details: (info.ProjectDetails ?? []).map((d) => ({ details: d.details })),
+		// kind / title 도 적재 — Phase 2 후속 admin 명시 필드. 빠뜨리면 빈 값으로
+		// 덮어써져 'NOTE/메모' 폴백 처리됨.
+		details: (info.ProjectDetails ?? []).map((d) => ({
+			kind: d.kind ?? '',
+			title: d.title ?? '',
+			details: d.details,
+		})),
 	};
 }
 

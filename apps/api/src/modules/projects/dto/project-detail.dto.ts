@@ -45,8 +45,48 @@ export class ProjectDetailItemDto {
   @ApiProperty()
   id!: number;
 
+  // Phase 2 후속 — admin 명시. 비어있으면 web 의 markdown h2 split 폴백.
+  @ApiProperty({ required: false, nullable: true })
+  kind!: string | null;
+
+  @ApiProperty({ required: false, nullable: true })
+  title!: string | null;
+
   @ApiProperty()
   details!: string;
+}
+
+export class ProjectStatItemDto {
+  @ApiProperty()
+  id!: number;
+
+  @ApiProperty()
+  label!: string;
+
+  @ApiProperty()
+  value!: string;
+
+  @ApiProperty({ required: false, nullable: true })
+  sub!: string | null;
+}
+
+export class ProjectQuoteItemDto {
+  @ApiProperty()
+  text!: string;
+
+  @ApiProperty({ required: false, nullable: true })
+  author!: string | null;
+}
+
+export class ProjectLinkItemDto {
+  @ApiProperty()
+  id!: number;
+
+  @ApiProperty()
+  label!: string;
+
+  @ApiProperty()
+  url!: string;
 }
 
 export class ProjectInfoDto {
@@ -73,6 +113,17 @@ export class ProjectInfoDto {
 
   @ApiProperty()
   SocialSharingHeading!: string;
+
+  // Phase 2 — 빈 배열 / null 이면 web 에서 섹션 미렌더.
+  @ApiProperty({ type: [ProjectStatItemDto] })
+  Impact!: ProjectStatItemDto[];
+
+  @ApiProperty({ type: ProjectQuoteItemDto, required: false, nullable: true })
+  Quote!: ProjectQuoteItemDto | null;
+
+  // Project Links — Hero meta strip 아래 Direct row 노출용. 빈 배열이면 영역 미렌더.
+  @ApiProperty({ type: [ProjectLinkItemDto] })
+  Links!: ProjectLinkItemDto[];
 }
 
 export class ProjectDetailDto {
@@ -90,6 +141,20 @@ export class ProjectDetailDto {
 
   @ApiProperty()
   img!: string;
+
+  // Phase 2 — Hero subtitle / accent 명시 필드. 미입력이면 null.
+  @ApiProperty({ required: false, nullable: true })
+  heroSubtitle!: string | null;
+
+  @ApiProperty({ required: false, nullable: true })
+  heroAccentWord!: string | null;
+
+  // Hero meta strip 의 Role / Client. companyInfo 키워드 매칭 대체 (#125).
+  @ApiProperty({ required: false, nullable: true })
+  heroRole!: string | null;
+
+  @ApiProperty({ required: false, nullable: true })
+  heroClient!: string | null;
 
   @ApiProperty({ type: ProjectHeaderDto })
   ProjectHeader!: ProjectHeaderDto;

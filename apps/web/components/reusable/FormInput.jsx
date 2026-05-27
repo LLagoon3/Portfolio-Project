@@ -8,6 +8,9 @@ const FormInput = ({
 	ariaLabelName,
 	value,
 	onChange,
+	// 기본값 true 로 기존 사용처 (Contact 폼 등) 호환 유지. admin 의 선택 필드는
+	// required={false} 로 명시해서 빈 값 저장 허용.
+	required = true,
 }) => {
 	return (
 		<div className="font-general-regular mb-4">
@@ -28,7 +31,7 @@ const FormInput = ({
 				aria-label={ariaLabelName}
 				value={value}
 				onChange={onChange}
-				required
+				required={required}
 			/>
 		</div>
 	);

@@ -68,21 +68,21 @@ describe('UploadsController', () => {
     );
   });
 
-  it('thumbnail preset 은 16:9 로 중앙 crop 된다 (1920×1080 → 1600×900)', async () => {
+  it('thumbnail preset 은 4:5 로 중앙 crop 된다 (1920×1080 → 1200×1500)', async () => {
     const file = await seedFile('t.jpg', 1920, 1080);
     const result = await controller.upload(file, UploadPreset.THUMBNAIL);
     expect(result.url).toBe(`${UPLOADS_URL_PREFIX}/t.jpg`);
     expect(result.mime).toBe('image/jpeg');
     expect(result.preset).toBe(UploadPreset.THUMBNAIL);
-    expect(result.width).toBe(1600);
-    expect(result.height).toBe(900);
+    expect(result.width).toBe(1200);
+    expect(result.height).toBe(1500);
   });
 
   it('thumbnail 은 cover 이므로 작은 원본도 목표 크기로 업스케일', async () => {
-    const file = await seedFile('small.jpg', 800, 450);
+    const file = await seedFile('small.jpg', 600, 750);
     const result = await controller.upload(file, UploadPreset.THUMBNAIL);
-    expect(result.width).toBe(1600);
-    expect(result.height).toBe(900);
+    expect(result.width).toBe(1200);
+    expect(result.height).toBe(1500);
   });
 
   it('profile preset 은 1:1 로 중앙 crop 된다', async () => {

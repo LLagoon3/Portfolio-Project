@@ -57,6 +57,9 @@ describe('ProjectsRepository', () => {
         companyInfo: true,
         technologies: { items: true },
         details: true,
+        stats: true,
+        quote: true,
+        links: true,
       },
     });
   });

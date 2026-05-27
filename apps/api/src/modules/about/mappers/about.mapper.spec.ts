@@ -8,6 +8,9 @@ const profile = (overrides: Partial<AboutProfile> = {}): AboutProfile =>
     name: 'Lagoon',
     tagline: 'Backend Developer',
     profileImage: '/images/profile.jpeg',
+    address: null,
+    email: null,
+    phone: null,
     createdAt: new Date('2026-01-01T00:00:00.000Z'),
     bios: [],
     ...overrides,
@@ -40,5 +43,23 @@ describe('toAboutResponseDto', () => {
     expect(dto.name).toBe('Foo');
     expect(dto.tagline).toBeNull();
     expect(dto.profileImage).toBe('/p.jpg');
+  });
+
+  it('address / email / phone 도 그대로 복사, 값이 없으면 null', () => {
+    const filled = toAboutResponseDto(
+      profile({
+        address: 'Seoul',
+        email: 'me@example.com',
+        phone: '+82 10-1234-5678',
+      }),
+    );
+    expect(filled.address).toBe('Seoul');
+    expect(filled.email).toBe('me@example.com');
+    expect(filled.phone).toBe('+82 10-1234-5678');
+
+    const blank = toAboutResponseDto(profile());
+    expect(blank.address).toBeNull();
+    expect(blank.email).toBeNull();
+    expect(blank.phone).toBeNull();
   });
 });

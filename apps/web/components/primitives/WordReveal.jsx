@@ -34,16 +34,18 @@ export default function WordReveal({
 			{items.map((item, idx) => {
 				if (item.br) return <br key={`br-${idx}`} />;
 				// italic accent: Safari 는 inline-block 너비를 italic glyph 의 우측 overhang
-				// 제외하고 측정 (Chrome 과 다름). outer + inner 양쪽에 padding-right 를
-				// 두어 어느 레벨의 inline-block 측정에서도 italic 우측이 안전하게 fit.
-				// paddingBottom 은 비-accent 와 inline-block 높이가 달라져 같은 줄에서
-				// baseline 어긋남 → 제거 (애니메이션 종료 후 overflow 가 풀려 descender
-				// 잘림 우려 없음).
+				// 제외하고 측정 (Chrome 과 다름). paddingRight 0.5em 로 우측 보강.
+				// 단, accent 가 연속되면 누적 + sep 공백 합쳐 단어 간격이 너무 커지므로,
+				// '연속 accent run 의 마지막' 에만 paddingRight 적용. 중간 accent 는
+				// padding 없이 sep 공백만으로 정상 단어 간격 유지.
+				const next = items[idx + 1];
+				const isLastOfAccentRun =
+					item.accent && (!next || next.br || !next.accent);
 				const accentInnerStyle = item.accent
 					? {
 							color: 'var(--indigo-soft)',
 							fontStyle: 'italic',
-							paddingRight: '0.5em',
+							paddingRight: isLastOfAccentRun ? '0.5em' : '0',
 							textRendering: 'optimizeLegibility',
 						}
 					: undefined;
@@ -81,7 +83,9 @@ export default function WordReveal({
 						<motion.span
 							className="inline-block"
 							style={
-								item.accent ? { paddingRight: '0.5em' } : undefined
+								item.accent
+									? { paddingRight: isLastOfAccentRun ? '0.5em' : '0' }
+									: undefined
 							}
 							initial={{ y: '105%' }}
 							animate={{ y: 0 }}

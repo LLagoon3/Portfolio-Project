@@ -34,14 +34,14 @@ export default function WordReveal({
 			{items.map((item, idx) => {
 				if (item.br) return <br key={`br-${idx}`} />;
 				// italic accent: Safari 는 inline-block 너비를 italic glyph 의 우측 overhang
-				// 제외하고 측정 (Chrome 과 다름). 모든 accent 에 paddingRight 0.5em 로
-				// 우측 잘림 방지.
+				// 제외하고 측정 (Chrome 과 다름). outer 에만 paddingRight 0.35em 로
+				// overflow:hidden padding-box 안에 italic 우측 들어오게 보호.
 				const next = items[idx + 1];
 				const accentInnerStyle = item.accent
 					? {
 							color: 'var(--indigo-soft)',
 							fontStyle: 'italic',
-							paddingRight: '0.5em',
+							paddingRight: '0.35em',
 							textRendering: 'optimizeLegibility',
 						}
 					: undefined;

@@ -34,14 +34,15 @@ export default function WordReveal({
 			{items.map((item, idx) => {
 				if (item.br) return <br key={`br-${idx}`} />;
 				// italic accent: Safari 는 inline-block 너비를 italic glyph 의 우측 overhang
-				// 제외하고 측정해 (Chrome 과 다름) padding-right 가 클수록 안전. 0.5em 으로
-				// 우상단 slant + 받침 ㄹ 우측까지 커버.
-				const innerStyle = item.accent
+				// 제외하고 측정 (Chrome 과 다름). outer + inner 양쪽에 padding-right 를
+				// 두어 어느 레벨의 inline-block 측정에서도 italic 우측이 안전하게 fit.
+				const accentInnerStyle = item.accent
 					? {
 							color: 'var(--indigo-soft)',
 							fontStyle: 'italic',
 							paddingRight: '0.5em',
 							paddingBottom: '0.18em',
+							textRendering: 'optimizeLegibility',
 						}
 					: undefined;
 				// 다음 단어와 공백 분리. 단 noSep 가 true 면 공백 없이 직접 붙임
@@ -56,7 +57,7 @@ export default function WordReveal({
 						<span
 							key={idx}
 							className="inline-block align-bottom pb-[0.04em]"
-							style={innerStyle}
+							style={accentInnerStyle}
 						>
 							{item.text}
 							{sep}
@@ -69,11 +70,22 @@ export default function WordReveal({
 					<span
 						key={idx}
 						className={`inline-block align-bottom pb-[0.04em] ${revealed ? '' : 'overflow-hidden'}`}
-						style={innerStyle}
+						style={accentInnerStyle}
 					>
-						{/* hero 영역 전용이라 viewport 감지(whileInView) 대신 mount 즉시 animate. */}
+						{/* hero 영역 전용이라 viewport 감지(whileInView) 대신 mount 즉시 animate.
+						    Safari italic clipping 회피 — inner motion.span 의 inline-block
+						    측정도 italic overhang 포함하지 않으므로 동일 padding 을 inner 에
+						    도 적용 (outer 와 중첩되어도 텍스트 위치는 그대로). */}
 						<motion.span
 							className="inline-block"
+							style={
+								item.accent
+									? {
+											paddingRight: '0.5em',
+											paddingBottom: '0.18em',
+										}
+									: undefined
+							}
 							initial={{ y: '105%' }}
 							animate={{ y: 0 }}
 							transition={{

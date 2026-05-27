@@ -36,7 +36,7 @@ function About({ about }) {
 			<AboutCounters stats={about.stats} />
 			<AboutPrinciples principles={about.principles} />
 			<AboutJourney journey={about.journey} />
-			<AboutBrands stacks={about.stacks} />
+			<AboutBrands groups={about.stacks} />
 			<AboutContactCTA />
 		</>
 	);

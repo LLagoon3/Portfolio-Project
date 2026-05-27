@@ -90,7 +90,7 @@ function StatItem({ label, value, delay }) {
 					color: 'transparent',
 				}}
 			>
-				<StatCounter end={Number(value) || 0} />
+				<StatCounter value={Number(value) || 0} />
 			</div>
 			<Eyebrow className="mt-3">{label}</Eyebrow>
 		</Reveal>

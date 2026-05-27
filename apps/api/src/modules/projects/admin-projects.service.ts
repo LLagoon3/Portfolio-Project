@@ -176,6 +176,9 @@ export class AdminProjectsService {
   }
 }
 
+// DTO 의 @Transform(trimIfString / trimToNull) + class-validator 가 ValidationPipe
+// 단계에서 이미 trim + 빈 문자열 → null + IsNotEmpty 검증을 수행한다. buildProject
+// 는 이를 신뢰하고 단순 매핑만 — 중복 trim/truthy 체크 제거.
 function buildProject(dto: UpsertProjectDto): Project {
   const project = new Project();
   project.url = dto.url;
@@ -189,13 +192,10 @@ function buildProject(dto: UpsertProjectDto): Project {
   project.objectivesDetails = dto.objectivesDetails;
   project.projectDetailsHeading = dto.projectDetailsHeading;
   project.socialSharingHeading = dto.socialSharingHeading ?? '';
-  // Phase 2: 빈 문자열은 null 로 정규화 (DB nullable).
-  project.heroSubtitle = dto.heroSubtitle?.trim() ? dto.heroSubtitle : null;
-  project.heroAccentWord = dto.heroAccentWord?.trim()
-    ? dto.heroAccentWord
-    : null;
-  project.heroRole = dto.heroRole?.trim() ? dto.heroRole : null;
-  project.heroClient = dto.heroClient?.trim() ? dto.heroClient : null;
+  project.heroSubtitle = dto.heroSubtitle ?? null;
+  project.heroAccentWord = dto.heroAccentWord ?? null;
+  project.heroRole = dto.heroRole ?? null;
+  project.heroClient = dto.heroClient ?? null;
 
   project.images = dto.images.map((img, idx) => {
     const e = new ProjectImage();
@@ -228,45 +228,38 @@ function buildProject(dto: UpsertProjectDto): Project {
 
   project.details = dto.details.map((detail, idx) => {
     const e = new ProjectDetail();
-    // Phase 2 후속 — admin 명시 kind/title 은 trim 후 null 정규화. 미입력 entry 는
-    // web 의 parseProcessSteps 가 markdown h2 split 폴백으로 처리.
-    e.kind = detail.kind?.trim() ? detail.kind : null;
-    e.title = detail.title?.trim() ? detail.title : null;
+    e.kind = detail.kind ?? null;
+    e.title = detail.title ?? null;
     e.details = detail.details;
     e.sortOrder = idx;
     return e;
   });
 
-  // Phase 2: stats (OneToMany) — 입력 순서대로 sort_order 부여.
   project.stats = (dto.stats ?? []).map((stat, idx) => {
     const e = new ProjectStat();
     e.label = stat.label;
     e.value = stat.value;
-    e.sub = stat.sub?.trim() ? stat.sub : null;
+    e.sub = stat.sub ?? null;
     e.sortOrder = idx;
     return e;
   });
 
-  // Phase 2: quote (OneToOne) — text 비면 null.
-  if (dto.quote && dto.quote.text?.trim()) {
+  if (dto.quote) {
     const q = new ProjectQuote();
     q.text = dto.quote.text;
-    q.author = dto.quote.author?.trim() ? dto.quote.author : null;
+    q.author = dto.quote.author ?? null;
     project.quote = q;
   } else {
     project.quote = null;
   }
 
-  // Links (OneToMany) — label/url 둘 다 있어야 살림. 입력 순서대로 sortOrder.
-  project.links = (dto.links ?? [])
-    .filter((l) => l.label?.trim() && l.url?.trim())
-    .map((link, idx) => {
-      const e = new ProjectLink();
-      e.label = link.label.trim();
-      e.url = link.url.trim();
-      e.sortOrder = idx;
-      return e;
-    });
+  project.links = (dto.links ?? []).map((link, idx) => {
+    const e = new ProjectLink();
+    e.label = link.label;
+    e.url = link.url;
+    e.sortOrder = idx;
+    return e;
+  });
 
   return project;
 }

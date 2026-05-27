@@ -19,14 +19,6 @@ import {
 const API_BASE_URL =
 	process.env.API_INTERNAL_URL || 'http://localhost:7341';
 
-const PROCESS_KIND_KEYWORDS = [
-	{ kind: 'DECISION', keywords: ['결정', '선택', 'DECISION', 'CHOOSE'] },
-	{ kind: 'OPS', keywords: ['운영', '배포', 'OPS', 'DEPLOY'] },
-	{ kind: 'RESULT', keywords: ['결과', '성과', 'RESULT', 'IMPACT'] },
-	{ kind: 'TRADEOFF', keywords: ['트레이드오프', '대안', 'TRADEOFF'] },
-];
-const KIND_ROTATION = ['DECISION', 'OPS', 'RESULT', 'TRADEOFF'];
-
 function ProjectDetail({ project, relatedProjects }) {
 	const heroEyebrow = buildHeroEyebrow(project);
 	const heroMeta = buildHeroMeta(project);
@@ -119,52 +111,21 @@ function buildHeroEyebrow(project) {
 	return primary;
 }
 
-// admin 명시 우선 (1 entry = 1 step), 미입력 entry 는 details markdown 의 ## h2 split
-// + 키워드 매칭 폴백. 둘이 섞여 있어도 하나의 step 시퀀스로 합쳐 출력 (sortOrder 보존).
+// 1 entry = 1 step. admin 폼이 kind/title 입력을 항상 받으므로 (Phase 2 완료) 별도
+// 폴백 (markdown h2 split, 키워드 추출, kind rotation) 없음. body 만 있고 kind/title 가
+// 빈 row 는 단순 '메모' 로 표시.
 function parseProcessSteps(projectDetails = []) {
-	const steps = [];
-	for (const entry of projectDetails) {
-		const md = entry.details ?? '';
-		const kindExplicit = entry.kind?.trim();
-		const titleExplicit = entry.title?.trim();
-
-		if (kindExplicit || titleExplicit) {
-			// admin 명시 — 1 entry = 1 step
-			steps.push({
-				kind: kindExplicit || pickKind(titleExplicit ?? '', steps.length),
-				title: titleExplicit || '',
-				body: md,
-			});
-			continue;
-		}
-
-		// 폴백: 기존 markdown h2 split. ## 없으면 단일 메모.
-		if (!md.trim()) continue;
-		const hasH2 = /^##\s+/m.test(md);
-		if (!hasH2) {
-			steps.push({ kind: 'NOTE', title: '메모', body: md.trim() });
-			continue;
-		}
-		const sections = md.split(/^##\s+/gm).filter((s) => s.trim().length > 0);
-		sections.forEach((section) => {
-			const [titleLine, ...bodyLines] = section.split('\n');
-			const title = titleLine.trim();
-			steps.push({
-				kind: pickKind(title, steps.length),
-				title,
-				body: bodyLines.join('\n').trim(),
-			});
-		});
-	}
-	return steps;
-}
-
-function pickKind(title, idx) {
-	const lower = title.toLowerCase();
-	for (const { kind, keywords } of PROCESS_KIND_KEYWORDS) {
-		if (keywords.some((k) => lower.includes(k.toLowerCase()))) return kind;
-	}
-	return KIND_ROTATION[idx % KIND_ROTATION.length];
+	return projectDetails
+		.map((entry) => {
+			const body = (entry.details ?? '').trim();
+			if (!body) return null;
+			return {
+				kind: entry.kind?.trim() || null,
+				title: entry.title?.trim() || '메모',
+				body,
+			};
+		})
+		.filter(Boolean);
 }
 
 export async function getServerSideProps({ query }) {

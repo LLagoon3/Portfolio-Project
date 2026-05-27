@@ -1,5 +1,6 @@
 import Reveal from '../../primitives/Reveal';
 import Eyebrow from '../../primitives/Eyebrow';
+import DirectLinkRow, { deriveLinkLabel } from '../../primitives/DirectLinkRow';
 
 // socials 는 admin About 입력으로 동적. EMAIL 행은 about.email 우선. 빈 배열이면 EMAIL 만 노출.
 export default function BoldContactSidebar({
@@ -60,19 +61,18 @@ export default function BoldContactSidebar({
 					}}
 				>
 					{email && (
-						<DirectRow label="EMAIL" href={`mailto:${email}`}>
+						<DirectLinkRow label="EMAIL" href={`mailto:${email}`} external={false}>
 							{email}
-						</DirectRow>
+						</DirectLinkRow>
 					)}
 					{socials.map((s) => (
-						<DirectRow
+						<DirectLinkRow
 							key={`${s.label}-${s.url}`}
-							label={deriveDirectLabel(s)}
+							label={deriveLinkLabel(s.url)}
 							href={s.url}
-							external
 						>
 							{s.label}
-						</DirectRow>
+						</DirectLinkRow>
 					))}
 				</div>
 			</Reveal>
@@ -91,31 +91,3 @@ export default function BoldContactSidebar({
 	);
 }
 
-// 좌측 라벨은 url 의 host 에서 추출. 예: github.com/... → GITHUB. 알 수 없으면 'LINK'.
-function deriveDirectLabel(social) {
-	try {
-		const host = new URL(social.url).host.toLowerCase();
-		const dotParts = host.split('.');
-		const root = dotParts.length >= 2 ? dotParts[dotParts.length - 2] : host;
-		return root.toUpperCase().slice(0, 10);
-	} catch {
-		return 'LINK';
-	}
-}
-
-function DirectRow({ label, href, external, children }) {
-	return (
-		<div className="flex items-center justify-between">
-			<span>{label}</span>
-			<a
-				href={href}
-				target={external ? '_blank' : undefined}
-				rel={external ? 'noopener noreferrer' : undefined}
-				className="bold-interactive transition-colors hover:text-[color:var(--paper)]"
-				style={{ color: 'var(--paper-dim)' }}
-			>
-				{children}
-			</a>
-		</div>
-	);
-}

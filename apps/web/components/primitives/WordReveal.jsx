@@ -34,25 +34,24 @@ export default function WordReveal({
 			{items.map((item, idx) => {
 				if (item.br) return <br key={`br-${idx}`} />;
 				// italic accent: Safari 는 inline-block 너비를 italic glyph 의 우측 overhang
-				// 제외하고 측정 (Chrome 과 다름). outer 에만 paddingRight 0.35em 로
-				// overflow:hidden padding-box 안에 italic 우측 들어오게 보호.
-				const next = items[idx + 1];
+				// 제외하고 측정 (Chrome 과 다름). outer 에 paddingRight 0.2em 로 overflow
+				// :hidden padding-box 안에 italic 우측 들어오게 보호. 0.35em 이상이면
+				// 다음 단어와 시각 간격이 과대해져 0.2em 로 축소 — 받침 ㄹ 우측 italic
+				// overhang 정도까지만 커버 + 단어 사이 sep 공백은 항상 유지 (semantic).
 				const accentInnerStyle = item.accent
 					? {
 							color: 'var(--indigo-soft)',
 							fontStyle: 'italic',
-							paddingRight: '0.35em',
+							paddingRight: '0.2em',
 							textRendering: 'optimizeLegibility',
 						}
 					: undefined;
-				// 다음 단어와 공백 분리. accent 의 paddingRight 가 이미 우측 간격을
-				// 만들므로, 다음 단어도 accent 면 sep 를 빼서 padding + sep 누적 회피.
-				// noSep (한국어 토씨 붙임) 와 다음 br 인 경우도 sep 미부착.
+				// 다음 단어와 공백 분리. accent 연속이어도 sep ' ' 유지 — textContent
+				// 가 '함께할기회를' 처럼 붙으면 copy/paste / 브라우저 검색 / 스크린리더
+				// 발음이 깨짐 (Codex P2 #144). noSep (한국어 토씨 붙임) 와 다음 br 인
+				// 경우만 sep 미부착.
 				const sep =
-					idx < items.length - 1 &&
-					!next?.br &&
-					!item.noSep &&
-					!(item.accent && next?.accent)
+					idx < items.length - 1 && !items[idx + 1]?.br && !item.noSep
 						? ' '
 						: '';
 

@@ -10,18 +10,7 @@ import {
   MaxLength,
   ValidateNested,
 } from 'class-validator';
-
-// About 의 trim helper 와 동일 패턴 (apps/api/src/modules/about/dto/upsert-about.dto.ts:14-25).
-// 후속에 apps/api/src/common/dto/transforms.ts 같은 공용 위치로 lift 검토.
-const trimIfString = (value: unknown): unknown =>
-  typeof value === 'string' ? value.trim() : value;
-
-// 빈 문자열·공백-only 는 null 로 정규화 (선택 필드 공통 규칙).
-const trimToNull = (value: unknown): unknown => {
-  if (typeof value !== 'string') return value;
-  const trimmed = value.trim();
-  return trimmed.length === 0 ? null : trimmed;
-};
+import { trimIfString, trimToNull } from '../../../common/dto/transforms';
 
 export class UpsertImageDto {
   @ApiProperty({ maxLength: 200 })

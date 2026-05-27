@@ -10,19 +10,11 @@ import {
   MaxLength,
   ValidateNested,
 } from 'class-validator';
-
-const trimIfString = (value: unknown): unknown =>
-  typeof value === 'string' ? value.trim() : value;
-
-const trimArray = (value: unknown): unknown =>
-  Array.isArray(value) ? value.map(trimIfString) : value;
-
-// 빈 문자열·공백-only 는 null 로 정규화 (선택 필드 공통 규칙).
-const trimToNull = (value: unknown): unknown => {
-  if (typeof value !== 'string') return value;
-  const trimmed = value.trim();
-  return trimmed.length === 0 ? null : trimmed;
-};
+import {
+  trimArray,
+  trimIfString,
+  trimToNull,
+} from '../../../common/dto/transforms';
 
 // Bold 리디자인 후속 — 신규 nested DTO 4개.
 

@@ -20,6 +20,9 @@ const DEFAULT_VALUES = {
 	// Phase 2 (선택) — Bold Hero / Impact / Quote 섹션.
 	heroSubtitle: '',
 	heroAccentWord: '',
+	// Hero meta strip 의 Role / Client 전용 필드 (#125). companyInfo 키워드 매칭 대체.
+	heroRole: '',
+	heroClient: '',
 	quote: { text: '', author: '' },
 	stats: [],
 	links: [],
@@ -41,6 +44,8 @@ function toFormState(initial) {
 		...merged,
 		heroSubtitle: merged.heroSubtitle ?? '',
 		heroAccentWord: merged.heroAccentWord ?? '',
+		heroRole: merged.heroRole ?? '',
+		heroClient: merged.heroClient ?? '',
 		quote: {
 			text: apiQuote?.text ?? '',
 			author: apiQuote?.author ?? '',
@@ -97,6 +102,8 @@ function toSubmitPayload(form) {
 		socialSharingHeading: form.socialSharingHeading.trim() || undefined,
 		heroSubtitle: form.heroSubtitle.trim() || null,
 		heroAccentWord: form.heroAccentWord.trim() || null,
+		heroRole: form.heroRole.trim() || null,
+		heroClient: form.heroClient.trim() || null,
 		// Phase 2: text 비면 quote 자체 미전송 (api 가 null 로 cascade delete).
 		quote: quoteText ? { text: quoteText, author: quoteAuthor || null } : null,
 		stats: form.stats
@@ -240,6 +247,7 @@ function ProjectForm({ initialValue, submitLabel = '저장', onSubmit }) {
 					placeholderText="여러 서비스 로그를 한 곳에 모으는 인프라."
 					value={form.heroSubtitle}
 					onChange={(e) => set('heroSubtitle', e.target.value)}
+					required={false}
 				/>
 				<FormInput
 					inputLabel="Hero Accent Word (강조할 단어, 미입력 시 타이틀 마지막 단어)"
@@ -251,6 +259,31 @@ function ProjectForm({ initialValue, submitLabel = '저장', onSubmit }) {
 					placeholderText="시스템"
 					value={form.heroAccentWord}
 					onChange={(e) => set('heroAccentWord', e.target.value)}
+					required={false}
+				/>
+				<FormInput
+					inputLabel="Hero Role (Hero meta strip 의 Role 칸, 비우면 미노출)"
+					labelFor="heroRole"
+					inputType="text"
+					inputId="heroRole"
+					inputName="heroRole"
+					ariaLabelName="Hero role"
+					placeholderText="백엔드 · 1인"
+					value={form.heroRole}
+					onChange={(e) => set('heroRole', e.target.value)}
+					required={false}
+				/>
+				<FormInput
+					inputLabel="Hero Client (Hero meta strip 의 Client 칸, 비우면 미노출)"
+					labelFor="heroClient"
+					inputType="text"
+					inputId="heroClient"
+					inputName="heroClient"
+					ariaLabelName="Hero client"
+					placeholderText="에버디그엠"
+					value={form.heroClient}
+					onChange={(e) => set('heroClient', e.target.value)}
+					required={false}
 				/>
 			</AdminFormSection>
 

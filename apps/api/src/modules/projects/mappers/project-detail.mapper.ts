@@ -20,6 +20,8 @@ export function toProjectDetailDto(project: Project): ProjectDetailDto {
     img: project.thumbnailImg,
     heroSubtitle: project.heroSubtitle ?? null,
     heroAccentWord: project.heroAccentWord ?? null,
+    heroRole: project.heroRole ?? null,
+    heroClient: project.heroClient ?? null,
     ProjectHeader: {
       title: project.title,
       publishDate: project.headerPublishDate,

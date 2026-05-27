@@ -123,23 +123,19 @@ function buildHeroEyebrow(project) {
 	return primary;
 }
 
-// CompanyInfo[] 의 title 매칭으로 Client/Role/Team/Status 폴백 + 항상 Timeline / Category 표시.
+// Hero meta strip: Client / Role 은 admin 의 전용 필드 (#125) 사용.
+// 이전엔 companyInfo 의 title 키워드 (role/역할/담당, client/...) 매칭 폴백이
+// 있었으나 명명 의존 + 직관성 부족으로 제거. 빈 값이면 해당 칸 미노출.
 function buildHeroMeta(project) {
-	const info = project.ProjectInfo?.CompanyInfo ?? [];
-	const findByKeywords = (keywords) =>
-		info.find((row) =>
-			keywords.some((k) =>
-				row.title?.toLowerCase().includes(k.toLowerCase()),
-			),
-		);
-
 	const meta = [];
 
-	const client = findByKeywords(['client', '클라이언트', '고객']);
-	if (client) meta.push({ label: 'Client', value: client.details });
+	if (project.heroClient) {
+		meta.push({ label: 'Client', value: project.heroClient });
+	}
 
-	const role = findByKeywords(['role', '역할', '담당']);
-	if (role) meta.push({ label: 'Role', value: role.details });
+	if (project.heroRole) {
+		meta.push({ label: 'Role', value: project.heroRole });
+	}
 
 	if (project.ProjectHeader?.publishDate) {
 		meta.push({ label: 'Timeline', value: project.ProjectHeader.publishDate });

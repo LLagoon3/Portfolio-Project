@@ -62,6 +62,15 @@ export class Project {
   @Column({ name: 'hero_accent_word', type: 'varchar', length: 100, nullable: true })
   heroAccentWord!: string | null;
 
+  // Hero meta strip 의 Role / Client 전용 필드. 이전엔 companyInfo 의 title 키워드
+  // 매칭 (role/역할/담당, client/클라이언트/고객) 으로 추출했지만 명명 컨벤션 의존
+  // + 직관성 부족 문제로 dedicated column 으로 분리.
+  @Column({ name: 'hero_role', type: 'varchar', length: 100, nullable: true })
+  heroRole!: string | null;
+
+  @Column({ name: 'hero_client', type: 'varchar', length: 100, nullable: true })
+  heroClient!: string | null;
+
   @CreateDateColumn({ name: 'created_at' })
   createdAt!: Date;
 

@@ -194,6 +194,8 @@ function buildProject(dto: UpsertProjectDto): Project {
   project.heroAccentWord = dto.heroAccentWord?.trim()
     ? dto.heroAccentWord
     : null;
+  project.heroRole = dto.heroRole?.trim() ? dto.heroRole : null;
+  project.heroClient = dto.heroClient?.trim() ? dto.heroClient : null;
 
   project.images = dto.images.map((img, idx) => {
     const e = new ProjectImage();

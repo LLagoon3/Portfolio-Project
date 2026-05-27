@@ -18,15 +18,16 @@ export default function WordReveal({
 			{items.map((item, idx) => {
 				if (item.br) return <br key={`br-${idx}`} />;
 				// italic accent 단어의 마지막 글자가 inline-block + overflow-hidden 박스 밖으로
-				// 살짝 비져나가 잘리는 현상이 있어 paddingRight 로 박스 너비 보강.
-				// 한글 batchim (ㄹ 등) 이 italic 시 우측·하단 양방향 확장 — Hero 의 tight
-				// lineHeight (1.1) 에서 paddingBottom 0.08em 으로 부족해 0.16em 로 보강.
+				// 비져나가 잘리는 현상 보강. 한글 italic 의 우상단 slant + 받침 ㄹ/ㅁ 의
+				// 우측 폭 + ㄹ descender 가 0.35em / 0.16em 으로는 여전히 잘렸음 (#143):
+				//   paddingRight 0.35em → 0.5em (우상단 slant)
+				//   paddingBottom 0.16em → 0.22em (받침 ㄹ descender)
 				const innerStyle = item.accent
 					? {
 							color: 'var(--indigo-soft)',
 							fontStyle: 'italic',
-							paddingRight: '0.35em',
-							paddingBottom: '0.16em',
+							paddingRight: '0.5em',
+							paddingBottom: '0.22em',
 						}
 					: undefined;
 				// 다음 단어와 공백 분리. 단 noSep 가 true 면 공백 없이 직접 붙임

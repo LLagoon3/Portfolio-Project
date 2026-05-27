@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import useReducedMotion from '../../hooks/useReducedMotion';
 
@@ -6,11 +7,10 @@ import useReducedMotion from '../../hooks/useReducedMotion';
 //   ex: <WordReveal items={[{ text: '이석호' }, { br: true }, { text: '포트폴리오' }, { text: '2026.', accent: true }]} />
 // reduced-motion 시 framer-motion 분기 없이 평범한 span 으로 즉시 렌더.
 //
-// 과거 slide-up (y:105%→0 + overflow-hidden) 방식은 italic 한글의 우상단 slant +
-// 받침 descender 가 박스 밖으로 잘리는 cutoff 가 SPA 전환 / 폰트 metric 정착 직전
-// 측정 등의 시점에서 영구히 남는 문제가 있었다 (#143). overflow-hidden 자체를
-// 제거하고 opacity + 작은 y 페이드인으로 변경 — 어떤 박스도 글리프를 clip 하지
-// 않으므로 italic 잘림 0.
+// slide-up reveal 동안 overflow-hidden 으로 y:105% 위치 글리프를 가린다. italic
+// accent 의 우상단 slant + 받침 descender 가 박스 밖으로 잘리는 cutoff 문제 (#143)
+// 는 모든 stagger 애니메이션 종료 후 overflow-hidden 을 풀어 해소 — 마지막 motion
+// span 의 onAnimationComplete 콜백으로 트리거 (setTimeout 추정보다 정확).
 export default function WordReveal({
 	items = [],
 	className = '',
@@ -18,17 +18,28 @@ export default function WordReveal({
 	delayBase = 0,
 }) {
 	const reduced = useReducedMotion();
+	const [revealed, setRevealed] = useState(false);
+
+	// 마지막 'text' 아이템의 인덱스 (br 제외) — 이 아이템의 애니메이션 완료 시점이
+	// 전체 reveal 종료 시점.
+	const lastTextIdx = (() => {
+		for (let i = items.length - 1; i >= 0; i -= 1) {
+			if (!items[i]?.br) return i;
+		}
+		return -1;
+	})();
 
 	return (
 		<div className={`bold-word-reveal ${className}`} style={style}>
 			{items.map((item, idx) => {
 				if (item.br) return <br key={`br-${idx}`} />;
+				// italic accent 글자: 옆 단어와 시각 간격 보강 (우상단 slant 가 옆으로 침범 방지).
 				const innerStyle = item.accent
 					? {
 							color: 'var(--indigo-soft)',
 							fontStyle: 'italic',
-							// 옆 단어와 시각 간격 — italic 의 우측 slant 가 옆으로 침범하지 않게.
-							paddingRight: '0.1em',
+							paddingRight: '0.3em',
+							paddingBottom: '0.15em',
 						}
 					: undefined;
 				// 다음 단어와 공백 분리. 단 noSep 가 true 면 공백 없이 직접 붙임
@@ -40,28 +51,40 @@ export default function WordReveal({
 
 				if (reduced) {
 					return (
-						<span key={idx} style={innerStyle}>
+						<span
+							key={idx}
+							className="inline-block align-bottom pb-[0.04em]"
+							style={innerStyle}
+						>
 							{item.text}
 							{sep}
 						</span>
 					);
 				}
 
+				const isLast = idx === lastTextIdx;
 				return (
-					<motion.span
+					<span
 						key={idx}
+						className={`inline-block align-bottom pb-[0.04em] ${revealed ? '' : 'overflow-hidden'}`}
 						style={innerStyle}
-						initial={{ opacity: 0, y: 14 }}
-						animate={{ opacity: 1, y: 0 }}
-						transition={{
-							duration: 0.7,
-							ease: [0.2, 0.7, 0.2, 1],
-							delay: delayBase + idx * 0.07,
-						}}
 					>
-						{item.text}
+						{/* hero 영역 전용이라 viewport 감지(whileInView) 대신 mount 즉시 animate. */}
+						<motion.span
+							className="inline-block"
+							initial={{ y: '105%' }}
+							animate={{ y: 0 }}
+							transition={{
+								duration: 0.9,
+								ease: [0.2, 0.7, 0.2, 1],
+								delay: delayBase + idx * 0.07,
+							}}
+							onAnimationComplete={isLast ? () => setRevealed(true) : undefined}
+						>
+							{item.text}
+						</motion.span>
 						{sep}
-					</motion.span>
+					</span>
 				);
 			})}
 		</div>

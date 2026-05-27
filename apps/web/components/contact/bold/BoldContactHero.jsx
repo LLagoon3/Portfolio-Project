@@ -39,9 +39,7 @@ export default function BoldContactHero() {
 				style={{
 					fontSize: 'clamp(2.6rem, 11vw, 12rem)',
 					letterSpacing: '-0.04em',
-					// 1.15 도 12rem fontSize 의 italic 한글 받침 ㄹ descender 에 부족했음
-					// (#143). Project Detail Hero (1.2) 와 통일.
-					lineHeight: 1.2,
+					lineHeight: 1.0,
 				}}
 				items={[
 					{ text: '함께할', accent: true },

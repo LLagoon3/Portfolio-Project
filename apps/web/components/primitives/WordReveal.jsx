@@ -34,25 +34,25 @@ export default function WordReveal({
 			{items.map((item, idx) => {
 				if (item.br) return <br key={`br-${idx}`} />;
 				// italic accent: Safari 는 inline-block 너비를 italic glyph 의 우측 overhang
-				// 제외하고 측정 (Chrome 과 다름). paddingRight 0.5em 로 우측 보강.
-				// 단, accent 가 연속되면 누적 + sep 공백 합쳐 단어 간격이 너무 커지므로,
-				// '연속 accent run 의 마지막' 에만 paddingRight 적용. 중간 accent 는
-				// padding 없이 sep 공백만으로 정상 단어 간격 유지.
+				// 제외하고 측정 (Chrome 과 다름). 모든 accent 에 paddingRight 0.5em 로
+				// 우측 잘림 방지.
 				const next = items[idx + 1];
-				const isLastOfAccentRun =
-					item.accent && (!next || next.br || !next.accent);
 				const accentInnerStyle = item.accent
 					? {
 							color: 'var(--indigo-soft)',
 							fontStyle: 'italic',
-							paddingRight: isLastOfAccentRun ? '0.5em' : '0',
+							paddingRight: '0.5em',
 							textRendering: 'optimizeLegibility',
 						}
 					: undefined;
-				// 다음 단어와 공백 분리. noSep 가 true 면 공백 없이 직접 붙임
-				// (예: '이석호' + '입니다' 처럼 한국어 토씨와 함께 가는 경우).
+				// 다음 단어와 공백 분리. accent 의 paddingRight 가 이미 우측 간격을
+				// 만들므로, 다음 단어도 accent 면 sep 를 빼서 padding + sep 누적 회피.
+				// noSep (한국어 토씨 붙임) 와 다음 br 인 경우도 sep 미부착.
 				const sep =
-					idx < items.length - 1 && !items[idx + 1]?.br && !item.noSep
+					idx < items.length - 1 &&
+					!next?.br &&
+					!item.noSep &&
+					!(item.accent && next?.accent)
 						? ' '
 						: '';
 
@@ -83,9 +83,7 @@ export default function WordReveal({
 						<motion.span
 							className="inline-block"
 							style={
-								item.accent
-									? { paddingRight: isLastOfAccentRun ? '0.5em' : '0' }
-									: undefined
+								item.accent ? { paddingRight: '0.5em' } : undefined
 							}
 							initial={{ y: '105%' }}
 							animate={{ y: 0 }}

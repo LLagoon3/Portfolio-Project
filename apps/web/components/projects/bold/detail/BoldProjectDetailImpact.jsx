@@ -1,6 +1,6 @@
 import Reveal from '../../../primitives/Reveal';
 import Eyebrow from '../../../primitives/Eyebrow';
-import StatCounterOrText from '../../../primitives/StatCounterOrText';
+import StatCounter from '../../../primitives/StatCounter';
 
 // stats 빈 배열이면 섹션 자체 미렌더 (Phase 1 동일 동작 호환).
 // StatCounterOrText primitive 공용 (AboutCounters 동일 사용).
@@ -52,7 +52,7 @@ export default function BoldProjectDetailImpact({ stats = [] }) {
 									color: 'transparent',
 								}}
 							>
-								<StatCounterOrText value={stat.value} />
+								<StatCounter value={stat.value} />
 							</div>
 							<Eyebrow className="mt-3">{stat.label}</Eyebrow>
 							{stat.sub && (

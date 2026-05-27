@@ -1,6 +1,6 @@
 import Reveal from '../../primitives/Reveal';
 import Eyebrow from '../../primitives/Eyebrow';
-import StatCounterOrText from '../../primitives/StatCounterOrText';
+import StatCounter from '../../primitives/StatCounter';
 
 // stats 가 빈 배열이면 섹션 자체 미렌더 (page 가 깨지지 않게). 어드민 입력 전 케이스.
 // StatCounterOrText 가 value 가 number 일 때 카운트업, 단위 섞이면 plain 처리.
@@ -61,7 +61,7 @@ export default function AboutCounters({ stats = [] }) {
 									color: 'transparent',
 								}}
 							>
-								<StatCounterOrText value={stat.value} />
+								<StatCounter value={stat.value} />
 							</div>
 							<Eyebrow className="mt-3">{stat.label}</Eyebrow>
 							{stat.sub && (

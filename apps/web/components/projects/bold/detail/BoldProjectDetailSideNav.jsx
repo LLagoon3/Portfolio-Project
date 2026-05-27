@@ -19,6 +19,14 @@ export default function BoldProjectDetailSideNav({ sections = [] }) {
 			if (typeof window === 'undefined') return;
 			// 클릭에 의한 smooth scroll 동안 active 갱신 차단.
 			if (isClickScrollingRef.current) return;
+			// 페이지 바닥 도달 시 마지막 섹션 강제 active — 짧은 마지막 섹션 (예: Quote)
+			// 이 refLine (30vh) 까지 못 올라와도 사용자는 그 섹션을 보고 있는 상태.
+			const scrollBottom = window.innerHeight + window.scrollY;
+			const docHeight = document.documentElement.scrollHeight;
+			if (scrollBottom >= docHeight - 4) {
+				setActiveId(ids[ids.length - 1]);
+				return;
+			}
 			const refLine = window.innerHeight * 0.3;
 			let currentId = ids[0];
 			// 모든 섹션을 순회해서 top < refLine 인 마지막 섹션 = 현재 통과 중인 섹션.

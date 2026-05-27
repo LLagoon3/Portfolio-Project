@@ -35,6 +35,9 @@ pnpm-debug.log*
 .parcel-cache
 .tmp
 
+# ad-hoc working dir — DB 백업 / 임시 SQL / 스크래치 노트. 항상 untracked.
+tmp/
+
 # editors / IDE
 .idea
 .vscode/*

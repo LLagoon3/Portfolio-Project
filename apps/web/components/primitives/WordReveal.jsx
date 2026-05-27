@@ -49,12 +49,11 @@ export default function WordReveal({
 							textRendering: 'optimizeLegibility',
 						}
 					: undefined;
-				// 다음 단어와 공백 분리. 단 noSep 가 true 면 공백 없이 직접 붙임
-				// (예: '이석호' + '입니다' 처럼 한국어 토씨와 함께 가는 경우).
-				const sep =
-					idx < items.length - 1 && !items[idx + 1]?.br && !item.noSep
-						? ' '
-						: '';
+				// 인접 span 사이는 SSR HTML 의 줄바꿈/공백이 브라우저에서 single space 로
+				// 자동 collapse. 별도 sep 를 추가하면 double space 가 되어 단어 간격이
+				// 과대해진다. noSep 가 true 면 명시적 ZWJ 로 공백 자체를 차단 (한국어
+				// 토씨 붙임 케이스). 아니면 sep 없이 자연 공백.
+				const sep = item.noSep ? '‍' : '';
 
 				if (reduced) {
 					return (

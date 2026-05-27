@@ -45,9 +45,12 @@ function toFormState(about) {
 			role: j.role ?? '',
 			body: j.body ?? '',
 		})),
-		stacks: (about?.stacks ?? []).map((stack) => ({
+		// stacks: 그룹별 {title, techs[]} 배열. admin 폼에서는 techs 를 CSV 로
+		// 다루다가 submit 시점에 split (ProjectForm.technologies 와 동일 패턴).
+		stacks: (about?.stacks ?? []).map((group) => ({
 			_key: nextKey('stack'),
-			value: stack,
+			title: group.title ?? '',
+			techs: (group.techs ?? []).join(', '),
 		})),
 		socials: (about?.socials ?? []).map((s) => ({
 			_key: nextKey('social'),
@@ -110,8 +113,14 @@ function AdminAboutEditor({ initialAbout }) {
 						body: j.body.trim(),
 					})),
 				stacks: form.stacks
-					.map((s) => s.value.trim())
-					.filter((v) => v.length > 0),
+					.map((g) => ({
+						title: g.title.trim(),
+						techs: g.techs
+							.split(',')
+							.map((t) => t.trim())
+							.filter(Boolean),
+					}))
+					.filter((g) => g.title && g.techs.length > 0),
 				socials: form.socials
 					.filter((s) => s.label.trim() && s.url.trim())
 					.map((s) => ({ label: s.label.trim(), url: s.url.trim() })),
@@ -483,21 +492,35 @@ function AdminAboutEditor({ initialAbout }) {
 
 				<AdminFormSection
 					title="Tech Stack"
-					description="About 의 'Tech Stack' 그리드. 한 칸에 한 항목씩 입력. 비워둔 항목은 저장 시 자동 제거."
+					description="About 의 'Tech Stack' 섹션. 그룹 단위로 묶어 보여집니다. title 과 techs (콤마 구분) 둘 다 채워야 저장됩니다."
 				>
 					<DynamicList
 						items={form.stacks}
 						onChange={(next) => set('stacks', next)}
-						emptyItem={() => ({ _key: nextKey('stack'), value: '' })}
-						addLabel="스택 추가"
+						emptyItem={() => ({
+							_key: nextKey('stack'),
+							title: '',
+							techs: '',
+						})}
+						addLabel="스택 그룹 추가"
+						maxLength={20}
 						renderItem={(item, _idx, onItemChange) => (
-							<input
-								className={inputClass}
-								placeholder="예: NestJS"
-								aria-label="Tech stack"
-								value={item.value}
-								onChange={(e) => onItemChange({ value: e.target.value })}
-							/>
+							<div className="flex flex-col gap-2">
+								<input
+									className={inputClass}
+									placeholder="그룹 제목 (예: Backend, Databases)"
+									aria-label="Stack group title"
+									value={item.title}
+									onChange={(e) => onItemChange({ title: e.target.value })}
+								/>
+								<input
+									className={inputClass}
+									placeholder="기술 (콤마로 구분, 예: NestJS, Express, TypeScript)"
+									aria-label="Stack group techs"
+									value={item.techs}
+									onChange={(e) => onItemChange({ techs: e.target.value })}
+								/>
+							</div>
 						)}
 					/>
 				</AdminFormSection>

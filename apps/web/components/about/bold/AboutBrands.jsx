@@ -1,9 +1,13 @@
 import Reveal from '../../primitives/Reveal';
 import Eyebrow from '../../primitives/Eyebrow';
 
-// stacks 가 빈 배열이면 섹션 미렌더.
-export default function AboutBrands({ stacks = [] }) {
-	if (!stacks.length) return null;
+// 그룹 단위 ({title, techs[]}) 로 묶어 노출. project detail 의 Stack 섹션 동일 패턴.
+// 빈 배열이면 섹션 미렌더 — 각 그룹의 techs 가 빈 경우도 그 그룹은 hide.
+export default function AboutBrands({ groups = [] }) {
+	const visible = groups.filter((g) => g?.techs?.length);
+	if (!visible.length) return null;
+
+	const totalTechs = visible.reduce((sum, g) => sum + g.techs.length, 0);
 
 	return (
 		<section
@@ -42,44 +46,33 @@ export default function AboutBrands({ stacks = [] }) {
 						color: 'var(--paper-faint)',
 					}}
 				>
-					CORE · {String(stacks.length).padStart(2, '0')}
+					{visible.length} GROUPS · {String(totalTechs).padStart(2, '0')} TOOLS
 				</div>
 			</Reveal>
 
-			<div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 lg:gap-4">
-				{stacks.map((label, idx) => (
-					<Reveal key={`${label}-${idx}`} delay={(idx % 4) * 0.06}>
+			<div className="flex flex-col gap-8 lg:gap-10">
+				{visible.map((group, idx) => (
+					<Reveal key={`${group.title}-${idx}`} delay={idx * 0.06}>
 						<div
-							className="bold-interactive grid place-items-center rounded-[12px] transition-all"
-							style={{
-								aspectRatio: '5 / 2',
-								border: '1px solid var(--line)',
-								transitionProperty: 'border-color, background',
-								transitionDuration: '0.3s',
-							}}
-							onMouseEnter={(e) => {
-								e.currentTarget.style.borderColor = 'var(--line-strong)';
-								e.currentTarget.style.background = 'rgba(255,255,255,0.02)';
-								const lbl = e.currentTarget.querySelector('span');
-								if (lbl) lbl.style.color = 'var(--paper)';
-							}}
-							onMouseLeave={(e) => {
-								e.currentTarget.style.borderColor = 'var(--line)';
-								e.currentTarget.style.background = 'transparent';
-								const lbl = e.currentTarget.querySelector('span');
-								if (lbl) lbl.style.color = 'var(--paper-faint)';
-							}}
+							className="pt-6"
+							style={{ borderTop: '1px solid var(--line-strong)' }}
 						>
-							<span
-								className="font-general-semibold transition-colors"
-								style={{
-									fontSize: 'clamp(1rem, 1.4vw, 1.4rem)',
-									letterSpacing: '0.04em',
-									color: 'var(--paper-faint)',
-								}}
-							>
-								{label}
-							</span>
+							<Eyebrow className="mb-4">{group.title}</Eyebrow>
+							<div className="flex flex-wrap gap-2 lg:gap-3">
+								{group.techs.map((tech) => (
+									<span
+										key={tech}
+										className="inline-flex items-center font-general-medium text-[13px] px-[1.1rem] py-[0.7rem] rounded-full"
+										style={{
+											border: '1px solid var(--line-strong)',
+											color: 'var(--paper)',
+											background: 'transparent',
+										}}
+									>
+										{tech}
+									</span>
+								))}
+							</div>
 						</div>
 					</Reveal>
 				))}

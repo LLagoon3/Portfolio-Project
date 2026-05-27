@@ -35,6 +35,14 @@ export class AboutFaqDto {
   answer!: string;
 }
 
+export class AboutStackGroupDto {
+  @ApiProperty({ example: 'Backend' })
+  title!: string;
+
+  @ApiProperty({ type: [String], example: ['NestJS', 'Express'] })
+  techs!: string[];
+}
+
 export class AboutJourneyDto {
   @ApiProperty({ example: '2026.01 — Now', description: '자유 표현 가능한 기간 라벨' })
   year!: string;
@@ -92,8 +100,8 @@ export class AboutResponseDto {
   @ApiProperty({ type: [AboutJourneyDto], description: 'sort_order 정렬' })
   journey!: AboutJourneyDto[];
 
-  @ApiProperty({ type: [String], example: ['NestJS', 'Express', 'TypeScript'] })
-  stacks!: string[];
+  @ApiProperty({ type: [AboutStackGroupDto] })
+  stacks!: AboutStackGroupDto[];
 
   // Contact PR (#94) 보류분 — Contact Sidebar Direct / FAQ 섹션에 사용.
   @ApiProperty({ type: [AboutSocialDto], description: 'sort_order 정렬' })

@@ -31,7 +31,7 @@ export default function BoldProjectsCTA() {
 
 			<Reveal delay={0.16} className="mt-12">
 				<PillButton href="/contact" variant="cta" ariaLabel="문의하기로 이동">
-					<span>메일로 시작하기</span>
+					<span>메일로 연락하기</span>
 					<svg
 						className="w-4 h-4"
 						viewBox="0 0 24 24"

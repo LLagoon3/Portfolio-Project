@@ -11,7 +11,7 @@ export default function BoldProjectsCTA() {
 			style={{ borderColor: 'var(--line)' }}
 		>
 			<Reveal className="mb-6">
-				<Eyebrow>— Have a project?</Eyebrow>
+				<Eyebrow>— Let&apos;s work together</Eyebrow>
 			</Reveal>
 
 			<WordReveal
@@ -21,7 +21,12 @@ export default function BoldProjectsCTA() {
 					letterSpacing: '-0.04em',
 					lineHeight: 1.0,
 				}}
-				items={[{ text: '같이' }, { text: '만들어요.', accent: true }]}
+				items={[
+					{ text: '함께할', accent: true },
+					{ text: '기회를', accent: true },
+					{ br: true },
+					{ text: '기다립니다.' },
+				]}
 			/>
 
 			<Reveal delay={0.16} className="mt-12">

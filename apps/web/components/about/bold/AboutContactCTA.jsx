@@ -33,17 +33,10 @@ export default function AboutContactCTA() {
 								style={{
 									color: 'var(--indigo-soft)',
 									fontStyle: 'italic',
+									paddingRight: '0.1em',
 								}}
 							>
-								함께할{' '}
-								<span
-									style={{
-										display: 'inline-block',
-										paddingRight: '0.1em',
-									}}
-								>
-									기회를
-								</span>
+								함께할 기회를
 							</span>
 							<br />
 							기다립니다.

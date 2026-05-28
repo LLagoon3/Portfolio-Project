@@ -23,7 +23,6 @@ async function fetchJsonSafe(path) {
 }
 
 export default function Home({ projects, about }) {
-	const featured = projects.slice(0, 6);
 	const bioFirst = Array.isArray(about?.bio) ? about.bio[0] : null;
 
 	return (
@@ -31,7 +30,9 @@ export default function Home({ projects, about }) {
 			<PagesMetaHead title="Home" />
 			<HomeHero tagline={about?.tagline} />
 			<KeywordMarquee />
-			<HomeProjects projects={featured} />
+			{/* 메인은 highlight 슬롯 6개 한정 — total / 카테고리 카운트는 HomeProjects
+			    내부에서 전체 projects 기준으로 계산하고 그리드만 displayLimit 까지 잘림. */}
+			<HomeProjects projects={projects} displayLimit={6} />
 			<AboutStrip bioFirst={bioFirst} />
 			<ContactCTA />
 		</>

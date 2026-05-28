@@ -14,8 +14,12 @@ export default function CursorDot() {
 				background: 'var(--indigo-soft)',
 				mixBlendMode: 'difference',
 				transform: 'translate(-50%, -50%)',
-				transition: 'transform 0.12s ease-out, width 0.25s, height 0.25s, opacity 0.25s',
+				// transform 은 transition 제외 — Safari 가 매 mousemove (60+ Hz) 마다
+				// 120ms 보간 애니메이션 실행하다 누적 lag 발생. width/height/opacity 만
+				// transition 적용 (변화 빈도 낮음).
+				transition: 'width 0.25s, height 0.25s, opacity 0.25s',
 				opacity: 0,
+				willChange: 'transform',
 			}}
 		/>
 	);

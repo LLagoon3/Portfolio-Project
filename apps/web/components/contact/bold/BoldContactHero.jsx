@@ -39,9 +39,10 @@ export default function BoldContactHero() {
 				style={{
 					fontSize: 'clamp(2.6rem, 11vw, 12rem)',
 					letterSpacing: '-0.04em',
-					// 1.0 은 12rem fontSize 의 italic 한글 (예: 함께할/기회를) batchim 이
-					// overflow-hidden 박스 하단으로 잘리는 경계. 1.15 로 살짝 키워 fit.
-					lineHeight: 1.15,
+					// 1.0 은 italic 한글 받침 ㄹ descender 가 reveal 도중 overflow-hidden
+					// 박스 하단에서 잘림 위험 (#143 Codex P2). 1.2 로 안전 fit + Project
+					// Detail Hero 와 통일.
+					lineHeight: 1.2,
 				}}
 				items={[
 					{ text: '함께할', accent: true },

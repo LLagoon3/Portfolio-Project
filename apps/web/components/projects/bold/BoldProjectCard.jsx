@@ -41,13 +41,14 @@ export default function BoldProjectCard({ project, delay = 0 }) {
 						}}
 						aria-hidden="true"
 					/>
-					{/* 우상단 화살표 */}
+					{/* 우상단 화살표 — 어두운 반투명 배경 + 흰 화살표 로 모든 색의 썸네일
+					    (밝은 흰색 포함) 위에서도 항상 대비 확보. */}
 					<div
 						className="absolute top-4 right-4 w-10 h-10 rounded-full flex items-center justify-center transition-transform duration-500 group-hover:rotate-[-45deg]"
 						style={{
-							background: 'rgba(255,255,255,0.12)',
+							background: 'rgba(7,14,23,0.55)',
 							backdropFilter: 'blur(6px)',
-							border: '1px solid rgba(255,255,255,0.18)',
+							border: '1px solid rgba(255,255,255,0.25)',
 						}}
 						aria-hidden="true"
 					>

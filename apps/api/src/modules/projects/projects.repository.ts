@@ -22,7 +22,6 @@ export class ProjectsRepository {
       where: { url },
       relations: {
         images: true,
-        companyInfo: true,
         technologies: { items: true },
         details: true,
         // Phase 2 — 공개 detail 페이지의 Impact / Quote 섹션이 보이도록 함께 로드.

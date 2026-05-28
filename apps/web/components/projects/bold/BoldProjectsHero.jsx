@@ -42,7 +42,7 @@ export default function BoldProjectsHero({ totalCount, categoryCount, yearCount 
 					letterSpacing: '-0.04em',
 					lineHeight: 1.0,
 				}}
-				items={[{ text: '모든' }, { br: true }, { text: '프로젝트들.', accent: true }]}
+				items={[{ text: '전체' }, { br: true }, { text: '프로젝트.', accent: true }]}
 			/>
 
 			{/* tagline */}
@@ -56,7 +56,7 @@ export default function BoldProjectsHero({ totalCount, categoryCount, yearCount 
 					letterSpacing: '-0.02em',
 				}}
 			>
-				직접 만들고 함께 완성한 프로젝트들.
+				만들고 개선하며,
 				<br />
 				문제를 해결해 온 기록입니다.
 			</Reveal>

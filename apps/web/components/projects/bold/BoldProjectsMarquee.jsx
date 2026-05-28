@@ -16,7 +16,7 @@ const DEFAULT_KEYWORDS = [
 	'Docker',
 	'AWS',
 	'CI/CD',
-	'AI · LLM',
+	'AI/LLM',
 ];
 
 export default function BoldProjectsMarquee({ items = DEFAULT_KEYWORDS }) {

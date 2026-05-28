@@ -25,7 +25,7 @@ export default function HomeHero({ tagline }) {
 							style={{ background: '#22c55e' }}
 						/>
 					</span>
-					<Eyebrow>신입 채용 검토 중</Eyebrow>
+					<Eyebrow>신입 백엔드 포지션 탐색 중</Eyebrow>
 				</div>
 				<div className="hidden sm:block">
 					<Eyebrow>서울, 한국 · KST</Eyebrow>
@@ -68,8 +68,8 @@ export default function HomeHero({ tagline }) {
 					delay={0.24}
 					className="col-span-12 lg:col-span-5 flex flex-wrap items-center gap-3 lg:justify-end"
 				>
-					<PillButton variant="ghost" href="#work" ariaLabel="작업 보기">
-						<span>작업 보기</span>
+					<PillButton variant="ghost" href="#work" ariaLabel="프로젝트 보기">
+						<span>프로젝트 보기</span>
 						<svg
 							className="w-4 h-4"
 							viewBox="0 0 24 24"

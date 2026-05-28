@@ -12,7 +12,6 @@ import {
   UploadsStorageService,
 } from '../uploads/uploads-storage.service';
 import { Project } from './entities/project.entity';
-import { ProjectCompanyInfo } from './entities/project-company-info.entity';
 import { ProjectDetail } from './entities/project-detail.entity';
 import { ProjectImage } from './entities/project-image.entity';
 import { ProjectLink } from './entities/project-link.entity';
@@ -84,7 +83,6 @@ export class AdminProjectsService {
       }
       await manager.delete(ProjectTechnology, { projectId: id });
       await manager.delete(ProjectImage, { projectId: id });
-      await manager.delete(ProjectCompanyInfo, { projectId: id });
       await manager.delete(ProjectDetail, { projectId: id });
       await manager.delete(ProjectStat, { projectId: id });
       await manager.delete(ProjectQuote, { projectId: id });
@@ -158,7 +156,6 @@ export class AdminProjectsService {
       where: { id },
       relations: {
         images: true,
-        companyInfo: true,
         technologies: { items: true },
         details: true,
         stats: true,
@@ -186,13 +183,7 @@ function buildProject(dto: UpsertProjectDto): Project {
   project.category = dto.category;
   project.thumbnailImg = dto.thumbnailImg;
   project.headerPublishDate = dto.headerPublishDate;
-  project.headerTags = dto.headerTags;
-  project.clientHeading = dto.clientHeading;
-  project.objectivesHeading = dto.objectivesHeading;
   project.objectivesDetails = dto.objectivesDetails;
-  project.projectDetailsHeading = dto.projectDetailsHeading;
-  project.socialSharingHeading = dto.socialSharingHeading ?? '';
-  project.heroSubtitle = dto.heroSubtitle ?? null;
   project.heroAccentWord = dto.heroAccentWord ?? null;
   project.heroRole = dto.heroRole ?? null;
   project.heroClient = dto.heroClient ?? null;
@@ -201,14 +192,6 @@ function buildProject(dto: UpsertProjectDto): Project {
     const e = new ProjectImage();
     e.title = img.title;
     e.img = img.img;
-    e.sortOrder = idx;
-    return e;
-  });
-
-  project.companyInfo = dto.companyInfo.map((info, idx) => {
-    const e = new ProjectCompanyInfo();
-    e.title = info.title;
-    e.details = info.details;
     e.sortOrder = idx;
     return e;
   });

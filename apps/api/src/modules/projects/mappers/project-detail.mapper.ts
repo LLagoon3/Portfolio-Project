@@ -6,7 +6,6 @@ const bySortOrder = <T extends { sortOrder: number }>(a: T, b: T): number =>
 
 export function toProjectDetailDto(project: Project): ProjectDetailDto {
   const images = [...(project.images ?? [])].sort(bySortOrder);
-  const companyInfo = [...(project.companyInfo ?? [])].sort(bySortOrder);
   const technologies = [...(project.technologies ?? [])].sort(bySortOrder);
   const details = [...(project.details ?? [])].sort(bySortOrder);
   const stats = [...(project.stats ?? [])].sort(bySortOrder);
@@ -18,14 +17,12 @@ export function toProjectDetailDto(project: Project): ProjectDetailDto {
     url: project.url,
     category: project.category,
     img: project.thumbnailImg,
-    heroSubtitle: project.heroSubtitle ?? null,
     heroAccentWord: project.heroAccentWord ?? null,
     heroRole: project.heroRole ?? null,
     heroClient: project.heroClient ?? null,
     ProjectHeader: {
       title: project.title,
       publishDate: project.headerPublishDate,
-      tags: project.headerTags,
     },
     ProjectImages: images.map((image) => ({
       id: image.id,
@@ -33,13 +30,6 @@ export function toProjectDetailDto(project: Project): ProjectDetailDto {
       img: image.img,
     })),
     ProjectInfo: {
-      ClientHeading: project.clientHeading,
-      CompanyInfo: companyInfo.map((info) => ({
-        id: info.id,
-        title: info.title,
-        details: info.details,
-      })),
-      ObjectivesHeading: project.objectivesHeading,
       ObjectivesDetails: project.objectivesDetails,
       Technologies: technologies.map((tech) => ({
         title: tech.title,
@@ -47,14 +37,12 @@ export function toProjectDetailDto(project: Project): ProjectDetailDto {
           .sort(bySortOrder)
           .map((item) => item.name),
       })),
-      ProjectDetailsHeading: project.projectDetailsHeading,
       ProjectDetails: details.map((detail) => ({
         id: detail.id,
         kind: detail.kind ?? null,
         title: detail.title ?? null,
         details: detail.details,
       })),
-      SocialSharingHeading: project.socialSharingHeading,
       Impact: stats.map((stat) => ({
         id: stat.id,
         label: stat.label,

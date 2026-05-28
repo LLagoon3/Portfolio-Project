@@ -19,12 +19,23 @@ export default function useCursorDot() {
 		if (!dot) return undefined;
 
 		let visible = false;
+		// rAF throttle — mousemove 가 60+ Hz 로 들어와도 layout write 는 frame 당
+		// 1회만. Safari 에서 mousemove 누적 lag 방지에 효과 있음.
+		let pendingX = 0;
+		let pendingY = 0;
+		let rafId = 0;
+		const flush = () => {
+			rafId = 0;
+			dot.style.transform = `translate3d(${pendingX}px, ${pendingY}px, 0) translate(-50%, -50%)`;
+		};
 		const handleMove = (e) => {
+			pendingX = e.clientX;
+			pendingY = e.clientY;
 			if (!visible) {
 				dot.style.opacity = '1';
 				visible = true;
 			}
-			dot.style.transform = `translate(${e.clientX}px, ${e.clientY}px) translate(-50%, -50%)`;
+			if (!rafId) rafId = window.requestAnimationFrame(flush);
 		};
 
 		const interactiveSelectors = 'a, button, [role="button"], .bold-interactive';
@@ -58,6 +69,7 @@ export default function useCursorDot() {
 
 		return () => {
 			window.removeEventListener('mousemove', handleMove);
+			if (rafId) window.cancelAnimationFrame(rafId);
 			mo.disconnect();
 			boundEls.forEach((el) => {
 				el.removeEventListener('mouseenter', handleEnter);

@@ -7,7 +7,7 @@ import HomeProjectCard from './HomeProjectCard';
 
 const ALL = 'All';
 
-export default function HomeProjects({ projects = [] }) {
+export default function HomeProjects({ projects = [], displayLimit }) {
 	const [activeCat, setActiveCat] = useState(ALL);
 	const [search, setSearch] = useState('');
 
@@ -32,6 +32,9 @@ export default function HomeProjects({ projects = [] }) {
 			return okCat && okSearch;
 		});
 	}, [projects, activeCat, search]);
+
+	// grid 만 displayLimit 적용 — TOTAL / 카테고리 chip / 결과 카운트는 전체 기준.
+	const displayed = displayLimit ? filtered.slice(0, displayLimit) : filtered;
 
 	const total = projects.length;
 	const padTotal = String(total).padStart(2, '0');
@@ -109,7 +112,7 @@ export default function HomeProjects({ projects = [] }) {
 				</div>
 			</Reveal>
 
-			{/* 결과 카운트 */}
+			{/* 결과 카운트 — 표시 중 / 필터 통과 / 전체 */}
 			<Reveal
 				delay={0.16}
 				className="text-xs mb-6"
@@ -118,7 +121,12 @@ export default function HomeProjects({ projects = [] }) {
 					color: 'var(--paper-faint)',
 				}}
 			>
-				<span>{String(filtered.length).padStart(2, '0')}</span> / {padTotal} PROJECTS
+				<span>{String(displayed.length).padStart(2, '0')}</span>
+				{displayLimit && filtered.length > displayLimit ? (
+					<> / {String(filtered.length).padStart(2, '0')} (HIGHLIGHTS OF {padTotal})</>
+				) : (
+					<> / {padTotal} PROJECTS</>
+				)}
 			</Reveal>
 
 			{/* 그리드 또는 빈 상태 */}
@@ -135,7 +143,7 @@ export default function HomeProjects({ projects = [] }) {
 				</div>
 			) : (
 				<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-7">
-					{filtered.map((project, idx) => (
+					{displayed.map((project, idx) => (
 						<HomeProjectCard
 							key={project.id ?? project.url}
 							index={idx}

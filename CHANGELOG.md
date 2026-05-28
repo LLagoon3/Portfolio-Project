@@ -1,5 +1,38 @@
 # Changelog
 
+## [0.2.1](https://github.com/LLagoon3/Portfolio-Project/compare/portfolio-project-v0.2.0...portfolio-project-v0.2.1) (2026-05-28)
+
+
+### Bug Fixes
+
+* **web:** BoldContactHero lineHeight 1.0 → 1.2 복원 (Codex P2) ([3f70b7a](https://github.com/LLagoon3/Portfolio-Project/commit/3f70b7a562f031fb9d7a57795af019e290012954))
+* **web:** CTA italic baseline + 카드 화살표 흰 썸네일 대비 ([523bc76](https://github.com/LLagoon3/Portfolio-Project/commit/523bc7616a7fc088e6f43a49e55fb2a3cf6c69c2)), closes [#70](https://github.com/LLagoon3/Portfolio-Project/issues/70)
+* **web:** Home Hero status 카피 + CTA 라벨 개선 ([0b88104](https://github.com/LLagoon3/Portfolio-Project/commit/0b88104c635cc839336cdda96420c859cb99b8d0)), closes [#146](https://github.com/LLagoon3/Portfolio-Project/issues/146) [#70](https://github.com/LLagoon3/Portfolio-Project/issues/70)
+* **web:** Projects 페이지 — Marquee + CTA 버튼 카피 누락 추가 ([6723c7f](https://github.com/LLagoon3/Portfolio-Project/commit/6723c7f82dbbf8515972e79a891d763d17691ff9))
+* **web:** Projects 페이지 카피 다듬기 (Hero / Marquee / CTA) ([09981d2](https://github.com/LLagoon3/Portfolio-Project/commit/09981d2daadbeff40964b77c62efedb0042da4d1)), closes [#148](https://github.com/LLagoon3/Portfolio-Project/issues/148) [#70](https://github.com/LLagoon3/Portfolio-Project/issues/70)
+* **web:** Reveal amount 0.6 → 0.3 (긴 sticky 컨테이너 트리거 안 되는 문제) ([0cbd9a3](https://github.com/LLagoon3/Portfolio-Project/commit/0cbd9a32e16ab56d92b6e749ac5b294eecf51dd9)), closes [#70](https://github.com/LLagoon3/Portfolio-Project/issues/70)
+* **web:** Reveal duration 1.2→1.8s, amount 0.4→0.6 추가 조정 ([ea27d8e](https://github.com/LLagoon3/Portfolio-Project/commit/ea27d8e9ba99531e6bf15dc409d93ad22492e4e1)), closes [#70](https://github.com/LLagoon3/Portfolio-Project/issues/70)
+* **web:** Reveal primitive duration 0.9 → 1.2s (스크롤 진입 fade-in 속도 완화) ([39073fc](https://github.com/LLagoon3/Portfolio-Project/commit/39073fcfc24ccc06e3797cff8f7ffec16b56409e)), closes [#70](https://github.com/LLagoon3/Portfolio-Project/issues/70)
+* **web:** Reveal whileInView amount 기본값 0.15 → 0.4 (트리거 시점 늦춤) ([3c313a2](https://github.com/LLagoon3/Portfolio-Project/commit/3c313a253626657aa60af4361fb9fb59eb5a12d3)), closes [#70](https://github.com/LLagoon3/Portfolio-Project/issues/70)
+* **web:** Safari 호환성 — italic accent padding 증대 + CursorDot transform 최적화 ([ff42c40](https://github.com/LLagoon3/Portfolio-Project/commit/ff42c40dd5e8b0f31d22db1bbb88a0451714a2be))
+* **web:** WordReveal — 모든 accent 에 paddingRight 유지 + accent 연속 시 sep 제거 ([2b2c8c1](https://github.com/LLagoon3/Portfolio-Project/commit/2b2c8c19c59d295105dd258b5e05b392126f0169)), closes [#70](https://github.com/LLagoon3/Portfolio-Project/issues/70)
+* **web:** WordReveal accent inner motion.span 에도 padding 적용 (Safari italic) ([5efab4e](https://github.com/LLagoon3/Portfolio-Project/commit/5efab4e725b5a5f9a55312a6228126715b03967b))
+* **web:** WordReveal accent paddingRight 0.5em → 0.35em (단어 간격 더 줄임) ([940e041](https://github.com/LLagoon3/Portfolio-Project/commit/940e0418ea22f64073537c1a9380bc29ef84aa3c))
+* **web:** WordReveal accent paddingRight 를 'accent run 마지막' 에만 적용 ([eb0e04b](https://github.com/LLagoon3/Portfolio-Project/commit/eb0e04b48b633abc4530b19965e6e6d062caa9b4)), closes [#70](https://github.com/LLagoon3/Portfolio-Project/issues/70)
+* **web:** WordReveal inner motion.span padding 제거 — outer 만 0.5em (간격 정상화) ([cf316dc](https://github.com/LLagoon3/Portfolio-Project/commit/cf316dcc2f0926bd91c9a927619d7ea6bb9bfd89)), closes [#70](https://github.com/LLagoon3/Portfolio-Project/issues/70)
+* **web:** WordReveal italic accent paddingRight/Bottom + ContactHero lineHeight 추가 보강 ([0529d2d](https://github.com/LLagoon3/Portfolio-Project/commit/0529d2dc4c5a01ba11669ed97dd9d5aa16eed94d)), closes [#143](https://github.com/LLagoon3/Portfolio-Project/issues/143) [#70](https://github.com/LLagoon3/Portfolio-Project/issues/70)
+* **web:** WordReveal sep 항상 유지 + paddingRight 0.35→0.2em (Codex P2 [#144](https://github.com/LLagoon3/Portfolio-Project/issues/144)) ([93863f7](https://github.com/LLagoon3/Portfolio-Project/commit/93863f7afb711fe79a2ab4975c087a07965604d8))
+* **web:** WordReveal slide-up + overflow-hidden 폐기, opacity 페이드로 교체 ([c383331](https://github.com/LLagoon3/Portfolio-Project/commit/c3833312bd0e7854028496730ac673f7f1493a8f)), closes [#143](https://github.com/LLagoon3/Portfolio-Project/issues/143) [#70](https://github.com/LLagoon3/Portfolio-Project/issues/70)
+* **web:** WordReveal 애니메이션 종료 후 overflow-hidden 해제 (SPA 라우터 잘림) ([c56fa07](https://github.com/LLagoon3/Portfolio-Project/commit/c56fa0793ad159499af48611b1fa1b21fc8ba84c))
+* **web:** WordReveal 의 sep 공백 제거 — SSR whitespace 와 이중으로 누적되던 문제 ([414ed0a](https://github.com/LLagoon3/Portfolio-Project/commit/414ed0ab5333b8cc8bb6547c3b2d6de416bc5976)), closes [#70](https://github.com/LLagoon3/Portfolio-Project/issues/70)
+* **web:** 메인 HomeProjects 의 total/카테고리 카운트는 전체 기준, grid 만 limit ([9e827fa](https://github.com/LLagoon3/Portfolio-Project/commit/9e827fa9301af7a6402bed777cce68cdf0fc24b1)), closes [#70](https://github.com/LLagoon3/Portfolio-Project/issues/70)
+
+
+### Reverts
+
+* **web:** WordReveal sep 공백 복원 ([2154874](https://github.com/LLagoon3/Portfolio-Project/commit/21548749627f46c02d5a333395ea6e4ce16f70da)), closes [#70](https://github.com/LLagoon3/Portfolio-Project/issues/70)
+* **web:** WordReveal slide-up + overflow-hidden 복원, toggle 만 onAnimationComplete 로 ([958724a](https://github.com/LLagoon3/Portfolio-Project/commit/958724ade44897667ff8319281a1f97f73b0c564))
+
 ## [0.2.0](https://github.com/LLagoon3/Portfolio-Project/compare/portfolio-project-v0.1.4...portfolio-project-v0.2.0) (2026-05-27)
 
 

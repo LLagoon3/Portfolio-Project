@@ -99,6 +99,7 @@ jobs:
         with:
           context: .
           file: apps/${{ matrix.image }}/Dockerfile
+          platforms: linux/amd64,linux/arm64
           # PR 트리거는 빌드 검증만, push(main/dev) 만 GHCR 푸시
           push: ${{ github.event_name == 'push' }}
           tags: ${{ steps.meta.outputs.tags }}

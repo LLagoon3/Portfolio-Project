@@ -116,7 +116,7 @@ PR 및 push 시 자동 실행:
 
 - **web-check**: lint + build
 - **api-check**: lint + build + test (Jest)
-- **docker-build**: web/api Docker 이미지 빌드 (matrix). `main`/`dev` push 트리거에서는 빌드 후 **GHCR 로 push** 까지 수행하고, PR 트리거에서는 빌드 검증만 한다.
+- **docker-build**: web/api Docker 이미지 빌드 (matrix). `linux/amd64`, `linux/arm64` 멀티아키 이미지로 빌드한다. `main`/`dev` push 트리거에서는 빌드 후 **GHCR 로 push** 까지 수행하고, PR 트리거에서는 빌드 검증만 한다.
 
 이미지는 `ghcr.io/llagoon3/portfolio-{web,api}` 에 다음 태그로 push 된다.
 

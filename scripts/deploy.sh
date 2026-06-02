@@ -88,11 +88,10 @@ if [ -n "${DEPLOY_TARGET_HOST:-}" ]; then
   scp "$ENV_FILE_ABS" "$DEPLOY_TARGET_HOST:$REMOTE_DEPLOY_DIR/$ENV_FILE"
 
   ssh "$DEPLOY_TARGET_HOST" "cd '$REMOTE_DEPLOY_DIR' && \
-    export WEB_IMAGE_TAG='$TAG' API_IMAGE_TAG='$TAG' && \
-    sudo docker compose -p '$REMOTE_COMPOSE_PROJECT' -f docker-compose.yml --profile prod --env-file '$ENV_FILE' pull web api && \
-    sudo docker compose -p '$REMOTE_COMPOSE_PROJECT' -f docker-compose.yml --profile prod --env-file '$ENV_FILE' up -d && \
+    sudo env WEB_IMAGE_TAG='$TAG' API_IMAGE_TAG='$TAG' docker compose -p '$REMOTE_COMPOSE_PROJECT' -f docker-compose.yml --profile prod --env-file '$ENV_FILE' pull web api && \
+    sudo env WEB_IMAGE_TAG='$TAG' API_IMAGE_TAG='$TAG' docker compose -p '$REMOTE_COMPOSE_PROJECT' -f docker-compose.yml --profile prod --env-file '$ENV_FILE' up -d && \
     sudo docker image prune -f && \
-    sudo docker compose -p '$REMOTE_COMPOSE_PROJECT' -f docker-compose.yml --profile prod --env-file '$ENV_FILE' ps"
+    sudo env WEB_IMAGE_TAG='$TAG' API_IMAGE_TAG='$TAG' docker compose -p '$REMOTE_COMPOSE_PROJECT' -f docker-compose.yml --profile prod --env-file '$ENV_FILE' ps"
   exit 0
 fi
 

@@ -73,6 +73,29 @@ if [ ! -f "$ENV_FILE_ABS" ]; then
   exit 1
 fi
 
+if [ -n "${DEPLOY_TARGET_HOST:-}" ]; then
+  REMOTE_DEPLOY_DIR="${REMOTE_DEPLOY_DIR:-/home/ubuntu/portfolio-deploy}"
+  REMOTE_COMPOSE_PROJECT="${REMOTE_COMPOSE_PROJECT:-$COMPOSE_PROJECT}"
+
+  if [ "$ENV_NAME" != "prod" ]; then
+    echo "=== Remote deploy currently supports prod only: env=$ENV_NAME ===" >&2
+    exit 1
+  fi
+
+  echo "=== Remote deploy target: $DEPLOY_TARGET_HOST:$REMOTE_DEPLOY_DIR (project=$REMOTE_COMPOSE_PROJECT tag=$TAG) ==="
+  ssh "$DEPLOY_TARGET_HOST" "mkdir -p '$REMOTE_DEPLOY_DIR'"
+  scp docker-compose.yml "$DEPLOY_TARGET_HOST:$REMOTE_DEPLOY_DIR/docker-compose.yml"
+  scp "$ENV_FILE_ABS" "$DEPLOY_TARGET_HOST:$REMOTE_DEPLOY_DIR/$ENV_FILE"
+
+  ssh "$DEPLOY_TARGET_HOST" "cd '$REMOTE_DEPLOY_DIR' && \
+    export WEB_IMAGE_TAG='$TAG' API_IMAGE_TAG='$TAG' && \
+    sudo docker compose -p '$REMOTE_COMPOSE_PROJECT' -f docker-compose.yml --profile prod --env-file '$ENV_FILE' pull web api && \
+    sudo docker compose -p '$REMOTE_COMPOSE_PROJECT' -f docker-compose.yml --profile prod --env-file '$ENV_FILE' up -d && \
+    sudo docker image prune -f && \
+    sudo docker compose -p '$REMOTE_COMPOSE_PROJECT' -f docker-compose.yml --profile prod --env-file '$ENV_FILE' ps"
+  exit 0
+fi
+
 # docker-compose.yml / docker-compose.dev.yml 의 service-level `env_file:` 디렉티브는
 # compose CLI 의 `--env-file` 과 다른 메커니즘이고, **compose 파일 디렉토리**(=DEPLOY_DIR)
 # 기준으로 path 를 해석한다. 따라서 `--env-file` 만 절대경로로 줘도 service env_file 은

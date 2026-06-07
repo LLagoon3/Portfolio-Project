@@ -5,7 +5,7 @@ ENV_NAME="${1:-prod}"
 # 호스트 운영자 디렉토리 — .env / .env.dev 등 비공개 환경 파일이 위치.
 # self-hosted runner 가 호스트의 다른 작업 (브랜치 작업, cherry-pick, rebase 등)
 # 을 reset 으로 망가뜨리지 않도록 deploy 작업은 별도 디렉토리에서 수행한다.
-ORIG_PROJECT_DIR="/home/lagoon3/.openclaw/workspace/Portfolio-Project"
+ORIG_PROJECT_DIR="${ORIG_PROJECT_DIR:-/home/lagoon3/.openclaw/workspace/Portfolio-Project}"
 # deploy 전용 작업 디렉토리 — 첫 실행 시 clone, 이후 매번 origin/main 으로 reset.
 DEPLOY_DIR="${HOME}/.cache/portfolio-deploy"
 DEPLOY_REPO_URL="https://github.com/LLagoon3/Portfolio-Project.git"

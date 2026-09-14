@@ -13,7 +13,9 @@ DEPLOY_SHA="${DEPLOY_SHA:-}"
 
 case "$ENV_NAME" in
   prod)
-    COMPOSE_PROJECT="portfolio-project"
+    # 운영 호스트 이전이나 복구 시 기존 Docker 볼륨을 그대로 이어 쓸 수 있게
+    # 워크플로우에서 compose project 이름을 명시적으로 고정한다.
+    COMPOSE_PROJECT="${COMPOSE_PROJECT_OVERRIDE:-portfolio-project}"
     COMPOSE_FILES=(-f docker-compose.yml)
     COMPOSE_PROFILES=(--profile prod)
     ENV_FILE=".env"

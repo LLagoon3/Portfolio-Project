@@ -323,7 +323,7 @@
       "title": "제조 공정 POP 모니터링 시스템",
       "url": "manufacturing-pop-monitoring",
       "category": "Backend / Manufacturing / Performance",
-      "img": "/images/projects/pop-monitoring/thumbnail.png",
+      "img": "/uploads/2e3ea8f2-f194-47cf-ae52-f4cde6f1664a.jpg",
       "heroAccentWord": "시스템",
       "heroRole": "백엔드 · 단독 담당",
       "heroClient": "현대에버다임",
@@ -333,12 +333,12 @@
         "tags": "Backend / Manufacturing / Performance"
       },
       "ProjectImages": [
-        { "title": "POP 모니터링 대표 화면", "img": "/images/projects/pop-monitoring/thumbnail.png" },
-        { "title": "생산현황 종합 모니터링", "img": "/images/projects/pop-monitoring/overview.png" },
-        { "title": "실시간 생산현황 모니터링", "img": "/images/projects/pop-monitoring/realtime.png" },
-        { "title": "호기별 진도현황", "img": "/images/projects/pop-monitoring/progress.png" },
-        { "title": "공정별 생산현황 모니터링", "img": "/images/projects/pop-monitoring/process.png" },
-        { "title": "공정별 생산속도 및 공수 분석", "img": "/images/projects/pop-monitoring/performance.png" }
+        { "title": "POP 모니터링 대표 화면", "img": "/uploads/2e3ea8f2-f194-47cf-ae52-f4cde6f1664a.jpg" },
+        { "title": "생산현황 종합 모니터링", "img": "/uploads/4d019753-5409-42d4-af3c-d0f7e255793f.jpg" },
+        { "title": "실시간 생산현황 모니터링", "img": "/uploads/b02c2177-d144-4470-9ab1-8bdd171fe648.jpg" },
+        { "title": "호기별 진도현황", "img": "/uploads/46e01d7a-a28a-4174-a0f9-af69e655d671.jpg" },
+        { "title": "공정별 생산현황 모니터링", "img": "/uploads/608995e2-b07c-4335-bc33-bb7c30db3a4a.jpg" },
+        { "title": "공정별 생산속도 및 공수 분석", "img": "/uploads/d107b3f0-cba4-4ab2-80b6-360bd8382846.jpg" }
       ],
       "ProjectInfo": {
         "ClientHeading": "About Project",

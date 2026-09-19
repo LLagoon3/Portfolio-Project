@@ -11,6 +11,9 @@ import { ProjectImage } from '../../modules/projects/entities/project-image.enti
 import { ProjectTechnology } from '../../modules/projects/entities/project-technology.entity';
 import { ProjectTechnologyItem } from '../../modules/projects/entities/project-technology-item.entity';
 import { ProjectDetail } from '../../modules/projects/entities/project-detail.entity';
+import { ProjectStat } from '../../modules/projects/entities/project-stat.entity';
+import { ProjectQuote } from '../../modules/projects/entities/project-quote.entity';
+import { ProjectLink } from '../../modules/projects/entities/project-link.entity';
 
 interface RawProject {
   id: number;
@@ -18,12 +21,22 @@ interface RawProject {
   url: string;
   category: string;
   img: string;
+  heroAccentWord?: string | null;
+  heroRole?: string | null;
+  heroClient?: string | null;
   ProjectHeader: { title: string; publishDate: string };
   ProjectImages: { title: string; img: string }[];
   ProjectInfo: {
     ObjectivesDetails: string;
     Technologies: { title: string; techs: string[] }[];
-    ProjectDetails: { details: string }[];
+    ProjectDetails: {
+      kind?: string | null;
+      title?: string | null;
+      details: string;
+    }[];
+    Impact?: { label: string; value: string; sub?: string | null }[];
+    Quote?: { text: string; author?: string | null } | null;
+    Links?: { label: string; url: string }[];
   };
 }
 
@@ -51,6 +64,9 @@ async function bootstrap(): Promise<void> {
 
   await dataSource.transaction(async (manager) => {
     await manager.query('SET FOREIGN_KEY_CHECKS=0');
+    await manager.query('TRUNCATE TABLE PROJECT_LINK');
+    await manager.query('TRUNCATE TABLE PROJECT_QUOTE');
+    await manager.query('TRUNCATE TABLE PROJECT_STAT');
     await manager.query('TRUNCATE TABLE PROJECT_TECHNOLOGY_ITEM');
     await manager.query('TRUNCATE TABLE PROJECT_TECHNOLOGY');
     await manager.query('TRUNCATE TABLE PROJECT_IMAGE');
@@ -67,6 +83,9 @@ async function bootstrap(): Promise<void> {
     project.thumbnailImg = raw.img;
     project.headerPublishDate = raw.ProjectHeader.publishDate;
     project.objectivesDetails = raw.ProjectInfo.ObjectivesDetails;
+    project.heroAccentWord = raw.heroAccentWord ?? null;
+    project.heroRole = raw.heroRole ?? null;
+    project.heroClient = raw.heroClient ?? null;
 
     project.images = raw.ProjectImages.map((img, idx) => {
       const e = new ProjectImage();
@@ -91,7 +110,35 @@ async function bootstrap(): Promise<void> {
 
     project.details = raw.ProjectInfo.ProjectDetails.map((detail, idx) => {
       const e = new ProjectDetail();
+      e.kind = detail.kind ?? null;
+      e.title = detail.title ?? null;
       e.details = detail.details;
+      e.sortOrder = idx;
+      return e;
+    });
+
+    project.stats = (raw.ProjectInfo.Impact ?? []).map((stat, idx) => {
+      const e = new ProjectStat();
+      e.label = stat.label;
+      e.value = stat.value;
+      e.sub = stat.sub ?? null;
+      e.sortOrder = idx;
+      return e;
+    });
+
+    if (raw.ProjectInfo.Quote) {
+      const quote = new ProjectQuote();
+      quote.text = raw.ProjectInfo.Quote.text;
+      quote.author = raw.ProjectInfo.Quote.author ?? null;
+      project.quote = quote;
+    } else {
+      project.quote = null;
+    }
+
+    project.links = (raw.ProjectInfo.Links ?? []).map((link, idx) => {
+      const e = new ProjectLink();
+      e.label = link.label;
+      e.url = link.url;
       e.sortOrder = idx;
       return e;
     });

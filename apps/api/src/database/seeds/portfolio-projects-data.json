@@ -317,6 +317,77 @@
         ],
         "SocialSharingHeading": "Share This Project"
       }
+    },
+    {
+      "id": 7,
+      "title": "제조 공정 POP 모니터링 시스템",
+      "url": "manufacturing-pop-monitoring",
+      "category": "Backend / Manufacturing / Performance",
+      "img": "/images/web-project-1.jpg",
+      "heroAccentWord": "시스템",
+      "heroRole": "백엔드 · 단독 담당",
+      "heroClient": "현대에버다임",
+      "ProjectHeader": {
+        "title": "제조 공정 POP 모니터링 시스템",
+        "publishDate": "2026.01 – 2026.08",
+        "tags": "Backend / Manufacturing / Performance"
+      },
+      "ProjectImages": [],
+      "ProjectInfo": {
+        "ClientHeading": "About Project",
+        "CompanyInfo": [
+          { "title": "프로젝트 성격", "details": "사내 제조 공정 모니터링 시스템" },
+          { "title": "팀 구성", "details": "3명 (FE 2, BE 1)" },
+          { "title": "담당", "details": "백엔드 단독 담당 · API · 데이터 가공 · 성능 최적화 · 테스트 · CI/CD" },
+          { "title": "기간", "details": "2026.01 ~ 2026.08" }
+        ],
+        "ObjectivesHeading": "Objective",
+        "ObjectivesDetails": "기존 MES 데이터를 현장 작업자가 즉시 활용할 수 있는 생산·재고·공정 지표로 가공하는 사내 POP 모니터링 시스템의 백엔드를 단독 구축했습니다. NestJS와 MSSQL 기반의 REST API를 설계하고, 레거시 저장 프로시저 이관과 독립 쿼리 병렬화를 통해 주요 조회 중앙값을 각각 64.4%, 52.2% 단축했습니다. 결과 동등성 검증, 단위·통합·E2E 테스트, CI/CD와 배포 후 health check까지 운영 기반을 함께 구성했습니다.",
+        "Technologies": [
+          {
+            "title": "Tools & Technologies",
+            "techs": ["Node.js", "TypeScript", "NestJS", "MSSQL", "Jest", "Swagger", "Pino", "Docker Compose", "GitHub Actions"]
+          }
+        ],
+        "ProjectDetailsHeading": "Challenge",
+        "ProjectDetails": [
+          {
+            "kind": "CONTEXT",
+            "title": "MES 데이터를 현장 판단에 필요한 지표로 변환",
+            "details": "기존 MES에는 생산 실적과 재고, 작업 대기·재공, 설비별 진도 등 제조 데이터가 축적되어 있었지만, 현장에서는 여러 데이터를 빠르게 비교하고 현재 공정 상태를 판단하기 어려웠습니다. 이를 해결하기 위해 생산 현황, 재고, 작업 진도, 생산속도·공수, 작업자 현황, 공정 이상, 출고 예측과 공정 밸런싱 정보를 REST API로 제공하는 백엔드를 구축했습니다. 내부 부문명과 원본 데이터 구조는 외부에 노출하지 않고, 현장에서 필요한 기능 단위로 데이터를 재구성했습니다."
+          },
+          {
+            "kind": "ARCHITECTURE",
+            "title": "변경과 검증이 가능한 계층형 백엔드 설계",
+            "details": "Controller → Service → Repository → Transformer로 책임을 분리해 데이터 조회와 비즈니스 규칙, 응답 변환을 독립적으로 변경할 수 있게 했습니다. DTO 검증과 Swagger 명세로 프론트엔드와 API 계약을 공유하고, JWT 인증과 Pino 구조화 로그를 적용해 사내 서비스 운영에 필요한 접근 제어와 추적성을 확보했습니다. 2026년 8월 개발 브랜치 기준 18개 컨트롤러와 40개 REST 엔드포인트를 이 구조로 관리했습니다."
+          },
+          {
+            "kind": "PERFORMANCE",
+            "title": "결과 동등성을 먼저 보장한 저장 프로시저 이관",
+            "details": "특정 재고 조회의 응답 지연을 줄이기 위해 기존 저장 프로시저를 동일 결과를 반환하는 raw SQL로 이관했습니다. 성능만 비교하지 않고 parity test로 기존 방식과 신규 쿼리의 결과가 같은지 먼저 검증했습니다. 이후 실 MSSQL 환경에서 3회 warmup 뒤 4개 조회 범위를 각 12회씩 교차 측정한 결과, 전체 median이 1,381.3ms에서 492.0ms로 줄어 64.4% 단축됐습니다. 이 수치는 전체 API가 아니라 해당 재고 조회에 한정된 실측 결과입니다."
+          },
+          {
+            "kind": "CONCURRENCY",
+            "title": "독립 쿼리 병렬 실행으로 대기 시간 축소",
+            "details": "하나의 응답을 만들기 위해 순차 실행하던 공정 상태 조회 중 상호 의존성이 없는 쿼리를 식별하고 `Promise.all`로 병렬화했습니다. 동일한 측정 조건에서 순차 실행 median 1,495.8ms를 병렬 실행 714.3ms로 줄여 52.2% 단축했고, 약 2.09배의 처리 속도를 확인했습니다. 병렬화 대상은 독립성이 검증된 조회로 제한해 데이터 정합성과 장애 범위를 함께 관리했습니다."
+          },
+          {
+            "kind": "QUALITY",
+            "title": "테스트와 배포 검증을 운영 흐름에 포함",
+            "details": "성능 최적화 이후의 회귀를 막기 위해 단위·통합·E2E 테스트를 계층별로 구성했습니다. 2026년 8월 개발 브랜치 기준 테스트 파일은 118개로, unit 96개·integration 19개·e2e 3개입니다. GitHub Actions에서 lint, typecheck, unit test, build와 nightly coverage를 실행하고, 사내 self-hosted runner로 Docker Compose 배포 후 health check까지 자동화해 배포 결과를 검증했습니다."
+          }
+        ],
+        "Impact": [
+          { "label": "재고 조회", "value": "-64.4%", "sub": "median 1,381.3ms → 492.0ms" },
+          { "label": "독립 쿼리", "value": "-52.2%", "sub": "median 1,495.8ms → 714.3ms" }
+        ],
+        "Quote": {
+          "text": "결과 동등성을 먼저 검증한 뒤 병목을 제거해, 성능 개선과 운영 신뢰성을 함께 확보했습니다.",
+          "author": "프로젝트 회고"
+        },
+        "Links": [],
+        "SocialSharingHeading": "Share This Project"
+      }
     }
   ]
 }

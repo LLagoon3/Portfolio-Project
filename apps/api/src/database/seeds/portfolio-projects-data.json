@@ -323,7 +323,7 @@
       "title": "제조 공정 POP 모니터링 시스템",
       "url": "manufacturing-pop-monitoring",
       "category": "Backend / Manufacturing / Performance",
-      "img": "/images/web-project-1.jpg",
+      "img": "/images/projects/pop-monitoring/thumbnail.png",
       "heroAccentWord": "시스템",
       "heroRole": "백엔드 · 단독 담당",
       "heroClient": "현대에버다임",
@@ -332,7 +332,14 @@
         "publishDate": "2026.01 – 2026.08",
         "tags": "Backend / Manufacturing / Performance"
       },
-      "ProjectImages": [],
+      "ProjectImages": [
+        { "title": "POP 모니터링 대표 화면", "img": "/images/projects/pop-monitoring/thumbnail.png" },
+        { "title": "생산현황 종합 모니터링", "img": "/images/projects/pop-monitoring/overview.png" },
+        { "title": "실시간 생산현황 모니터링", "img": "/images/projects/pop-monitoring/realtime.png" },
+        { "title": "호기별 진도현황", "img": "/images/projects/pop-monitoring/progress.png" },
+        { "title": "공정별 생산현황 모니터링", "img": "/images/projects/pop-monitoring/process.png" },
+        { "title": "공정별 생산속도 및 공수 분석", "img": "/images/projects/pop-monitoring/performance.png" }
+      ],
       "ProjectInfo": {
         "ClientHeading": "About Project",
         "CompanyInfo": [

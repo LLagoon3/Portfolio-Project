@@ -1,107 +1,66 @@
-import Reveal from '../primitives/Reveal';
-import WordReveal from '../primitives/WordReveal';
-import Eyebrow from '../primitives/Eyebrow';
-import PillButton from '../primitives/PillButton';
+import HomeIcon from './HomeIcon';
+import styles from './Home.module.css';
 
-// 이력서 외부 링크 — 메모리(portfolio-resume-link.md) 참고. PDF 아닌 Notion.
-const RESUME_URL =
+// 이력서 외부 링크 — PDF 가 아닌 Notion 페이지.
+export const RESUME_URL =
 	'https://dear-sawfish-e55.notion.site/15fd6568ef4b80509953d6e7648258dd?source=copy_link';
 
-export default function HomeHero({ tagline }) {
-	const safeTagline = tagline || '빠른 구현과 동시에, 안정적으로 운영될 구조를 만드는 데 집중합니다.';
+const EXPERTISE = [
+	'Realtime systems',
+	'Performance optimization',
+	'Observability',
+	'Operations automation',
+	'Redis & caching',
+	'MCP & AI integration',
+];
+
+export default function HomeHero({ role }) {
+	const roleLabel = (typeof role === 'string' && role.trim()) || 'Backend developer';
 
 	return (
-		<section id="hero" className="pt-36 lg:pt-48 pb-20 lg:pb-28 relative">
-			{/* status row */}
-			<Reveal className="flex items-center justify-between gap-6 mb-12">
-				<div className="flex items-center gap-3">
-					<span className="relative flex h-2.5 w-2.5">
-						<span
-							className="absolute inline-flex h-full w-full rounded-full opacity-75 animate-ping"
-							style={{ background: '#22c55e' }}
-						/>
-						<span
-							className="relative inline-flex rounded-full h-2.5 w-2.5"
-							style={{ background: '#22c55e' }}
-						/>
-					</span>
-					<Eyebrow>신입 백엔드 포지션 탐색 중</Eyebrow>
+		<>
+			<section className={styles.hero} aria-labelledby="hero-title">
+				<div className={styles.heroTop}>
+					<span className={styles.role}>{roleLabel}</span>
 				</div>
-				<div className="hidden sm:block">
-					<Eyebrow>서울, 한국 · KST</Eyebrow>
+				<div className={styles.heroGrid}>
+					<h1 id="hero-title" className={styles.heroTitle}>
+						이석호의<span>포트폴리오</span>
+					</h1>
+					<div className={styles.heroCopy}>
+						<p className={styles.tagline}>
+							기능 구현을 넘어,
+							<br />
+							안정적인 운영까지
+						</p>
+						<p className={styles.support}>
+							서비스의 동작 원리와 운영 구조를 함께 이해하며, 성능·안정성·운영 효율을
+							개선하는 백엔드 개발자입니다.
+						</p>
+						<div className={styles.actions}>
+							<a className={`${styles.btn} ${styles.btnPrimary}`} href="#work">
+								프로젝트 보기
+								<HomeIcon name="arrowDown" />
+							</a>
+							<a
+								className={styles.btn}
+								href={RESUME_URL}
+								target="_blank"
+								rel="noopener noreferrer"
+							>
+								이력서 보기
+								<HomeIcon name="external" />
+								<span className={styles.srOnly}>(새 탭)</span>
+							</a>
+						</div>
+					</div>
 				</div>
-			</Reveal>
-
-			{/* 거대 이름 */}
-			<WordReveal
-				className="font-general-semibold"
-				style={{
-					fontSize: 'clamp(2.6rem, 12vw, 13.5rem)',
-					letterSpacing: '-0.05em',
-					// 0.88 은 italic 한글 글자 박스 (≈0.95em) 보다 작아 마지막 자(예: '오')
-					// 가 overflow-hidden 박스 하단으로 잘림. 1.0 으로 fit.
-					lineHeight: 1.0,
-					wordBreak: 'keep-all',
-				}}
-				items={[
-					{ text: '이석호의' },
-					{ br: true },
-					{ text: '포트폴리오.', accent: true },
-				]}
-			/>
-
-			{/* tagline + CTA */}
-			<div className="mt-12 grid grid-cols-12 gap-6 lg:gap-10 items-end">
-				<Reveal
-					as="p"
-					delay={0.16}
-					className="col-span-12 lg:col-span-7 font-general-semibold"
-					style={{
-						fontSize: 'clamp(1.4rem, 2.4vw, 2.4rem)',
-						lineHeight: 1.18,
-						letterSpacing: '-0.02em',
-					}}
-				>
-					{safeTagline}
-				</Reveal>
-				<Reveal
-					delay={0.24}
-					className="col-span-12 lg:col-span-5 flex flex-wrap items-center gap-3 lg:justify-end"
-				>
-					<PillButton variant="ghost" href="#work" ariaLabel="프로젝트 보기">
-						<span>프로젝트 보기</span>
-						<svg
-							className="w-4 h-4"
-							viewBox="0 0 24 24"
-							fill="none"
-							stroke="currentColor"
-							strokeWidth="2"
-							aria-hidden="true"
-						>
-							<path d="M12 5v14M5 12l7 7 7-7" />
-						</svg>
-					</PillButton>
-					<PillButton
-						variant="cta"
-						href={RESUME_URL}
-						target="_blank"
-						rel="noopener noreferrer"
-						ariaLabel="이력서 보기 (새 탭)"
-					>
-						<span>이력서 보기</span>
-						<svg
-							className="w-4 h-4"
-							viewBox="0 0 24 24"
-							fill="none"
-							stroke="currentColor"
-							strokeWidth="2"
-							aria-hidden="true"
-						>
-							<path d="M7 17L17 7M9 7h8v8" />
-						</svg>
-					</PillButton>
-				</Reveal>
-			</div>
-		</section>
+			</section>
+			<ul className={styles.expertise} aria-label="관심 분야">
+				{EXPERTISE.map((item) => (
+					<li key={item}>{item}</li>
+				))}
+			</ul>
+		</>
 	);
 }

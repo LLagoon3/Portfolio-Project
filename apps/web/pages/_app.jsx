@@ -9,6 +9,9 @@ function MyApp({ Component, pageProps }) {
 	// 어드민 라우트는 폼 편집 중 라우트 왕복이 잦아 페이지 전환 애니메이션을
 	// 태우지 않는다. 공개 페이지에만 fade + subtle y-slide 트랜지션 적용.
 	const isAdmin = router.pathname.startsWith('/admin');
+	// 정적 플래그 `Page.minimalShell = true` 인 페이지(현재 홈)는 전환 reveal 과
+	// 플로팅 맨 위로 버튼을 쓰지 않는다. 미지정 페이지는 기존 동작 그대로.
+	const minimalShell = Component.minimalShell === true;
 
 	// per-page layout override (Next.js Pages Router 권장 패턴).
 	// 페이지에서 `Page.getLayout = (page) => <BoldLayout>{page}</BoldLayout>` 식으로 override.
@@ -16,7 +19,7 @@ function MyApp({ Component, pageProps }) {
 	const getLayout =
 		Component.getLayout ?? ((page) => <DefaultLayout>{page}</DefaultLayout>);
 
-	const inner = isAdmin ? (
+	const inner = isAdmin || minimalShell ? (
 		<Component {...pageProps} />
 	) : (
 		<AnimatePresence mode="wait" initial={false}>
@@ -35,7 +38,7 @@ function MyApp({ Component, pageProps }) {
 	return (
 		<div className="bg-secondary-light dark:bg-primary-dark transition duration-300">
 			{getLayout(inner)}
-			<UseScrollToTop />
+			{!minimalShell && <UseScrollToTop />}
 		</div>
 	);
 }

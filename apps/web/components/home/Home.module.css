@@ -1,0 +1,964 @@
+/* 홈 전용 스타일. CSS Module 로 범위를 .root 하위로 묶어 다른 공개/어드민 화면에 새지 않게 한다.
+ * 테마는 기존 useThemeSwitcher 가 <html> 에 붙이는 dark/light 클래스를 그대로 따른다. */
+
+.root {
+	--bg: #fbfaf7;
+	--surface: #fff;
+	--text: #171920;
+	--secondary: #555963;
+	--muted: #686c75;
+	--line: #dfdfdf;
+	--soft: #eeedf3;
+	--accent: #5145bd;
+	--accent-hover: #40359f;
+	--on-accent: #fff;
+	--ease: cubic-bezier(0.22, 1, 0.36, 1);
+	color-scheme: light;
+	min-height: 100vh;
+	background: var(--bg);
+	color: var(--text);
+	font-family: 'GeneralSans-Variable', -apple-system, BlinkMacSystemFont,
+		'Noto Sans KR', 'Noto Sans CJK KR', sans-serif;
+	font-size: 15px;
+	line-height: 1.6;
+	-webkit-font-smoothing: antialiased;
+	font-synthesis: none;
+}
+
+:global(html.dark) .root {
+	--bg: #141415;
+	--surface: #1b1b1e;
+	--text: #ededed;
+	--secondary: #b1b1ba;
+	--muted: #a1a1ac;
+	--line: #343438;
+	--soft: #25242d;
+	--accent: #afa5ff;
+	--accent-hover: #c6beff;
+	--on-accent: #191526;
+	color-scheme: dark;
+}
+
+.root a,
+.root button,
+.root input {
+	-webkit-tap-highlight-color: transparent;
+}
+
+.root a,
+.root button {
+	touch-action: manipulation;
+}
+
+.root button {
+	cursor: pointer;
+	color: inherit;
+	font: inherit;
+}
+
+.root a:focus-visible,
+.root button:focus-visible,
+.root input:focus-visible {
+	outline: 2px solid var(--accent);
+	outline-offset: 4px;
+}
+
+.root ::selection {
+	background: var(--accent);
+	color: var(--on-accent);
+}
+
+.root p,
+.root h1,
+.root h2,
+.root h3 {
+	margin: 0;
+	word-break: keep-all;
+	overflow-wrap: break-word;
+}
+
+.icon {
+	display: block;
+	width: 18px;
+	height: 18px;
+	fill: none;
+	stroke: currentColor;
+	stroke-width: 1.5;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+	flex-shrink: 0;
+}
+
+.wrap {
+	width: min(1248px, calc(100% - 96px));
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.mono {
+	font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+	font-variant-numeric: tabular-nums;
+}
+
+.srOnly {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip-path: inset(50%);
+	white-space: nowrap;
+	border: 0;
+}
+
+.skip {
+	position: absolute;
+	left: 24px;
+	top: -100px;
+	background: var(--text);
+	color: var(--bg);
+	padding: 12px 20px;
+	z-index: 50;
+}
+
+.skip:focus {
+	top: 12px;
+}
+
+/* ── Header ───────────────────────────────────────────── */
+.header {
+	border-bottom: 1px solid var(--line);
+}
+
+.headerInner {
+	height: 88px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 24px;
+}
+
+.brand {
+	display: flex;
+	gap: 12px;
+	align-items: center;
+	font-size: 18px;
+	font-weight: 500;
+	letter-spacing: 0;
+}
+
+.brandMark {
+	width: 28px;
+	height: 28px;
+	background: var(--accent);
+	color: var(--on-accent);
+	display: grid;
+	place-items: center;
+	border-radius: 6px;
+	font-weight: 600;
+	font-size: 20px;
+	line-height: 1;
+}
+
+.desktopNav {
+	display: flex;
+	gap: 32px;
+	color: var(--secondary);
+	font-size: 14px;
+}
+
+.desktopNav a:hover {
+	color: var(--accent);
+}
+
+.headerActions {
+	display: flex;
+	gap: 12px;
+	align-items: center;
+}
+
+.iconButton {
+	border: 1px solid var(--line);
+	background: transparent;
+	border-radius: 8px;
+	min-width: 44px;
+	height: 44px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	padding: 0 12px;
+}
+
+.iconButton:hover {
+	background: var(--soft);
+}
+
+.themeName {
+	font-size: 13px;
+}
+
+.menuButton {
+	display: none;
+}
+
+.mobileNav {
+	display: none;
+	border-top: 1px solid var(--line);
+	padding: 16px 0 24px;
+}
+
+.mobileNav a {
+	padding: 12px 0;
+	display: block;
+	font-size: 16px;
+}
+
+/* ── Hero ─────────────────────────────────────────────── */
+.hero {
+	padding: 72px 0 56px;
+}
+
+.heroTop {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 24px;
+	margin-bottom: 32px;
+	font-size: 13px;
+	color: var(--secondary);
+}
+
+.role {
+	display: flex;
+	gap: 12px;
+	align-items: center;
+}
+
+.role::before {
+	content: '';
+	width: 20px;
+	height: 2px;
+	background: var(--accent);
+	flex-shrink: 0;
+}
+
+.heroGrid {
+	display: grid;
+	grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+	gap: 64px;
+	align-items: end;
+}
+
+.root .heroTitle {
+	font-size: clamp(56px, 7.8vw, 112px);
+	font-weight: 500;
+	letter-spacing: -0.05em;
+	line-height: 1.14;
+}
+
+.heroTitle span {
+	color: var(--accent);
+	display: block;
+}
+
+.heroCopy {
+	padding-bottom: 8px;
+}
+
+.root .tagline {
+	font-size: clamp(22px, 2.1vw, 30px);
+	font-weight: 500;
+	letter-spacing: -0.025em;
+	line-height: 1.5;
+	margin-bottom: 20px;
+}
+
+.root .support {
+	font-size: 15px;
+	color: var(--secondary);
+	line-height: 1.8;
+	max-width: 36ch;
+}
+
+.actions {
+	display: flex;
+	gap: 12px;
+	align-items: center;
+	flex-wrap: wrap;
+	margin-top: 32px;
+}
+
+.root .btn {
+	height: 48px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 12px;
+	padding: 0 20px;
+	border: 1px solid var(--line);
+	border-radius: 8px;
+	background: transparent;
+	color: var(--text);
+	font-size: 14px;
+	font-weight: 500;
+	white-space: nowrap;
+	transition:
+		background-color 160ms var(--ease),
+		border-color 160ms var(--ease),
+		color 160ms var(--ease);
+}
+
+.root .btnPrimary {
+	background: var(--accent);
+	color: var(--on-accent);
+	border-color: var(--accent);
+}
+
+.root .btnPrimary:hover {
+	background: var(--accent-hover);
+	border-color: var(--accent-hover);
+}
+
+.root .btn:not(.btnPrimary):hover {
+	background: var(--soft);
+}
+
+.root .btn:active {
+	transform: scale(0.98);
+}
+
+.expertise {
+	list-style: none;
+	margin: 0;
+	border-top: 1px solid var(--line);
+	border-bottom: 1px solid var(--line);
+	padding: 24px 0;
+	display: flex;
+	justify-content: space-between;
+	gap: 20px;
+	flex-wrap: wrap;
+	font-size: 13px;
+	color: var(--secondary);
+}
+
+.expertise li {
+	display: flex;
+	gap: 12px;
+	align-items: center;
+}
+
+.expertise li::before {
+	content: '·';
+	color: var(--accent);
+}
+
+/* ── Work ─────────────────────────────────────────────── */
+.work {
+	padding: 88px 0 96px;
+	scroll-margin-top: 120px;
+}
+
+.sectionHead {
+	display: flex;
+	align-items: flex-end;
+	justify-content: space-between;
+	gap: 24px;
+	margin-bottom: 32px;
+}
+
+.eyebrow {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	color: var(--muted);
+	font-size: 13px;
+	margin-bottom: 16px;
+}
+
+.eyebrowNumber {
+	color: var(--accent);
+}
+
+.root .sectionTitle {
+	font-size: clamp(32px, 4vw, 52px);
+	line-height: 1.25;
+	letter-spacing: -0.035em;
+	font-weight: 500;
+}
+
+.toolbar {
+	display: flex;
+	gap: 16px;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 24px;
+}
+
+.search {
+	position: relative;
+	flex: 1;
+	max-width: 400px;
+}
+
+.searchIcon {
+	position: absolute;
+	left: 16px;
+	top: 15px;
+	color: var(--muted);
+	pointer-events: none;
+}
+
+/* @tailwindcss/forms 의 [type='search'] 기본/포커스 스타일보다 우선하도록 .root 로 한 단계 더 묶는다. */
+.root .searchInput {
+	appearance: none;
+	height: 48px;
+	width: 100%;
+	border: 1px solid var(--line);
+	border-radius: 8px;
+	padding: 0 16px 0 44px;
+	background: transparent;
+	color: var(--text);
+	font-size: 14px;
+	line-height: normal;
+	box-shadow: none;
+}
+
+.root .searchInput:focus {
+	border-color: var(--line);
+	box-shadow: none;
+}
+
+.root .searchInput:focus-visible {
+	outline: 2px solid var(--accent);
+	outline-offset: 4px;
+}
+
+.root .searchInput::placeholder {
+	color: var(--muted);
+	opacity: 1;
+}
+
+.projectGrid {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: 40px 24px;
+}
+
+.project {
+	display: block;
+	min-width: 0;
+}
+
+.projectImage {
+	aspect-ratio: 4 / 3;
+	overflow: hidden;
+	border-radius: 12px;
+	background: var(--surface);
+	border: 1px solid var(--line);
+	position: relative;
+}
+
+.projectImage img {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.projectImage::after {
+	content: '';
+	position: absolute;
+	inset: 0;
+	border-radius: inherit;
+	border: 1px solid transparent;
+	pointer-events: none;
+	transition: border-color 160ms var(--ease);
+}
+
+.project:hover .projectImage::after {
+	border-color: var(--accent);
+}
+
+.projectMeta {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	color: var(--muted);
+	font-size: 12px;
+	margin: 16px 0 8px;
+}
+
+.projectIndex {
+	color: var(--accent);
+}
+
+.projectHeading {
+	display: flex;
+	gap: 16px;
+	justify-content: space-between;
+	align-items: flex-start;
+}
+
+.root .projectTitle {
+	font-size: 18px;
+	font-weight: 500;
+	letter-spacing: -0.02em;
+	line-height: 1.5;
+}
+
+.projectHeading .icon {
+	margin-top: 4px;
+	color: var(--secondary);
+}
+
+.project:hover .projectTitle {
+	color: var(--accent);
+}
+
+.empty {
+	padding: 64px 24px;
+	border: 1px dashed var(--line);
+	border-radius: 12px;
+	text-align: center;
+}
+
+.root .emptyTitle {
+	font-size: 18px;
+	font-weight: 500;
+	line-height: 1.5;
+}
+
+.root .empty p {
+	color: var(--secondary);
+	margin: 8px 0 24px;
+}
+
+.workFooter {
+	margin-top: 48px;
+	display: flex;
+	justify-content: center;
+}
+
+/* ── About ────────────────────────────────────────────── */
+.about {
+	padding: 80px 0;
+	border-top: 1px solid var(--line);
+	display: grid;
+	grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+	gap: 96px;
+	scroll-margin-top: 96px;
+}
+
+.root .aboutTitle {
+	font-size: clamp(28px, 3.1vw, 44px);
+	line-height: 1.45;
+}
+
+.aboutTitle span {
+	color: var(--accent);
+}
+
+.aboutCopy {
+	padding-top: 44px;
+}
+
+.root .aboutCopy p {
+	font-size: 16px;
+	line-height: 1.9;
+	color: var(--secondary);
+}
+
+.aboutCopy a {
+	margin-top: 28px;
+	display: inline-flex;
+	gap: 12px;
+	align-items: center;
+	font-size: 14px;
+	font-weight: 500;
+}
+
+.aboutCopy a:hover {
+	color: var(--accent);
+}
+
+/* ── Contact ──────────────────────────────────────────── */
+.contact {
+	border-top: 1px solid var(--line);
+	padding: 80px 0;
+	scroll-margin-top: 96px;
+}
+
+.contactTop {
+	display: flex;
+	align-items: flex-end;
+	justify-content: space-between;
+	gap: 32px;
+}
+
+.root .contactTitle {
+	font-size: clamp(32px, 4.3vw, 60px);
+	line-height: 1.3;
+}
+
+.root .contactSub {
+	color: var(--secondary);
+	font-size: 15px;
+	margin-top: 20px;
+}
+
+.contactLinks {
+	display: flex;
+	gap: 24px;
+	flex-wrap: wrap;
+	margin-top: 40px;
+}
+
+.contactLinks a,
+.root .copyEmail {
+	font-size: 14px;
+	color: var(--secondary);
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	min-height: 44px;
+}
+
+.root .copyEmail {
+	border: none;
+	background: none;
+	padding: 0;
+}
+
+.contactLinks a:hover,
+.root .copyEmail:hover {
+	color: var(--accent);
+}
+
+.email {
+	display: inline-flex;
+	gap: 16px;
+	align-items: center;
+	border-bottom: 1px solid var(--accent);
+	padding-bottom: 8px;
+	color: var(--accent);
+	font-size: clamp(18px, 2vw, 28px);
+	font-weight: 500;
+	white-space: nowrap;
+}
+
+/* ── Footer / Toast ───────────────────────────────────── */
+.footer {
+	border-top: 1px solid var(--line);
+	padding: 28px 0 36px;
+	display: flex;
+	justify-content: space-between;
+	gap: 24px;
+	font-size: 12px;
+	color: var(--muted);
+}
+
+.footer a {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.footer a:hover {
+	color: var(--accent);
+}
+
+/* 라이브 영역은 항상 DOM 에 남겨 두고, 비어 있을 때만 크기/테두리를 없앤다. */
+.toast {
+	position: fixed;
+	bottom: 24px;
+	left: 50%;
+	transform: translateX(-50%);
+	padding: 12px 20px;
+	border: 1px solid var(--line);
+	border-radius: 8px;
+	background: var(--text);
+	color: var(--bg);
+	font-size: 14px;
+	z-index: 100;
+	max-width: calc(100% - 32px);
+	text-align: center;
+}
+
+.toast:empty {
+	padding: 0;
+	border: 0;
+}
+
+/* ── Responsive ───────────────────────────────────────── */
+@media (min-width: 1600px) {
+	.hero {
+		padding-top: 88px;
+		padding-bottom: 64px;
+	}
+
+	.heroGrid {
+		gap: 96px;
+	}
+}
+
+@media (max-width: 1050px) {
+	.wrap {
+		width: calc(100% - 64px);
+	}
+
+	.heroGrid {
+		gap: 32px;
+		grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+	}
+
+	.root .heroTitle {
+		font-size: clamp(56px, 8.6vw, 88px);
+	}
+
+	.root .tagline {
+		font-size: 23px;
+	}
+
+	.root .support {
+		font-size: 14px;
+	}
+
+	.hero .actions {
+		gap: 8px;
+	}
+
+	.root .hero .btn {
+		padding: 0 16px;
+	}
+
+	.expertise {
+		gap: 16px 24px;
+		justify-content: flex-start;
+	}
+
+	.projectGrid {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+
+	.about {
+		gap: 48px;
+	}
+
+	.contactTop {
+		align-items: flex-start;
+		flex-direction: column;
+		gap: 32px;
+	}
+
+	.contactLinks {
+		margin-top: 24px;
+	}
+}
+
+@media (max-width: 700px) {
+	.wrap {
+		width: calc(100% - 40px);
+	}
+
+	.headerInner {
+		height: 72px;
+		gap: 16px;
+	}
+
+	.brand {
+		font-size: 16px;
+		gap: 8px;
+	}
+
+	.brandMark {
+		width: 24px;
+		height: 24px;
+		font-size: 18px;
+	}
+
+	.desktopNav,
+	.themeName {
+		display: none;
+	}
+
+	.headerActions {
+		gap: 8px;
+	}
+
+	.iconButton {
+		padding: 0;
+		width: 44px;
+	}
+
+	.menuButton {
+		display: flex;
+	}
+
+	.mobileNav:not([hidden]) {
+		display: block;
+	}
+
+	.hero {
+		padding: 40px 0 32px;
+	}
+
+	.heroTop {
+		font-size: 12px;
+		margin-bottom: 24px;
+		gap: 16px;
+	}
+
+	.heroGrid {
+		grid-template-columns: 1fr;
+		gap: 32px;
+	}
+
+	.root .heroTitle {
+		font-size: clamp(44px, 13.5vw, 76px);
+		line-height: 1.18;
+		letter-spacing: -0.045em;
+	}
+
+	.heroCopy {
+		padding: 0;
+	}
+
+	.root .tagline {
+		font-size: 23px;
+		margin-bottom: 12px;
+		max-width: 24ch;
+	}
+
+	.root .support {
+		font-size: 14px;
+		max-width: 40ch;
+		line-height: 1.8;
+	}
+
+	.hero .actions {
+		margin-top: 24px;
+		gap: 12px;
+	}
+
+	.root .hero .btn {
+		height: 48px;
+		padding: 0 16px;
+	}
+
+	.expertise {
+		padding: 20px 0;
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 12px 16px;
+		font-size: 11px;
+	}
+
+	.expertise li {
+		gap: 8px;
+	}
+
+	.work {
+		padding: 48px 0 56px;
+		scroll-margin-top: 48px;
+	}
+
+	.sectionHead {
+		margin-bottom: 24px;
+		gap: 16px;
+	}
+
+	.eyebrow {
+		font-size: 12px;
+		margin-bottom: 12px;
+	}
+
+	.toolbar {
+		align-items: stretch;
+		flex-direction: column;
+		gap: 12px;
+		margin-bottom: 16px;
+	}
+
+	.search {
+		max-width: none;
+	}
+
+	.projectGrid {
+		grid-template-columns: 1fr;
+		gap: 32px;
+	}
+
+	.workFooter {
+		margin-top: 32px;
+	}
+
+	.about {
+		padding: 48px 0;
+		grid-template-columns: 1fr;
+		gap: 24px;
+		scroll-margin-top: 24px;
+	}
+
+	.root .aboutTitle {
+		font-size: 30px;
+		line-height: 1.5;
+	}
+
+	.aboutCopy {
+		padding: 0;
+	}
+
+	.root .aboutCopy p {
+		font-size: 15px;
+	}
+
+	.aboutCopy a {
+		margin-top: 24px;
+	}
+
+	.contact {
+		padding: 48px 0;
+		scroll-margin-top: 24px;
+	}
+
+	.root .contactTitle {
+		font-size: 34px;
+	}
+
+	.root .contactSub {
+		font-size: 14px;
+		margin-top: 16px;
+	}
+
+	.contactTop {
+		gap: 24px;
+	}
+
+	.email {
+		font-size: clamp(16px, 5.3vw, 23px);
+		gap: 8px;
+	}
+
+	.contactLinks {
+		gap: 20px;
+		margin-top: 24px;
+	}
+
+	.footer {
+		padding: 24px 0;
+		gap: 12px;
+		font-size: 11px;
+		align-items: center;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.root *,
+	.root *::before,
+	.root *::after {
+		transition: none !important;
+		animation: none !important;
+	}
+}

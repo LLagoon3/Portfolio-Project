@@ -11,9 +11,10 @@ export function useMobileMenuOpen() {
 	return useContext(MobileMenuOpenContext);
 }
 
-// /projects 전용 레이아웃. BoldLayout 의 grain / scroll progress / cursor dot / Hire Me 없이
-// 정적 헤더, 본문, 짧은 연락 안내 푸터만 둔다. 다른 공개 페이지는 계속 BoldLayout 을 쓴다.
-export default function ProjectsLayout({ children }) {
+// /projects 와 /projects/[url] 전용 레이아웃. BoldLayout 의 grain / scroll progress / cursor dot / Hire Me
+// 없이 정적 헤더, 본문, 짧은 연락 안내 푸터만 둔다. 다른 공개 페이지는 계속 BoldLayout 을 쓴다.
+// 상세 화면은 navCurrent="section" 으로 Projects 메뉴를 표시만 하고 aria-current 는 두지 않는다.
+export default function ProjectsLayout({ children, navCurrent = 'page' }) {
 	const [menuOpen, setMenuOpen] = useState(false);
 	const year = new Date().getFullYear();
 
@@ -22,7 +23,7 @@ export default function ProjectsLayout({ children }) {
 			<a className={styles.skip} href="#main">
 				본문으로 바로 가기
 			</a>
-			<ProjectsHeader menuOpen={menuOpen} onMenuOpenChange={setMenuOpen} />
+			<ProjectsHeader menuOpen={menuOpen} onMenuOpenChange={setMenuOpen} navCurrent={navCurrent} />
 			<MobileMenuOpenContext.Provider value={menuOpen}>
 				<main id="main" className={`${styles.wrap} ${styles.main}`} tabIndex={-1}>
 					{children}

@@ -2,7 +2,10 @@ import styles from './Projects.module.css';
 
 // /projects 전용 18px / 1.5px 선 아이콘. 장식용이라 항상 스크린리더에서 숨긴다.
 const PATHS = {
+	arrowLeft: <path d="M19 12H5m6-6-6 6 6 6" />,
 	arrowRight: <path d="M5 12h14m-6-6 6 6-6 6" />,
+	arrowUpRight: <path d="m7 17 10-10M7 7h10v10" />,
+	close: <path d="M18 6 6 18M6 6l12 12" />,
 	arrowUp: <path d="M12 19V5m-6 6 6-6 6 6" />,
 	chevronDown: <path d="m6 9 6 6 6-6" />,
 	moon: <path d="M20.9 13A9 9 0 0 1 11 3.1 9 9 0 1 0 20.9 13Z" />,

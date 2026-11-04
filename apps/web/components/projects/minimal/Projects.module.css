@@ -185,7 +185,9 @@
 }
 
 .desktopNav a[aria-current='page'],
-.mobileNav a[aria-current='page'] {
+.mobileNav a[aria-current='page'],
+.desktopNav a.isSection,
+.mobileNav a.isSection {
 	color: var(--text);
 	text-decoration: underline;
 	text-decoration-color: var(--accent);

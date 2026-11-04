@@ -1,9 +1,4 @@
-import {
-	buildHeroMeta,
-	parseYear,
-	pickHeroAccentWord,
-	pickOverview,
-} from '../../lib/projects';
+import { buildHeroMeta, parseYear, pickOverview } from '../../lib/projects';
 
 describe('parseYear', () => {
 	it('YYYY.MM – YYYY.MM 형식의 첫 4자리를 연도로 추출', () => {
@@ -20,32 +15,6 @@ describe('parseYear', () => {
 		expect(parseYear(null)).toBe('');
 		expect(parseYear(undefined)).toBe('');
 		expect(parseYear('')).toBe('');
-	});
-});
-
-describe('pickHeroAccentWord', () => {
-	it('heroAccentWord 가 있으면 그대로 반환 (trim)', () => {
-		expect(
-			pickHeroAccentWord({ heroAccentWord: '  시스템 ', title: '통합 로그 시스템' }),
-		).toBe('시스템');
-	});
-
-	it('heroAccentWord 가 없으면 title 의 마지막 공백 토큰', () => {
-		expect(pickHeroAccentWord({ title: '통합 로그 시스템' })).toBe('시스템');
-		expect(pickHeroAccentWord({ title: '커스텀 웹 프레임워크' })).toBe(
-			'프레임워크',
-		);
-	});
-
-	it('heroAccentWord 가 공백-only 면 title 폴백', () => {
-		expect(pickHeroAccentWord({ heroAccentWord: '   ', title: 'A B' })).toBe(
-			'B',
-		);
-	});
-
-	it('title 도 없으면 빈 문자열', () => {
-		expect(pickHeroAccentWord({})).toBe('');
-		expect(pickHeroAccentWord({ title: '' })).toBe('');
 	});
 });
 
@@ -67,7 +36,7 @@ describe('pickOverview', () => {
 });
 
 describe('buildHeroMeta', () => {
-	it('heroClient / heroRole / Timeline / Category 모두 있으면 4개 행', () => {
+	it('클라이언트 / 역할 / 기간 / 카테고리가 모두 있으면 4개 행', () => {
 		const meta = buildHeroMeta({
 			heroClient: 'ACME',
 			heroRole: '백엔드',
@@ -75,10 +44,10 @@ describe('buildHeroMeta', () => {
 			ProjectHeader: { publishDate: '2026.01 – 2026.03' },
 		});
 		expect(meta).toEqual([
-			{ label: 'Client', value: 'ACME' },
-			{ label: 'Role', value: '백엔드' },
-			{ label: 'Timeline', value: '2026.01 – 2026.03' },
-			{ label: 'Category', value: 'Web Application' },
+			{ label: '클라이언트', value: 'ACME' },
+			{ label: '역할', value: '백엔드' },
+			{ label: '기간', value: '2026.01 – 2026.03' },
+			{ label: '카테고리', value: 'Web Application' },
 		]);
 	});
 
@@ -89,8 +58,8 @@ describe('buildHeroMeta', () => {
 				category: 'Backend',
 			}),
 		).toEqual([
-			{ label: 'Role', value: '백엔드' },
-			{ label: 'Category', value: 'Backend' },
+			{ label: '역할', value: '백엔드' },
+			{ label: '카테고리', value: 'Backend' },
 		]);
 	});
 

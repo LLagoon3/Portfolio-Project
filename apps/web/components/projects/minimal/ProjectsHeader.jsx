@@ -5,6 +5,8 @@ import ProjectsIcon from './ProjectsIcon';
 import styles from './Projects.module.css';
 
 // 홈 헤더와 같은 모양이지만, 이 화면에서는 섹션 앵커 대신 실제 페이지로 이동한다.
+// current 링크는 navCurrent 가 'page' 면 aria-current="page" 로, 'section' 이면(상세 화면)
+// 같은 밑줄 표시만 두고 aria-current 는 붙이지 않는다 (목록 자체가 현재 페이지가 아니라서).
 const NAV_LINKS = [
 	{ href: '/projects', label: 'Projects', current: true },
 	{ href: '/about', label: 'About' },
@@ -13,12 +15,13 @@ const NAV_LINKS = [
 
 export const MOBILE_NAV_ID = 'projects-mobile-nav';
 
-function NavLinks({ onNavigate }) {
+function NavLinks({ navCurrent, onNavigate }) {
 	return NAV_LINKS.map((link) => (
 		<Link
 			key={link.href}
 			href={link.href}
-			aria-current={link.current ? 'page' : undefined}
+			aria-current={link.current && navCurrent === 'page' ? 'page' : undefined}
+			className={link.current && navCurrent === 'section' ? styles.isSection : undefined}
 			onClick={onNavigate}
 		>
 			{link.label}
@@ -26,7 +29,7 @@ function NavLinks({ onNavigate }) {
 	));
 }
 
-export default function ProjectsHeader({ menuOpen, onMenuOpenChange }) {
+export default function ProjectsHeader({ menuOpen, onMenuOpenChange, navCurrent = 'page' }) {
 	// 다른 공개 페이지와 같은 localStorage('theme') + <html> 클래스 기반 테마를 공유한다.
 	// activeTheme 은 "다음에 전환될 테마" 를 뜻한다.
 	const [activeTheme, setTheme] = useThemeSwitcher();
@@ -58,7 +61,7 @@ export default function ProjectsHeader({ menuOpen, onMenuOpenChange }) {
 					Lagoon
 				</Link>
 				<nav className={styles.desktopNav} aria-label="주 메뉴">
-					<NavLinks />
+					<NavLinks navCurrent={navCurrent} />
 				</nav>
 				<div className={styles.headerActions}>
 					<button
@@ -91,7 +94,7 @@ export default function ProjectsHeader({ menuOpen, onMenuOpenChange }) {
 				aria-label="모바일 메뉴"
 				hidden={!menuOpen}
 			>
-				<NavLinks onNavigate={closeMenu} />
+				<NavLinks navCurrent={navCurrent} onNavigate={closeMenu} />
 			</nav>
 		</header>
 	);

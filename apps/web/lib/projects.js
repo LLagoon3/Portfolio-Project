@@ -7,15 +7,6 @@ export function parseYear(headerPublishDate) {
 	return /^\d{4}$/.test(head) ? head : '';
 }
 
-// admin 명시 값이 있으면 그대로, 없으면 title 마지막 공백 토큰 폴백.
-export function pickHeroAccentWord(project) {
-	if (project?.heroAccentWord && project.heroAccentWord.trim()) {
-		return project.heroAccentWord.trim();
-	}
-	const tokens = (project?.title ?? '').trim().split(/\s+/);
-	return tokens[tokens.length - 1] || '';
-}
-
 // 첫 단락 (빈 줄 split 의 첫 청크) 만 노출 — Overview 는 한 호흡 요약.
 export function pickOverview(objectivesDetails) {
 	if (!objectivesDetails) return '';
@@ -23,23 +14,22 @@ export function pickOverview(objectivesDetails) {
 	return first || '';
 }
 
-// Hero meta strip: Client / Role 은 admin 의 전용 필드 (#125) 사용.
-// 이전엔 companyInfo 의 title 키워드 (role/역할/담당, client/...) 매칭 폴백이
-// 있었으나 명명 의존 + 직관성 부족으로 제거. 빈 값이면 해당 칸 미노출.
+// 상세 화면 상단 사실 목록: 클라이언트 / 역할은 admin 의 전용 필드 (#125) 를 쓰고,
+// 기간 / 카테고리는 기본 필드를 쓴다. 빈 값이면 해당 행을 노출하지 않는다.
 export function buildHeroMeta(project) {
 	const meta = [];
 
 	if (project?.heroClient) {
-		meta.push({ label: 'Client', value: project.heroClient });
+		meta.push({ label: '클라이언트', value: project.heroClient });
 	}
 	if (project?.heroRole) {
-		meta.push({ label: 'Role', value: project.heroRole });
+		meta.push({ label: '역할', value: project.heroRole });
 	}
 	if (project?.ProjectHeader?.publishDate) {
-		meta.push({ label: 'Timeline', value: project.ProjectHeader.publishDate });
+		meta.push({ label: '기간', value: project.ProjectHeader.publishDate });
 	}
 	if (project?.category) {
-		meta.push({ label: 'Category', value: project.category });
+		meta.push({ label: '카테고리', value: project.category });
 	}
 
 	return meta;

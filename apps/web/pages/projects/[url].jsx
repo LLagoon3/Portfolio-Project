@@ -1,137 +1,47 @@
-import BoldLayout from '../../components/layout/bold/BoldLayout';
 import PagesMetaHead from '../../components/PagesMetaHead';
-import BoldProjectDetailHero from '../../components/projects/bold/detail/BoldProjectDetailHero';
-import BoldProjectDetailOverview from '../../components/projects/bold/detail/BoldProjectDetailOverview';
-import BoldProjectDetailGallery from '../../components/projects/bold/detail/BoldProjectDetailGallery';
-import BoldProjectDetailProcess from '../../components/projects/bold/detail/BoldProjectDetailProcess';
-import BoldProjectDetailStack from '../../components/projects/bold/detail/BoldProjectDetailStack';
-import BoldProjectDetailRelated from '../../components/projects/bold/detail/BoldProjectDetailRelated';
-import BoldProjectDetailSideNav from '../../components/projects/bold/detail/BoldProjectDetailSideNav';
-import BoldProjectDetailImpact from '../../components/projects/bold/detail/BoldProjectDetailImpact';
-import BoldProjectDetailQuote from '../../components/projects/bold/detail/BoldProjectDetailQuote';
-import {
-	buildHeroMeta,
-	parseYear,
-	pickHeroAccentWord,
-	pickOverview,
-} from '../../lib/projects';
+import ProjectsLayout from '../../components/projects/minimal/ProjectsLayout';
+import ProjectDetail from '../../components/projects/minimal/detail/ProjectDetail';
+import { buildMoreProjects } from '../../lib/projectDetail';
 
-const API_BASE_URL =
-	process.env.API_INTERNAL_URL || 'http://localhost:7341';
+const API_BASE_URL = process.env.API_INTERNAL_URL || 'http://localhost:7341';
 
-function ProjectDetail({ project, relatedProjects }) {
-	const heroEyebrow = buildHeroEyebrow(project);
-	const heroMeta = buildHeroMeta(project);
-	const overview = pickOverview(project.ProjectInfo?.ObjectivesDetails);
-	const gallery = project.ProjectImages?.slice(1) ?? [];
-	const steps = parseProcessSteps(project.ProjectInfo?.ProjectDetails);
-	const stackGroups = project.ProjectInfo?.Technologies ?? [];
-	// Phase 2 — admin 명시 값 우선, 미입력 시 폴백 (title 마지막 토큰).
-	const heroAccentWord = pickHeroAccentWord(project);
-	// heroSubtitle 은 DB / admin / API 에 보존하되 페이지에서는 미렌더 — Overview 섹션과
-	// 의미 중복이라 한 곳만 두기로 결정 (사용자 결정). 후속에 emotional 카피로 차별화 시
-	// 복원 가능.
-	const impactStats = project.ProjectInfo?.Impact ?? [];
-	const quote = project.ProjectInfo?.Quote ?? null;
-	const links = project.ProjectInfo?.Links ?? [];
-
-	// SideNav 는 실제 렌더되는 섹션만 노출.
-	const sections = [
-		{ id: 'hero', label: 'Intro' },
-		overview && { id: 'overview', label: 'Overview' },
-		gallery.length > 0 && { id: 'gallery', label: 'Gallery' },
-		steps.length > 0 && { id: 'process', label: 'Process' },
-		impactStats.length > 0 && { id: 'impact', label: 'Impact' },
-		stackGroups.some((g) => g?.techs?.length) && { id: 'stack', label: 'Stack' },
-		quote && { id: 'quote', label: 'Quote' },
-		relatedProjects.length > 0 && { id: 'related', label: 'Next Up' },
-	].filter(Boolean);
-
+function ProjectDetailPage({ project, moreProjects }) {
 	return (
 		<>
 			<PagesMetaHead title={project.title} />
-
-			<div className="container mx-auto px-6 lg:px-10">
-				{/* lg+ 에서 SideNav 를 별도 컬럼으로 분리 → fixed 시 main content 침범 문제 해소.
-				    SideNav 자체는 sticky top-32. 모바일에선 SideNav 영역 자체 미렌더. */}
-				<div className="lg:flex lg:gap-10 xl:gap-14">
-					<aside className="hidden lg:block lg:w-[160px] lg:flex-shrink-0 lg:pt-32">
-						<BoldProjectDetailSideNav sections={sections} />
-					</aside>
-					<div
-						className="lg:flex-1 lg:min-w-0"
-						style={{ wordBreak: 'keep-all' }}
-					>
-						<BoldProjectDetailHero
-							title={project.title}
-							accentWord={heroAccentWord}
-							eyebrow={heroEyebrow}
-							coverImage={project.ProjectImages?.[0]?.img}
-							meta={heroMeta}
-							links={links}
-						/>
-						<BoldProjectDetailOverview body={overview} />
-						<BoldProjectDetailGallery images={gallery} />
-						<BoldProjectDetailProcess steps={steps} />
-						<BoldProjectDetailImpact stats={impactStats} />
-						<BoldProjectDetailStack groups={stackGroups} />
-						<BoldProjectDetailQuote quote={quote} />
-						<BoldProjectDetailRelated projects={relatedProjects} />
-					</div>
-				</div>
-			</div>
+			{/* 상세 → 상세 이동은 같은 페이지 컴포넌트를 재사용하므로, 프로젝트별로 새로 마운트해
+			    목차 위치 / 이미지 보기 상태가 이전 프로젝트에서 이어지지 않게 한다. */}
+			<ProjectDetail key={project.url} project={project} moreProjects={moreProjects} />
 		</>
 	);
 }
 
-ProjectDetail.getLayout = (page) => <BoldLayout>{page}</BoldLayout>;
+// 목록과 같은 정적 레이아웃. 헤더는 Projects 메뉴를 표시만 하고 aria-current 는 두지 않는다.
+ProjectDetailPage.getLayout = (page) => <ProjectsLayout navCurrent="section">{page}</ProjectsLayout>;
+// 목록과 같이 라우트 전환 reveal 과 플로팅 맨 위로 버튼 없이 렌더한다 (_app.jsx 참고).
+ProjectDetailPage.minimalShell = true;
 
-// JSX 로 반환 → 두 phrase 사이의 공백 1곳에서만 wrap 가능. 좁은 viewport 에서
-// 'Selected Work / — 2025 · Web Application' 처럼 깔끔하게 두 줄.
-function buildHeroEyebrow(project) {
-	const year = parseYear(project.ProjectHeader?.publishDate);
-	const category = project.category;
-	const primary = <span className="whitespace-nowrap">Selected Work</span>;
-	if (year && category) {
-		return (
-			<>
-				{primary}{' '}
-				<span className="whitespace-nowrap">— {year} · {category}</span>
-			</>
-		);
+// 다른 프로젝트(같은 카테고리 / 이전 / 다음) 계산용 보조 목록. 실패해도 상세 화면은 렌더한다.
+async function fetchProjectList() {
+	try {
+		const res = await fetch(`${API_BASE_URL}/api/projects`);
+		if (!res.ok) {
+			throw new Error(`[project detail] project list API returned ${res.status}`);
+		}
+		const body = await res.json();
+		return Array.isArray(body?.data) ? body.data : [];
+	} catch (err) {
+		console.error('[project detail] fetch project list failed', err);
+		return [];
 	}
-	if (category) {
-		return (
-			<>
-				{primary}{' '}
-				<span className="whitespace-nowrap">· {category}</span>
-			</>
-		);
-	}
-	return primary;
-}
-
-// 1 entry = 1 step. admin 폼이 kind/title 입력을 항상 받으므로 (Phase 2 완료) 별도
-// 폴백 (markdown h2 split, 키워드 추출, kind rotation) 없음. body 만 있고 kind/title 가
-// 빈 row 는 단순 '메모' 로 표시.
-function parseProcessSteps(projectDetails = []) {
-	return projectDetails
-		.map((entry) => {
-			const body = (entry.details ?? '').trim();
-			if (!body) return null;
-			return {
-				kind: entry.kind?.trim() || null,
-				title: entry.title?.trim() || '메모',
-				body,
-			};
-		})
-		.filter(Boolean);
 }
 
 export async function getServerSideProps({ query }) {
-	const { url } = query;
+	const url = String(query.url ?? '');
+	// 보조 목록은 상세 요청과 함께 시작한다. fetchProjectList 는 reject 하지 않는다.
+	const projectListRequest = fetchProjectList();
 	try {
-		const res = await fetch(`${API_BASE_URL}/api/projects/${url}`);
+		const res = await fetch(`${API_BASE_URL}/api/projects/${encodeURIComponent(url)}`);
 		if (res.status === 404) {
 			// 존재하지 않는 슬러그는 Next.js 404 로 응답
 			return { notFound: true };
@@ -146,28 +56,19 @@ export async function getServerSideProps({ query }) {
 			return { notFound: true };
 		}
 
-		// Related projects 는 보조 섹션이므로 실패해도 메인 페이지 렌더를 막지 않는다
-		let relatedProjects = [];
+		// 최신순 정렬(localeCompare)은 실행 환경 로케일을 따르므로 서버에서만 계산해 내려 보낸다.
+		let moreProjects = [];
 		try {
-			const category = encodeURIComponent(project.category);
-			const relRes = await fetch(
-				`${API_BASE_URL}/api/projects?category=${category}`,
-			);
-			if (relRes.ok) {
-				const relBody = await relRes.json();
-				relatedProjects = (relBody?.data ?? [])
-					.filter((p) => p.url !== url)
-					.slice(0, 4);
-			}
-		} catch (relErr) {
-			console.error('[project detail] fetch related failed', relErr);
+			moreProjects = buildMoreProjects(project, await projectListRequest);
+		} catch (moreErr) {
+			console.error('[project detail] build more projects failed', moreErr);
 		}
 
-		return { props: { project, relatedProjects } };
+		return { props: { project, moreProjects } };
 	} catch (err) {
 		console.error('[project detail] fetch failed', err);
 		throw err;
 	}
 }
 
-export default ProjectDetail;
+export default ProjectDetailPage;

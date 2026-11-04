@@ -663,6 +663,14 @@
 	line-height: 1.4;
 }
 
+/* 보조 링크(About 의 이력서 보기)가 있을 때만 연락하기와 한 줄로 묶는다. */
+.footerActions {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 24px;
+}
+
 .footerBottom {
 	border-top: 1px solid var(--line);
 	padding: 16px 0 24px;
@@ -825,6 +833,13 @@
 
 	.root .footerCta p {
 		font-size: 20px;
+	}
+
+	/* 좁은 화면에서는 주 동작(연락하기)을 앞에 둔다. */
+	.footerActions {
+		flex-direction: row-reverse;
+		justify-content: flex-end;
+		gap: 20px;
 	}
 
 	.footerBottom {

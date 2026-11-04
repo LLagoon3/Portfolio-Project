@@ -144,6 +144,23 @@ afterAll(() => {
 	Object.assign(dialogProto, originalDialog);
 });
 
+// 모바일 메뉴 폭 판단(matchMedia)을 흉내 낸다. set(false) 는 데스크톱 폭으로 넓어진 것.
+function mockViewport(mobile) {
+	const listeners = new Set();
+	const query = {
+		matches: mobile,
+		addEventListener: (type, fn) => listeners.add(fn),
+		removeEventListener: (type, fn) => listeners.delete(fn),
+	};
+	window.matchMedia = jest.fn(() => query);
+	return {
+		set(matches) {
+			query.matches = matches;
+			act(() => listeners.forEach((fn) => fn({ matches })));
+		},
+	};
+}
+
 let props;
 
 beforeEach(async () => {
@@ -161,6 +178,7 @@ afterEach(() => {
 	String.prototype.localeCompare = nativeLocaleCompare; // eslint-disable-line no-extend-native
 	jest.restoreAllMocks();
 	delete global.fetch;
+	delete window.matchMedia;
 });
 
 describe('getServerSideProps', () => {
@@ -235,6 +253,20 @@ describe('레이아웃', () => {
 		expect(byText(container, 'a', '본문으로 바로 가기')).toHaveAttribute('href', '#main');
 		expect(container.querySelector('footer')).toHaveTextContent('함께할 기회를 기다립니다');
 		expect(container.querySelector('.bold-root, .bold-grain, .bold-interactive')).toBeNull();
+	});
+
+	it('데스크톱 폭이 되면 모바일 메뉴를 닫고 포커스를 데스크톱 Projects 표시 링크로 (aria-current 없음)', () => {
+		const viewport = mockViewport(true);
+		const { container } = renderPage(props);
+		const mobileNav = container.querySelector('#projects-mobile-nav');
+		click(container.querySelector('button[aria-controls="projects-mobile-nav"]'));
+		act(() => byText(mobileNav, 'a', 'Projects').focus());
+		viewport.set(false);
+		expect(mobileNav).toHaveAttribute('hidden');
+		const desktopProjects = byText(container.querySelector('nav[aria-label="주 메뉴"]'), 'a', 'Projects');
+		expect(document.activeElement).toBe(desktopProjects);
+		expect(desktopProjects.className).toMatch(/isSection/);
+		expect(container.querySelector('header [aria-current]')).toBeNull();
 	});
 });
 

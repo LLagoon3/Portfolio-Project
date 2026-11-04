@@ -1,12 +1,6 @@
-import BoldLayout from '../components/layout/bold/BoldLayout';
 import PagesMetaHead from '../components/PagesMetaHead';
-import AboutHero from '../components/about/bold/AboutHero';
-import AboutBioSection from '../components/about/bold/AboutBioSection';
-import AboutCounters from '../components/about/bold/AboutCounters';
-import AboutPrinciples from '../components/about/bold/AboutPrinciples';
-import AboutJourney from '../components/about/bold/AboutJourney';
-import AboutBrands from '../components/about/bold/AboutBrands';
-import AboutContactCTA from '../components/about/bold/AboutContactCTA';
+import ProjectsLayout from '../components/projects/minimal/ProjectsLayout';
+import About, { AboutResumeLink } from '../components/about/minimal/About';
 
 const API_BASE_URL = process.env.API_INTERNAL_URL || 'http://localhost:7341';
 
@@ -22,27 +16,24 @@ const EMPTY_ABOUT = {
 	stacks: [],
 };
 
-function About({ about }) {
+function AboutPage({ about }) {
 	return (
 		<>
 			<PagesMetaHead title="About Me" />
-			<AboutHero
-				name={about.name}
-				tagline={about.tagline}
-				profileImage={about.profileImage}
-				availability={about.availability}
-			/>
-			<AboutBioSection bio={about.bio} />
-			<AboutCounters stats={about.stats} />
-			<AboutPrinciples principles={about.principles} />
-			<AboutJourney journey={about.journey} />
-			<AboutBrands groups={about.stacks} />
-			<AboutContactCTA />
+			<About about={about} />
 		</>
 	);
 }
 
-About.getLayout = (page) => <BoldLayout>{page}</BoldLayout>;
+// 프로젝트 목록 / 상세와 같은 정적 레이아웃. 헤더는 About 을 현재 페이지로, 푸터는 연락하기 앞에
+// 기존 Notion 이력서 링크를 둔다.
+AboutPage.getLayout = (page) => (
+	<ProjectsLayout currentHref="/about" footerActions={<AboutResumeLink />}>
+		{page}
+	</ProjectsLayout>
+);
+// 라우트 전환 reveal / 플로팅 맨 위로 / 커서 / Hire Me 없이 렌더한다 (_app.jsx 참고).
+AboutPage.minimalShell = true;
 
 export async function getServerSideProps() {
 	try {
@@ -63,4 +54,4 @@ export async function getServerSideProps() {
 	}
 }
 
-export default About;
+export default AboutPage;

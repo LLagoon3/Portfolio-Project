@@ -8,6 +8,13 @@ const PATHS = {
 	close: <path d="M18 6 6 18M6 6l12 12" />,
 	arrowUp: <path d="M12 19V5m-6 6 6-6 6 6" />,
 	chevronDown: <path d="m6 9 6 6 6-6" />,
+	check: <path d="M20 6 9 17l-5-5" />,
+	copy: (
+		<>
+			<rect x="8" y="8" width="13" height="13" rx="2" />
+			<path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3" />
+		</>
+	),
 	moon: <path d="M20.9 13A9 9 0 0 1 11 3.1 9 9 0 1 0 20.9 13Z" />,
 	menu: <path d="M4 7h16M4 12h16M4 17h16" />,
 	search: (

@@ -1,10 +1,6 @@
-import BoldLayout from '../components/layout/bold/BoldLayout';
 import PagesMetaHead from '../components/PagesMetaHead';
-import BoldContactHero from '../components/contact/bold/BoldContactHero';
-import BoldContactBigEmail from '../components/contact/bold/BoldContactBigEmail';
-import BoldContactForm from '../components/contact/bold/BoldContactForm';
-import BoldContactSidebar from '../components/contact/bold/BoldContactSidebar';
-import BoldContactFaq from '../components/contact/bold/BoldContactFaq';
+import ProjectsLayout from '../components/projects/minimal/ProjectsLayout';
+import Contact from '../components/contact/minimal/Contact';
 
 const API_BASE_URL =
 	process.env.API_INTERNAL_URL || 'http://localhost:7341';
@@ -17,39 +13,24 @@ const EMPTY_CONTACT = {
 	faqs: [],
 };
 
-function Contact({ contact }) {
+function ContactPage({ contact }) {
 	return (
 		<>
 			<PagesMetaHead title="Contact" />
-
-			<div className="container mx-auto px-6 lg:px-10">
-				<BoldContactHero />
-				<BoldContactBigEmail email={contact.email} />
-
-				<section
-					className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 py-16 lg:py-20 border-t border-b"
-					style={{ borderColor: 'var(--line)' }}
-				>
-					<div className="lg:col-span-7">
-						<BoldContactForm />
-					</div>
-					<div className="lg:col-span-5">
-						<BoldContactSidebar
-							email={contact.email}
-							address={contact.address}
-							availability={contact.availability}
-							socials={contact.socials}
-						/>
-					</div>
-				</section>
-
-				<BoldContactFaq faqs={contact.faqs} />
-			</div>
+			<Contact contact={contact} />
 		</>
 	);
 }
 
-Contact.getLayout = (page) => <BoldLayout>{page}</BoldLayout>;
+// 프로젝트 목록 / 상세 / About 과 같은 정적 레이아웃. 헤더는 Contact 를 현재 페이지로 두고,
+// 이 화면 자신이 연락 수단이라 푸터의 연락 안내 줄은 빼고 저작권 / 맨 위로만 둔다.
+ContactPage.getLayout = (page) => (
+	<ProjectsLayout currentHref="/contact" showFooterCta={false}>
+		{page}
+	</ProjectsLayout>
+);
+// 라우트 전환 reveal / 플로팅 맨 위로 / 커서 / Hire Me 없이 렌더한다 (_app.jsx 참고).
+ContactPage.minimalShell = true;
 
 export async function getServerSideProps() {
 	try {
@@ -80,4 +61,4 @@ export async function getServerSideProps() {
 	}
 }
 
-export default Contact;
+export default ContactPage;

@@ -1,0 +1,762 @@
+/* /contact 전용 스타일. 색/글꼴 토큰과 헤더/푸터는 ProjectsLayout(Projects.module.css 의 .root)을 그대로 쓰고,
+ * 여기서는 본문만 .page 아래로 묶는다. .root p / h1 / h2 의 margin 초기화와 @tailwindcss/forms 의 입력 기본값보다
+ * 우선하도록 한 단계 더 묶는다. */
+
+.page {
+	/* 입력 테두리(3:1 이상)와 오류 색만 이 화면에서 더한다. */
+	--field: #898c95;
+	--danger: #b42328;
+}
+
+:global(html.dark) .page {
+	--field: #6c6c75;
+	--danger: #ff8f8f;
+}
+
+.page h3,
+.page dd,
+.page li {
+	margin: 0;
+	word-break: keep-all;
+	overflow-wrap: break-word;
+}
+
+.srOnly {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip-path: inset(50%);
+	white-space: nowrap;
+	border: 0;
+}
+
+/* ── Intro: 페이지 목적 + 실제 공개 연락처 ───────────────────── */
+.intro {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) minmax(0, 432px);
+	column-gap: 64px;
+	align-items: end;
+	padding: 64px 0 56px;
+}
+
+.introSingle {
+	grid-template-columns: minmax(0, 1fr);
+}
+
+.introText,
+.directWrap {
+	min-width: 0;
+}
+
+.page .title {
+	max-width: 15em;
+	font-size: clamp(32px, 3.2vw, 44px);
+	font-weight: 500;
+	letter-spacing: -0.03em;
+	line-height: 1.3;
+	text-wrap: balance;
+}
+
+.page .lead {
+	margin-top: 16px;
+	font-size: 18px;
+	line-height: 28px;
+	color: var(--secondary);
+}
+
+.page .availability {
+	margin-top: 12px;
+	font-size: 14px;
+	line-height: 22px;
+	color: var(--secondary);
+}
+
+.direct {
+	margin: 0;
+}
+
+.directRow {
+	padding: 16px 0;
+	border-top: 1px solid var(--line);
+}
+
+.directRow:first-child {
+	padding-top: 0;
+	border-top: 0;
+}
+
+.directRow:last-child {
+	padding-bottom: 0;
+}
+
+.direct dt {
+	font-size: 13px;
+	line-height: 20px;
+	color: var(--muted);
+}
+
+.page .direct dd {
+	margin-top: 8px;
+	min-width: 0;
+}
+
+.emailLine {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	gap: 8px 12px;
+}
+
+.email {
+	min-width: 0;
+	font-size: 22px;
+	line-height: 32px;
+	font-weight: 500;
+	letter-spacing: -0.01em;
+	text-decoration: underline;
+	text-decoration-color: var(--accent);
+	text-decoration-thickness: 1px;
+	text-underline-offset: 6px;
+	overflow-wrap: anywhere;
+	transition: color 160ms var(--ease);
+}
+
+.email:hover {
+	color: var(--accent);
+}
+
+.page .copy {
+	min-width: 112px;
+	height: 40px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	padding: 0 12px;
+	border: 1px solid var(--line);
+	border-radius: 8px;
+	background: transparent;
+	font-size: 13px;
+	color: var(--secondary);
+	white-space: nowrap;
+	transition:
+		background-color 160ms var(--ease),
+		color 160ms var(--ease);
+}
+
+.page .copy:hover {
+	background: var(--soft);
+	color: var(--text);
+}
+
+.page .copy:active {
+	transform: scale(0.98);
+}
+
+/* JS 가 붙기 전에는 같은 자리만 차지한다 (붙은 뒤 레이아웃이 밀리지 않게). */
+.page .copyPending {
+	visibility: hidden;
+}
+
+.page .copyIcon {
+	width: 16px;
+	height: 16px;
+}
+
+.page .copyHint {
+	margin-top: 8px;
+	font-size: 13px;
+	line-height: 20px;
+	color: var(--secondary);
+}
+
+.copyHint[hidden] {
+	display: none;
+}
+
+.page .address {
+	font-size: 16px;
+	line-height: 26px;
+}
+
+.socials {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.page .socials li + li {
+	margin-top: 4px;
+}
+
+.social,
+.socialText {
+	font-size: 16px;
+	line-height: 26px;
+	overflow-wrap: anywhere;
+	word-break: normal;
+}
+
+.social {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	max-width: 100%;
+	/* 링크임을 색만으로 구분하지 않도록 입력 테두리와 같은 3:1 대비의 밑줄을 둔다. */
+	text-decoration: underline;
+	text-decoration-color: var(--field);
+	text-decoration-thickness: 1px;
+	text-underline-offset: 4px;
+	transition:
+		color 160ms var(--ease),
+		text-decoration-color 160ms var(--ease);
+}
+
+.social:hover {
+	color: var(--accent);
+	text-decoration-color: var(--accent);
+}
+
+.page .socialIcon {
+	width: 16px;
+	height: 16px;
+	color: var(--muted);
+}
+
+/* ── Sections: 왼쪽 이름 열 + 오른쪽 폼 / 읽기 열 (About 과 같은 격자) ─── */
+.section {
+	display: grid;
+	grid-template-columns: 240px minmax(0, 1fr);
+	column-gap: 64px;
+	padding: 48px 0;
+	border-top: 1px solid var(--line);
+}
+
+.page .sectionTitle {
+	font-size: 22px;
+	font-weight: 500;
+	letter-spacing: -0.01em;
+	line-height: 32px;
+}
+
+.sectionBody {
+	min-width: 0;
+}
+
+/* ── Form ───────────────────────────────────────────────── */
+.form {
+	max-width: 720px;
+	min-width: 0;
+}
+
+.topicGroup {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	min-width: 0;
+}
+
+.topicGroup legend,
+.field label {
+	padding: 0;
+	font-size: 14px;
+	line-height: 20px;
+	font-weight: 500;
+}
+
+.topicGroup legend {
+	margin-bottom: 8px;
+}
+
+.optional {
+	margin-left: 4px;
+	font-weight: 400;
+	color: var(--muted);
+}
+
+.topics {
+	display: grid;
+	grid-template-columns: repeat(4, minmax(0, 1fr));
+	gap: 8px;
+}
+
+.topic {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	min-height: 44px;
+	min-width: 0;
+	padding: 0 12px;
+	border: 1px solid var(--line);
+	border-radius: 8px;
+	background: var(--surface);
+	font-size: 14px;
+	line-height: 20px;
+	color: var(--secondary);
+	cursor: pointer;
+	transition:
+		border-color 160ms var(--ease),
+		color 160ms var(--ease);
+}
+
+.topic:hover {
+	border-color: var(--field);
+	color: var(--text);
+}
+
+/* @tailwindcss/forms 가 그리는 라디오 대신 브라우저 기본 라디오(accent-color)를 쓴다. */
+.page .topic input {
+	-webkit-appearance: auto;
+	appearance: auto;
+	margin: 0;
+	padding: 0;
+	width: 16px;
+	height: 16px;
+	flex-shrink: 0;
+	border: 0;
+	background: none;
+	box-shadow: none;
+	color: inherit;
+	accent-color: var(--accent);
+	cursor: pointer;
+}
+
+.page .topic input:checked,
+.page .topic input:focus {
+	background: none;
+	box-shadow: none;
+}
+
+.page .topic input:focus-visible {
+	outline: 2px solid var(--accent);
+	outline-offset: 2px;
+}
+
+.topic:has(input:checked) {
+	border-color: var(--accent);
+	box-shadow: inset 0 0 0 1px var(--accent);
+	color: var(--text);
+	font-weight: 500;
+}
+
+@supports selector(:has(*)) {
+	.page .topic input:focus-visible {
+		outline: none;
+	}
+
+	.topic:has(input:focus-visible) {
+		outline: 2px solid var(--accent);
+		outline-offset: 2px;
+	}
+}
+
+.fields {
+	margin-top: 28px;
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 20px;
+}
+
+.field {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	min-width: 0;
+}
+
+.fieldFull {
+	grid-column: 1 / -1;
+}
+
+.page .field input,
+.page .field textarea {
+	-webkit-appearance: none;
+	appearance: none;
+	width: 100%;
+	min-height: 44px;
+	margin: 0;
+	padding: 9px 12px;
+	border: 1px solid var(--field);
+	border-radius: 8px;
+	background: var(--surface);
+	color: var(--text);
+	font-size: 15px;
+	line-height: 24px;
+	box-shadow: none;
+	transition: border-color 160ms var(--ease);
+}
+
+.page .field textarea {
+	display: block;
+	min-height: 176px;
+	resize: vertical;
+}
+
+.page .field input:hover,
+.page .field textarea:hover {
+	border-color: var(--secondary);
+}
+
+.page .field input:focus,
+.page .field textarea:focus {
+	outline: 2px solid var(--accent);
+	outline-offset: 1px;
+	border-color: var(--accent);
+	box-shadow: none;
+}
+
+.page .field [aria-invalid='true'] {
+	border-color: var(--danger);
+}
+
+.page .field [aria-invalid='true']:focus {
+	outline-color: var(--danger);
+	border-color: var(--danger);
+}
+
+.page .error {
+	font-size: 13px;
+	line-height: 20px;
+	color: var(--danger);
+}
+
+.actions {
+	margin-top: 32px;
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 12px 24px;
+}
+
+.page .submit {
+	height: 48px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 12px;
+	padding: 0 20px;
+	border: 1px solid var(--accent);
+	border-radius: 8px;
+	background: var(--accent);
+	color: var(--on-accent);
+	font-size: 14px;
+	font-weight: 500;
+	white-space: nowrap;
+	transition:
+		background-color 160ms var(--ease),
+		border-color 160ms var(--ease);
+}
+
+.page .submit:hover:not(:disabled) {
+	background: var(--accent-hover);
+	border-color: var(--accent-hover);
+}
+
+.page .submit:active:not(:disabled) {
+	transform: scale(0.98);
+}
+
+.page .submit:disabled {
+	opacity: 0.5;
+	cursor: not-allowed;
+}
+
+.page .note {
+	font-size: 13px;
+	line-height: 20px;
+	color: var(--muted);
+}
+
+.resultWrap {
+	margin-top: 16px;
+}
+
+.page .result {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	font-size: 14px;
+	line-height: 22px;
+	color: var(--text);
+}
+
+.page .result:empty {
+	display: none;
+}
+
+.page .resultIcon {
+	width: 16px;
+	height: 16px;
+	color: var(--secondary);
+}
+
+.page .failure {
+	font-size: 14px;
+	line-height: 22px;
+	color: var(--danger);
+}
+
+/* ── 자주 받는 질문 (있을 때만) ───────────────────────────── */
+.faqs {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	max-width: 720px;
+}
+
+.page .faqs > li {
+	padding: 20px 0;
+	border-top: 1px solid var(--line);
+}
+
+.page .faqs > li:first-child {
+	padding-top: 0;
+	border-top: 0;
+}
+
+.page .faqs > li:last-child {
+	padding-bottom: 0;
+}
+
+.page .question {
+	font-size: 16px;
+	font-weight: 500;
+	line-height: 26px;
+	text-wrap: pretty;
+}
+
+.page .question + .markdown {
+	margin-top: 8px;
+}
+
+/* 답변 Markdown: About 소개와 같은 조판을 이 화면 범위에서만 둔다. */
+.markdown {
+	max-width: 40em;
+	font-size: 15px;
+	line-height: 1.8;
+	color: var(--secondary);
+	text-wrap: pretty;
+	overflow-wrap: break-word;
+}
+
+.page .markdown > * + * {
+	margin-top: 12px;
+}
+
+.page .markdown p {
+	font-size: inherit;
+	line-height: inherit;
+}
+
+.markdown h4,
+.markdown h5,
+.markdown h6 {
+	font-size: 15px;
+	font-weight: 500;
+	line-height: 1.5;
+	color: var(--text);
+}
+
+.page .markdown * + h4,
+.page .markdown * + h5,
+.page .markdown * + h6 {
+	margin-top: 20px;
+}
+
+.markdown strong {
+	font-weight: 500;
+	color: var(--text);
+}
+
+.markdown ul,
+.markdown ol {
+	padding-left: 1.25em;
+}
+
+.markdown ul {
+	list-style: disc;
+}
+
+.markdown ol {
+	list-style: decimal;
+}
+
+.page .markdown li + li {
+	margin-top: 4px;
+}
+
+.markdown li::marker {
+	color: var(--muted);
+}
+
+.markdown a {
+	color: var(--accent);
+	text-decoration: underline;
+	text-underline-offset: 3px;
+	overflow-wrap: anywhere;
+	word-break: normal;
+	transition: color 160ms var(--ease);
+}
+
+.markdown a:hover {
+	color: var(--accent-hover);
+}
+
+.markdown code {
+	font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+	font-size: 0.875em;
+	padding: 0.1em 0.35em;
+	border-radius: 4px;
+	background: var(--soft);
+	color: var(--text);
+	overflow-wrap: anywhere;
+	word-break: normal;
+}
+
+.markdown pre {
+	margin: 0;
+	padding: 16px;
+	overflow-x: auto;
+	border: 1px solid var(--line);
+	border-radius: 8px;
+	background: var(--surface);
+	font-size: 14px;
+	line-height: 1.6;
+}
+
+.markdown pre code {
+	padding: 0;
+	background: none;
+	font-size: inherit;
+	overflow-wrap: normal;
+	white-space: pre;
+}
+
+.markdown blockquote {
+	margin: 0;
+	padding-left: 16px;
+	border-left: 2px solid var(--line);
+}
+
+.markdown hr {
+	border: 0;
+	border-top: 1px solid var(--line);
+}
+
+.markdown img {
+	max-width: 100%;
+	height: auto;
+	border-radius: 8px;
+}
+
+/* ── Responsive (시안의 1050 / 700 단계) ────────────────────── */
+@media (max-width: 1050px) {
+	.intro {
+		grid-template-columns: minmax(0, 1fr);
+		row-gap: 32px;
+		padding: 48px 0;
+	}
+
+	.direct {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		column-gap: 32px;
+	}
+
+	.directRow,
+	.directRow:first-child,
+	.directRow:last-child {
+		padding: 16px 0 0;
+		border-top: 1px solid var(--line);
+	}
+
+	.section {
+		grid-template-columns: minmax(0, 1fr);
+		padding: 40px 0;
+	}
+
+	.page .sectionTitle {
+		margin-bottom: 24px;
+	}
+}
+
+@media (max-width: 700px) {
+	.intro {
+		padding: 32px 0 40px;
+		row-gap: 24px;
+	}
+
+	.page .title {
+		font-size: clamp(26px, 7.4vw, 30px);
+		letter-spacing: -0.02em;
+		line-height: 1.35;
+	}
+
+	.page .lead {
+		margin-top: 12px;
+		font-size: 16px;
+		line-height: 26px;
+	}
+
+	.direct {
+		display: block;
+	}
+
+	.directRow,
+	.directRow:first-child {
+		padding: 16px 0;
+	}
+
+	.directRow:last-child {
+		padding-bottom: 0;
+	}
+
+	.email {
+		font-size: 20px;
+		line-height: 28px;
+	}
+
+	.section {
+		padding: 32px 0;
+	}
+
+	.page .sectionTitle {
+		font-size: 20px;
+		line-height: 28px;
+		margin-bottom: 20px;
+	}
+
+	.topics {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+
+	.fields {
+		grid-template-columns: minmax(0, 1fr);
+		margin-top: 24px;
+	}
+
+	/* iOS 가 포커스 때 확대하지 않도록 16px. */
+	.page .field input,
+	.page .field textarea {
+		font-size: 16px;
+	}
+
+	.actions {
+		margin-top: 28px;
+	}
+
+	.page .submit {
+		width: 100%;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.page .copy:active,
+	.page .submit:active:not(:disabled) {
+		transform: none;
+	}
+}

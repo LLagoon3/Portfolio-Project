@@ -694,6 +694,16 @@
 	color: var(--accent);
 }
 
+/* 연락 안내 줄이 없는 푸터(연락처 화면). 위 여백은 본문 마지막 섹션이 맡고, 구분선은 푸터 자신의 선 하나만 둔다.
+ * 아래 반응형 .footer 의 margin-top 보다 우선하도록 두 클래스로 묶는다. */
+.footer.footerBare {
+	margin-top: 0;
+}
+
+.footerBare .footerBottom {
+	border-top: 0;
+}
+
 /* ── Responsive ───────────────────────────────────────── */
 @media (max-width: 1050px) {
 	.wrap {
